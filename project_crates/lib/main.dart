@@ -1,7 +1,6 @@
 //import packages, modules, tools
 import 'package:flutter/material.dart';
 import 'login.dart';
-import 'app_theme.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 
@@ -18,7 +17,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.amber,
-        textTheme: AppTheme.textTheme,
         platform: TargetPlatform.android,
       ),
       home: LoginPage(),
