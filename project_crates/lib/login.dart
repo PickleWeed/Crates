@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/registerPage.dart';
 import 'landingPage.dart';
 import 'auth.dart';
+import 'activity.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -140,6 +141,15 @@ class _BodyState extends State<Body> {
                 ))));
   }
 
+  Widget activityButtuon() {
+    return OutlineButton(
+      onPressed: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ActivityPage()));
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -178,6 +188,9 @@ class _BodyState extends State<Body> {
       Padding(
           padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0),
           child: googleLoginButton()),
+      Padding(
+          padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0),
+          child: activityButtuon()),
       Container(
         height: 250,
         child: Column(
