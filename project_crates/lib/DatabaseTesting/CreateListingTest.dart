@@ -1,5 +1,6 @@
 // Dummy page to test database functionalities
 // To view this dummy page, replace the 'home' property value in main.dart to CreateListingTest()
+// Change the onPressed method in the ElevatedButton widget to test different methods
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/databaseAccess.dart';
@@ -89,11 +90,24 @@ class _CreateListingTestState extends State<CreateListingTest> {
               ),
             ),
             ElevatedButton(
-                child: Text("Create listing"),
+                child: Text("Test function"),
                 onPressed: () {
                   //using 'testuser' for userID cos I'm unable to login
-                  dao.addListing(isSelected[0], _selectedCategory,
-                      itemNameController.text, descController.text, 'testuser');
+                  // dao.addListing(
+                  //     isSelected[0],
+                  //     _selectedCategory,
+                  //     itemNameController.text,
+                  //     descController.text,
+                  //     DateTime.now(),
+                  //     'testuser');
+
+                  dao.deleteListingOnValue(
+                      isSelected[0],
+                      _selectedCategory,
+                      itemNameController.text,
+                      descController.text,
+                      DateTime.parse("2021-03-12T17:41:17.937656"),
+                      'testuser');
                 }),
           ],
         ),
