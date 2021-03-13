@@ -11,9 +11,32 @@ class _NearbyState extends State<Nearby> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                DrawerHeader(
+                  child: Text('Drawer Header'),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                  ),
+                ),
+                ListTile(
+                  title: Text('Item 1'),
+                  onTap: () {
+                    // Update the state of the app.
+                    // ...
+                  },
+                ),
+              ]// Populate the Drawer in the next step.
+          ),
+        ),
+      key: _globalKey,
       backgroundColor: offWhite,
       body: Stack(
         children: <Widget>[
+          //TODO: Put map here
           Container(
             color: Colors.red[100],
           ),
@@ -120,6 +143,17 @@ class _NearbyState extends State<Nearby> {
                 ),
               ),
             ],
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(10, 35, 0,0),
+            child: IconButton(
+              iconSize: 30,
+              icon: Icon(Icons.menu),
+              color: Colors.black,
+              onPressed: (){
+                _globalKey.currentState.openDrawer();
+              },
+            ),
           ),
         ]
       )

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../common/widgets.dart';
 import '../common/theme.dart';
 
 class Home extends StatefulWidget {
@@ -299,14 +300,14 @@ Widget NearbyList(){
       children: [
         Row(
           children: [
-            ListingCard("Old Town White Coffee", "leejunwei", 'assets/coffee.jpg','assets/icons/default.png'),
-            ListingCard("Korean Spicy Noodles Samyang", "Eggxactly", 'assets/noodles.jpg','assets/icons/default.png'),
+            ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
+            ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
           ],
         ),
         Row(
           children: [
-            ListingCard("Old Town White Coffee", "leejunwei", 'assets/coffee.jpg','assets/icons/default.png'),
-            ListingCard("Korean Spicy Noodles Samyang", "Eggxactly", 'assets/noodles.jpg','assets/icons/default.png'),
+            ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
+            ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
           ],
         ),
       ],
@@ -314,54 +315,54 @@ Widget NearbyList(){
   );
 }
 
-Widget ListingCard(title, owner, listingImg, ownerImg){
-  return Expanded(
-      child: Container(
-        child: InkWell(
-          //TODO: Edit this function to add listing page logic
-          onTap: (){print(title + " tapped!");},
-          child: Card(
-              color: Colors.grey[350],
-              margin: EdgeInsets.all(5),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      AspectRatio(
-                        aspectRatio: 1/1,
-                        child: Image.asset(
-                          listingImg,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      SizedBox(height:10),
-                      Text(title,
-                        maxLines: 1, // ensure long titles do not make card taller
-                        overflow: TextOverflow.ellipsis, // adds the '...' at the end of long titles
-                        style: TextStyle(
-                          color: Colors.grey[800],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        )
-                      ),
-                      SizedBox(height:5),
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: AssetImage(ownerImg),
-                            radius:15,
-                          ),
-                          SizedBox(width: 6),
-                          Text(owner),
-                        ],
-                      ),
-                    ]
-                ),
-              )
-          ),
-        ),
-      )
-  );
-}
+// Widget ListingCard(title, owner, listingImg, ownerImg){
+//   return Expanded(
+//       child: Container(
+//         child: InkWell(
+//           //TODO: Edit this function to add listing page logic
+//           onTap: (){print(title + " tapped!");},
+//           child: Card(
+//               color: Colors.grey[350],
+//               margin: EdgeInsets.all(5),
+//               child: Padding(
+//                 padding: const EdgeInsets.all(5.0),
+//                 child: Column(
+//                     mainAxisAlignment: MainAxisAlignment.start,
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: <Widget>[
+//                       AspectRatio(
+//                         aspectRatio: 1/1,
+//                         child: Image.asset(
+//                           listingImg,
+//                           fit: BoxFit.fill,
+//                         ),
+//                       ),
+//                       SizedBox(height:10),
+//                       Text(title,
+//                         maxLines: 1, // ensure long titles do not make card taller
+//                         overflow: TextOverflow.ellipsis, // adds the '...' at the end of long titles
+//                         style: TextStyle(
+//                           color: Colors.grey[800],
+//                           fontWeight: FontWeight.bold,
+//                           fontSize: 14,
+//                         )
+//                       ),
+//                       SizedBox(height:5),
+//                       Row(
+//                         children: [
+//                           CircleAvatar(
+//                             backgroundImage: AssetImage(ownerImg),
+//                             radius:15,
+//                           ),
+//                           SizedBox(width: 6),
+//                           Text(owner),
+//                         ],
+//                       ),
+//                     ]
+//                 ),
+//               )
+//           ),
+//         ),
+//       )
+//   );
+// }
