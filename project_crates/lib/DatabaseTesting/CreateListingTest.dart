@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/databaseAccess.dart';
+import 'package:flutter_application_1/models/Listing.dart';
 
 class CreateListingTest extends StatefulWidget {
   @override
@@ -93,21 +94,18 @@ class _CreateListingTestState extends State<CreateListingTest> {
                 child: Text("Test function"),
                 onPressed: () {
                   //using 'testuser' for userID cos I'm unable to login
-                  // dao.addListing(
-                  //     isSelected[0],
-                  //     _selectedCategory,
-                  //     itemNameController.text,
-                  //     descController.text,
-                  //     DateTime.now(),
-                  //     'testuser');
+                  Listing listing = new Listing(
+                      isRequest: isSelected[0],
+                      category: _selectedCategory,
+                      itemName: itemNameController.text,
+                      description: descController.text,
+                      userID: 'testuser',
+                      postDateTime:
+                          DateTime.parse("2021-03-13T09:21:23.083984"));
 
-                  dao.deleteListingOnValue(
-                      isSelected[0],
-                      _selectedCategory,
-                      itemNameController.text,
-                      descController.text,
-                      DateTime.parse("2021-03-12T17:41:17.937656"),
-                      'testuser');
+                  // dao.addListing(listing);
+
+                  dao.deleteListingOnValue(listing);
                 }),
           ],
         ),

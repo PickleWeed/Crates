@@ -1,46 +1,41 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'models/Listing.dart';
 
 class DatabaseAccess {
   final databaseRef = FirebaseDatabase.instance.reference();
 
   //TODO integrate image storing functionality
-  String addListing(bool isRequest, String category, String itemName,
-      String description, DateTime postDateTime, String userID) {
+  String addListing(Listing newListing) {
     DatabaseReference pushedPostRef = databaseRef.child("Listing").push();
     String postKey = pushedPostRef.key;
     pushedPostRef.set({
-      "isRequest": isRequest,
-      "category": category,
-      "itemName": itemName,
-      "description": description,
-      "postDateTime": postDateTime.toIso8601String(),
-      "userID": userID,
+      "isRequest": newListing.isRequest,
+      "category": newListing.category,
+      "itemName": newListing.itemName,
+      "description": newListing.description,
+      "postDateTime": newListing.postDateTime.toIso8601String(),
+      "userID": newListing.userID,
     });
     return postKey;
   }
 
   //find the unique key of a listing node using its field values
-  Future<String> findKeyOfListing(
-      bool isRequest,
-      String category,
-      String itemName,
-      String description,
-      DateTime postDateTime,
-      String userID) async {
+  Future<String> findKeyOfListing(Listing existingListing) async {
     List list = [];
     await databaseRef
         .child("Listing")
         .orderByChild("userID")
-        .equalTo(userID)
+        .equalTo(existingListing.userID)
         .once()
         .then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> data = snapshot.value;
       data.forEach((key, values) {
-        if (values['postDateTime'] == postDateTime.toIso8601String() &&
-            values['description'] == description &&
-            values['itemName'] == itemName &&
-            values['category'] == category &&
-            values['isRequest'] == isRequest) {
+        if (values['postDateTime'] ==
+                existingListing.postDateTime.toIso8601String() &&
+            values['description'] == existingListing.description &&
+            values['itemName'] == existingListing.itemName &&
+            values['category'] == existingListing.category &&
+            values['isRequest'] == existingListing.isRequest) {
           list.add(key);
         }
       });
@@ -49,6 +44,7 @@ class DatabaseAccess {
       return list[0];
     } catch (e) {
       print("Error finding matching listings");
+      return null;
     }
   }
 
@@ -62,10 +58,10 @@ class DatabaseAccess {
     }
   }
 
-  void deleteListingOnValue(bool isRequest, String category, String itemName,
-      String description, DateTime postDateTime, String userID) async {
-    String postKey = await findKeyOfListing(
-        isRequest, category, itemName, description, postDateTime, userID);
+  void deleteListingOnValue(Listing existingListing) async {
+    String postKey = await findKeyOfListing(existingListing);
     deleteListingOnKey(postKey);
   }
+
+  void updateListing(Listing existingListing) {}
 }
