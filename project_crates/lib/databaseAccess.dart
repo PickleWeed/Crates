@@ -5,6 +5,7 @@ class DatabaseAccess {
   final databaseRef = FirebaseDatabase.instance.reference();
 
   //TODO integrate image storing functionality
+  //add a listing to firebase database, returns the unique key identifier of the created node as a String
   String addListing(Listing newListing) {
     DatabaseReference pushedPostRef = databaseRef.child("Listing").push();
     String postKey = pushedPostRef.key;
@@ -13,8 +14,8 @@ class DatabaseAccess {
       "category": newListing.category,
       "itemName": newListing.itemName,
       "description": newListing.description,
-      "postDateTime": newListing.postDateTime.toIso8601String(),
-      "userID": newListing.userID,
+      "postDateTime": DateTime.now().toIso8601String(),
+      "userID": newListing.userID, //TODO change this to pass in userID
     });
     return postKey;
   }
@@ -63,5 +64,17 @@ class DatabaseAccess {
     deleteListingOnKey(postKey);
   }
 
-  void updateListing(Listing existingListing) {}
+  //update an entire listing node with a new listing, postDateTime updated to DateTime.now()
+  void updateListing(String existingListingID, Listing updatedListing) {
+    Map<String, dynamic> map = {
+      "isRequest": updatedListing.isRequest,
+      "category": updatedListing.category,
+      "itemName": updatedListing.itemName,
+      "description": updatedListing.description,
+      "postDateTime": DateTime.now().toIso8601String(),
+      "userID": updatedListing.userID, //TODO change this to pass in userID
+    };
+
+    databaseRef.child("Listing").child(existingListingID).set(map);
+  }
 }

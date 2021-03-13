@@ -103,9 +103,11 @@ class _CreateListingTestState extends State<CreateListingTest> {
                       postDateTime:
                           DateTime.parse("2021-03-13T09:21:23.083984"));
 
-                  // dao.addListing(listing);
+                  dao.addListing(listing);
 
-                  dao.deleteListingOnValue(listing);
+                  // dao.deleteListingOnValue(listing);
+
+                  // dao.updateListing("-MVfIohm-J9msKTmsiLD", listing);
                 }),
           ],
         ),
