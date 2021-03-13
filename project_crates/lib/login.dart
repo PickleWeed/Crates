@@ -71,7 +71,7 @@ class _BodyState extends State<Body> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Image(
-                      image: AssetImage('assests/google_logo.png'),
+                      image: AssetImage('assets/google_logo.png'),
                       height: 25,
                       alignment: Alignment.topLeft,
                     ),
