@@ -69,7 +69,7 @@ List<String> hello = [
   "Edan is valorant pro",
   "maybe that is a lie"
 ];
-//this is stupid
+
 // building of cards
 // Widget building() {
 //   return Center(
