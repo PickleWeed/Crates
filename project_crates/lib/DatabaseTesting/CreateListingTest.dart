@@ -3,8 +3,10 @@
 // Change the onPressed method in the ElevatedButton widget to test different methods
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/databaseAccess.dart';
+import 'package:flutter_application_1/services/databaseAccess.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/services/locationService.dart';
+import 'package:location/location.dart';
 
 class CreateListingTest extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class CreateListingTest extends StatefulWidget {
 
 class _CreateListingTestState extends State<CreateListingTest> {
   DatabaseAccess dao = new DatabaseAccess();
+  LocationService loc = new LocationService();
   List<bool> isSelected = [true, false];
   String _selectedCategory;
   List<String> _categories = ['Canned Food', 'Vegetables', 'Raw Meat'];
@@ -92,7 +95,7 @@ class _CreateListingTestState extends State<CreateListingTest> {
             ),
             ElevatedButton(
                 child: Text("Test function"),
-                onPressed: () {
+                onPressed: () async {
                   //using 'testuser' for userID cos I'm unable to login
                   Listing listing = new Listing(
                       isRequest: isSelected[0],
@@ -101,13 +104,16 @@ class _CreateListingTestState extends State<CreateListingTest> {
                       description: descController.text,
                       userID: 'testuser',
                       postDateTime:
-                          DateTime.parse("2021-03-13T09:21:23.083984"));
+                          DateTime.parse("2021-03-13T11:22:35.833219"));
 
-                  dao.addListing(listing);
+                  // dao.addListing(listing);
 
                   // dao.deleteListingOnValue(listing);
 
-                  // dao.updateListing("-MVfIohm-J9msKTmsiLD", listing);
+                  // dao.updateListing("-MVjswIGBqSnalG7cK55", listing);
+
+                  List<double> userLocation = await loc.getLatLong();
+                  print(userLocation);
                 }),
           ],
         ),

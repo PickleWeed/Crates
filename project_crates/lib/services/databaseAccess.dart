@@ -1,10 +1,10 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'models/Listing.dart';
+import 'package:flutter_application_1/models/Listing.dart';
 
 class DatabaseAccess {
   final databaseRef = FirebaseDatabase.instance.reference();
 
-  //TODO integrate image storing functionality
+  //TODO integrate location and image storing functionality
   //add a listing to firebase database, returns the unique key identifier of the created node as a String
   String addListing(Listing newListing) {
     DatabaseReference pushedPostRef = databaseRef.child("Listing").push();
