@@ -12,11 +12,14 @@ class DatabaseAccess {
     pushedPostRef.set({
       "isRequest": newListing.isRequest,
       "category": newListing.category,
-      "itemName": newListing.itemName,
+      "listingTitle": newListing.listingTitle,
       "description": newListing.description,
+      "latitude": newListing.latitude,
+      "longitude": newListing.longitude,
       "postDateTime": DateTime.now().toIso8601String(),
       "userID": newListing.userID, //TODO change this to pass in userID
     });
+    print('Created postKey: $postKey');
     return postKey;
   }
 
@@ -33,8 +36,10 @@ class DatabaseAccess {
       data.forEach((key, values) {
         if (values['postDateTime'] ==
                 existingListing.postDateTime.toIso8601String() &&
+            values['latitude'] == existingListing.latitude &&
+            values['longitude'] == existingListing.longitude &&
             values['description'] == existingListing.description &&
-            values['itemName'] == existingListing.itemName &&
+            values['listingTitle'] == existingListing.listingTitle &&
             values['category'] == existingListing.category &&
             values['isRequest'] == existingListing.isRequest) {
           list.add(key);
@@ -69,8 +74,10 @@ class DatabaseAccess {
     Map<String, dynamic> map = {
       "isRequest": updatedListing.isRequest,
       "category": updatedListing.category,
-      "itemName": updatedListing.itemName,
+      "listingTitle": updatedListing.listingTitle,
       "description": updatedListing.description,
+      "latitude": updatedListing.latitude,
+      "longitude": updatedListing.longitude,
       "postDateTime": DateTime.now().toIso8601String(),
       "userID": updatedListing.userID, //TODO change this to pass in userID
     };
