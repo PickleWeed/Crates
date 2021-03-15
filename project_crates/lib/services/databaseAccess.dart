@@ -23,6 +23,11 @@ class DatabaseAccess {
     return postKey;
   }
 
+  Stream retrieveListingStream() {
+    Stream stream = databaseRef.child("Listing").onValue;
+    return stream;
+  }
+
   //find the unique key of a listing node using its field values
   Future<String> findKeyOfListing(Listing existingListing) async {
     List list = [];
