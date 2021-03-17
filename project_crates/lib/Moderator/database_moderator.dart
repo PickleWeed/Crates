@@ -49,6 +49,9 @@ class DatabaseService{
     return reportChat;
   }
 
+  //Search list
+
+
   //Add
   Future addReportChatData(ReportChat data) async{
     _databaseRef.child("ReportChat").push().set({
@@ -187,7 +190,7 @@ class DatabaseService{
 
   //Add
   Future addReportListingActionData(ReportListingAction data) async{
-    _databaseRef.child("ReportListingAction").child(data.reportID).push().set({
+    _databaseRef.child("ReportListingAction").child(data.reportID).set({
       "actionsTaken": data.actionsTaken,
       "actionReason": data.actionReason,
       "updateToReporter": data.updateToReporter,
