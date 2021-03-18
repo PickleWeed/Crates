@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/registerPage.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'landingPage.dart';
 import 'auth.dart';
+import 'models/user.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -29,11 +31,25 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  FirebaseUser user;
+
+  //final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+   // usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
 //login click
   void googleLoginClick() {
     signInWithGoogle().then((user) => {
-          this.user = user,
+        //  this.user = user,
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -48,10 +64,20 @@ class _BodyState extends State<Body> {
 
 //TODO user validation
   void loginUserClick() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => LandingPage('insert username here')));
+    FirebaseUser user;
+    signInWithEmailAndPassword(emailController.text, passwordController.text).then((user) =>
+    {
+     // this.user = user,
+
+      if (user != null){
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => LandingPage(user.displayName)))
+      } else {
+        //print("login unsuccessful")
+      }
+    });
   }
 
   Widget googleLoginButton() {
@@ -159,14 +185,16 @@ class _BodyState extends State<Body> {
       Padding(
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: TextField(
+            controller: emailController,
             decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Username',
-                hintText: 'username')),
+                labelText: 'Email',
+                hintText: 'email')),
       ),
       Padding(
           padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0),
           child: TextField(
+            controller: passwordController,
             decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Password',

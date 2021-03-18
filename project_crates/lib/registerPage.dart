@@ -1,4 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'auth.dart';
+import 'login.dart';
+import 'models/user.dart';
 
 class RegisterPage extends StatelessWidget {
   @override
@@ -25,8 +29,23 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   Widget usernameField() {
     return TextField(
+      controller: usernameController,
       decoration: InputDecoration(
           border: OutlineInputBorder(),
           labelText: 'Enter Username',
@@ -34,13 +53,27 @@ class _BodyState extends State<Body> {
     );
   }
 
+  Widget emailField() {
+    return TextField(
+      controller: emailController,
+      decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Enter Email',
+          hintText: 'email'),
+    );
+  }
+
   Widget passwordField() {
     return TextField(
+        controller: passwordController,
+        obscureText: true, //hide password
         decoration: InputDecoration(
             border: OutlineInputBorder(),
             labelText: 'Enter Password',
-            hintText: 'Password'));
+            hintText: 'Password'),
+    );
   }
+
 
 //TODO submit button to database
   Widget submitButton() {
@@ -48,7 +81,14 @@ class _BodyState extends State<Body> {
         minWidth: 300.0,
         height: 60.0,
         child: FlatButton(
-          onPressed: () {},
+          onPressed: () async {
+            FirebaseUser user = await createUserWithEmailAndPassword(emailController.text, passwordController.text);
+           createUserDetails(user, usernameController.text, emailController.text);
+           Navigator.push(
+               context,
+               MaterialPageRoute(
+                   builder: (context) => LoginPage()));
+         },
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
           color: Colors.amber,
@@ -84,6 +124,10 @@ class _BodyState extends State<Body> {
         Container(
           padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
           child: usernameField(),
+        ),
+        Container(
+          padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+          child: emailField(),
         ),
         Container(
           padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
