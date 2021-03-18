@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:projectcrates/helpers/items.dart';
+import 'package:projectcrates/pages/chatpage.dart';
+import 'package:projectcrates/pages/notificationpage.dart';
 
 class ActivityPage extends StatelessWidget {
   @override
@@ -55,40 +59,18 @@ Widget notificationHeader() {
   ));
 }
 
-List<String> hello = [
-  'really?',
-  "need to test",
-  "seriously edan",
-  "last straw alr",
-  "maybe need more esting",
-  "I need more time",
-  "ssy so good",
-  "jun wei is the best!",
-  "something like that",
-  "valorant is the best",
-  "Edan is valorant pro",
-  "maybe that is a lie"
+// testing of notif
+List<NotifItem> hello = [
+  MessageItem('Sender Edan :)', 'Message body is empty!'),
+  MessageItem('Sender hello!', 'but really I am still testing only')
 ];
 
-// building of cards
-// Widget building() {
-//   return Center(
-//     child: Card(
-//       semanticContainer: false,
-//       child: InkWell(
-//         splashColor: Colors.blue.withAlpha(30),
-//         onTap: () {
-//           print('Card tapped.');
-//         },
-//         child: Container(
-//           width: 400,
-//           height: 200,
-//           child: Text('A card that can be tapped'),
-//         ),
-//       ),
-//     ),
-//   );
-// }
+//testing chat with notif stuff
+List<NotifItem> hello2 = [
+  HeadingItem('hello world!'),
+  MessageItem('Sender Edan :)', 'Message body is empty!'),
+  MessageItem('Sender hello!', 'but really I am still testing only')
+];
 
 class _BodyState extends State<Body> {
   final List<Tab> myTabs = <Tab>[
@@ -99,48 +81,72 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).canvasColor,
-          shape: Border(
-            top: BorderSide(color: Theme.of(context).canvasColor),
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).canvasColor,
+            shape: Border(
+              top: BorderSide(color: Theme.of(context).canvasColor),
+            ),
+            bottom: TabBar(
+              tabs: myTabs,
+              isScrollable: false,
+              indicatorWeight: 3.0,
+              //TODO OnTap Function
+            ),
+            automaticallyImplyLeading: false,
+            toolbarHeight: 60,
           ),
-          bottom: TabBar(
-            tabs: myTabs,
-            isScrollable: false,
-            indicatorWeight: 3.0,
-            //TODO OnTap Function
-          ),
-          automaticallyImplyLeading: false,
-          toolbarHeight: 80,
-        ),
-        body: Column(
-          // mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            notificationHeader(),
-            Container(
-                child: SingleChildScrollView(
-              child: // CHILD 1
-                  ListView.builder(
-                //CHILD 2
-                shrinkWrap: true,
-                //physics: NeverScrollableScrollPhysics(),
-                itemCount: hello.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                      child: ListTile(
-                    onTap: () {
-                      print("Hello"); // to go  to notifcation
-                    },
-                    title: Text(hello[index]),
-                  ));
-                },
+          body: TabBarView(
+            children: [
+              Column(
+                // mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  notificationHeader(),
+                  Container(
+                      child: SingleChildScrollView(
+                    child: // CHILD 1
+                        ListView.builder(
+                      //CHILD 2
+                      shrinkWrap: true,
+                      //physics: NeverScrollableScrollPhysics(),
+                      itemCount: hello.length,
+                      itemBuilder: (context, index) {
+                        final item = hello[index];
+                        return Card(
+                            child: ListTile(
+                          onTap: () {
+                            print("Hello");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => NotificationPage(
+                                        messageitem: hello[
+                                            index]))); // to go  to notifcation
+                          },
+                          title: item.buildTitle(context),
+                          subtitle: item.buildSubtitle(context),
+                          trailing: Icon(Icons.keyboard_arrow_right),
+                        ));
+                      },
+                    ),
+                  ))
+                ],
               ),
-            ))
-          ],
-        ),
-      ),
-    );
+              ChatPage(),
+            ],
+          ),
+        ));
   }
 }
+
+// now we implement a notif item that contains data to display msg
+
+//open up one to one chat
+// class ChatOneToOne extends StatelessWidget{
+
+//   @override
+//   Widget build(BuildContext context){
+
+//   }
+// }
