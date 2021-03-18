@@ -1,10 +1,9 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Moderator/ReportChat.dart';
-import 'package:flutter_application_1/Moderator/ReportChatAction.dart';
-import 'package:flutter_application_1/Moderator/ReportListing.dart';
-import 'package:flutter_application_1/Moderator/ReportListingAction.dart';
+import 'models/ReportChat.dart';
+import 'models/ReportChatAction.dart';
+import 'models/ReportListing.dart';
+import 'models/ReportListingAction.dart';
+import 'models/Notification.dart';
 
 class DatabaseService{
 
@@ -32,7 +31,8 @@ class DatabaseService{
       map.forEach((key, value) {
         ReportChat reportChat = new ReportChat(reportID: key, chatID: value['chatID'],
         reportTitle: value['reportTitle'], reportOffense: value['reportOffense'],
-        reportDescription: value['reportDescription'], complete: value['complete'], reportDate: DateTime.parse(snapshot.value['reportDate']));
+        reportDescription: value['reportDescription'], complete: value['complete'],
+            reportDate: DateTime.parse(value['reportDate']), userID: value['userID']);
         reportChatList.add(reportChat);
       });
     });
@@ -45,7 +45,8 @@ class DatabaseService{
     DataSnapshot snapshot = await _databaseRef.child('ReportChat').child(reportID).once();
     ReportChat reportChat = new ReportChat(reportID: reportID, chatID: snapshot.value['chatID'],
         reportTitle: snapshot.value['reportTitle'], reportOffense: snapshot.value['reportOffense'],
-        reportDescription: snapshot.value['reportDescription'], complete: snapshot.value['complete'], reportDate: DateTime.parse(snapshot.value['reportDate']));
+        reportDescription: snapshot.value['reportDescription'], complete: snapshot.value['complete'],
+        reportDate: DateTime.parse(snapshot.value['reportDate']), userID: snapshot.value['userID']);
     return reportChat;
   }
 
@@ -61,6 +62,7 @@ class DatabaseService{
       "reportOffense": data.reportOffense,
       "complete": "False",
       "reportDate": data.reportDate.toString(),
+      "userID": data.userID
     });
   }
 
@@ -109,6 +111,16 @@ class DatabaseService{
       "moderatorID": data.moderatorID,
       "actionDate": data.actionDate.toString()
     });
+
+    ReportChat rc = await readReportChat(data.reportID);
+
+    String notiText = data.updateToReporter + "\n Actions Taken: " + "\n";
+    for(var i = 0; i < data.actionsTaken.length; i++){
+      notiText += data.actionsTaken[i] + "\n";
+    }
+
+    Notification noti = new Notification(notificationText: notiText, isMatch: "ChatReport", reportID: data.reportID,userID: rc.userID);
+    addNotification(noti);
   }
 
   //
@@ -123,7 +135,8 @@ class DatabaseService{
       map.forEach((key, value) {
         ReportListing reportListing = new ReportListing(reportID: key, listingID: value['listingID'],
             reportTitle: value['reportTitle'], reportOffense: value['reportOffense'],
-            reportDescription: value['reportDescription'], complete: value['complete'], reportDate: DateTime.parse(value['reportDate']));
+            reportDescription: value['reportDescription'], complete: value['complete'],
+            reportDate: DateTime.parse(value['reportDate']), userID: value['userID']);
         reportListingList.add(reportListing);
       });
     });
@@ -135,7 +148,8 @@ class DatabaseService{
     DataSnapshot snapshot = await _databaseRef.child('ReportListing').child(reportID).once();
     ReportListing reportListing = new ReportListing(reportID: reportID, listingID: snapshot.value['listingID'],
         reportTitle: snapshot.value['reportTitle'], reportOffense: snapshot.value['reportOffense'],
-        reportDescription: snapshot.value['reportDescription'], complete: snapshot.value['complete'], reportDate: DateTime.parse(snapshot.value['reportDate']));
+        reportDescription: snapshot.value['reportDescription'], complete: snapshot.value['complete'],
+        reportDate: DateTime.parse(snapshot.value['reportDate']), userID: snapshot.value['userID']);
 
     return reportListing;
   }
@@ -148,7 +162,8 @@ class DatabaseService{
       "reportDescription": data.reportDescription,
       "reportOffense": data.reportOffense,
       "complete": "False",
-      "reportDate": data.reportDate.toString()
+      "reportDate": data.reportDate.toString(),
+      "userID": data.userID
     });
   }
 
@@ -197,6 +212,31 @@ class DatabaseService{
       "moderatorID": data.moderatorID,
       "actionDate": data.actionDate.toString()
     });
+
+    ReportListing rl = await readReportListing(data.reportID);
+
+    String notiText = data.updateToReporter + "\n Actions Taken: " + "\n";
+    for(var i = 0; i < data.actionsTaken.length; i++){
+      notiText += data.actionsTaken[i] + "\n";
+    }
+
+    Notification noti = new Notification(notificationText: notiText, isMatch: "ListingReport", reportID: data.reportID,userID: rl.userID);
+    addNotification(noti);
   }
+
+  //
+  // Add to notification
+  //
+
+  Future addNotification(Notification data) async{
+    _databaseRef.child("Notification").push().set({
+      "notificationText": data.notificationText,
+      "isMatch": data.isMatch,
+      "listingID": data.listingID ?? "",
+      "reportID": data.reportID ?? "",
+      "userID": data.userID
+    });
+  }
+
 
 }
