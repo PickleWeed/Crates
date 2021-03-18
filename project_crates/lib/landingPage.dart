@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/ui/SearchResult_page.dart';
 
 class LandingPage extends StatefulWidget {
   final String name;
@@ -20,8 +21,25 @@ class _LandingPageState extends State<LandingPage> {
             ),
             shape: RoundedRectangleBorder(
                 borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(70.0)))),
-        body: Body());
+                    BorderRadius.vertical(bottom: Radius.circular(70.0))),
+            actions: <Widget>[
+              IconButton(
+                alignment: Alignment.center,
+                icon: new Icon(Icons.search,size:35),
+                color:Colors.black,
+                onPressed: () {
+                  // pressed to execute search in the search field the user has entered
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SearchResult_page()));
+                },
+              ),
+            ]
+
+        ),
+
+        body: Body()
+
+
+    );
     // body: Body());
   }
 }
