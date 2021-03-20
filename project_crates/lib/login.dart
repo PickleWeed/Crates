@@ -71,7 +71,7 @@ class _BodyState extends State<Body> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Image(
-                      image: AssetImage('assests/google_logo.png'),
+                      image: AssetImage('assets/google_logo.png'),
                       height: 25,
                       alignment: Alignment.topLeft,
                     ),
@@ -83,7 +83,7 @@ class _BodyState extends State<Body> {
                 ))));
   }
 
-  Widget registerButton() {
+  Widget registerButton1() {
     return ButtonTheme(
         minWidth: 400.0,
         height: 60.0,
@@ -184,7 +184,7 @@ class _BodyState extends State<Body> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Padding(padding: EdgeInsets.zero, child: registerButton())
+            Padding(padding: EdgeInsets.zero, child: registerButton1())
           ],
         ),
       )
