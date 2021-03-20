@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import '../common/widgets.dart';
 import '../common/theme.dart';
 import 'dart:async';
-
-//gmaps
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'nearby_MapHandler.dart';
@@ -51,27 +50,7 @@ class _NearbyState extends State<Nearby> {
     mapHandler.createMarker(context, customIcon1);
     //print(dataHandler.haversine( 1.4267489378462697, 103.72670044012453, 1.4336990577109694, 103.70837558813479));
     return Scaffold(
-      drawer: Drawer(
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                DrawerHeader(
-                  child: Text('Drawer Header'),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                  ),
-                ),
-                ListTile(
-                  title: Text('Item 1'),
-                  onTap: () {
-                    // Update the state of the app.
-                    // ...
-                  },
-                ),
-              ]// Populate the Drawer in the next step.
-          ),
-        ),
+      drawer: MenuDrawer(),
       key: _globalKey,
       backgroundColor: offWhite,
       body: Stack(

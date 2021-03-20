@@ -117,3 +117,104 @@ class ListingCard extends StatelessWidget {
     );
   }
 }
+
+class MenuDrawer extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Menu'),
+              decoration: BoxDecoration(
+                color: primaryColor,
+              ),
+            ),
+            ListTile(
+              title: Row(
+                children: <Widget>[
+                  Icon(Icons.home),
+                  SizedBox(width:8),
+                  Text('Home'),
+                ],
+              ),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: Row(
+                children: <Widget>[
+                  Icon(Icons.person),
+                  SizedBox(width:8),
+                  Text('Profile'),
+                ],
+              ),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: Row(
+                children: <Widget>[
+                  Icon(Icons.location_on),
+                  SizedBox(width:8),
+                  Text('Nearby'),
+                ],
+              ),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: Row(
+                children: <Widget>[
+                  Icon(Icons.notifications),
+                  SizedBox(width:8),
+                  Text('Activity'),
+                ],
+              ),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: Row(
+                children: <Widget>[
+                  Icon(Icons.library_add),
+                  SizedBox(width:8),
+                  Text('New Listing'),
+                ],
+              ),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: Row(
+                children: <Widget>[
+                  Icon(Icons.logout),
+                  SizedBox(width:8),
+                  Text('Sign Out'),
+                ],
+              ),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+          ]// Populate the Drawer in the next step.
+      ),
+    );
+  }
+}
+
+
