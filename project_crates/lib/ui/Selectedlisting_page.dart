@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'Editinglist_page.dart';
+
 
 
 
@@ -39,7 +41,7 @@ class Selectedlisting_page extends StatelessWidget {
             ),
 
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor: Color(0xFFFFC857),
         body: Body()
 
 
@@ -62,7 +64,7 @@ class _BodyState extends State<Body> {
          child: Column(
           children: <Widget>[
             Container(
-              color: Colors.orange,
+              color: Color(0xFFFFC857),
               height: 230,
               width: 450,
               child:
@@ -75,8 +77,8 @@ class _BodyState extends State<Body> {
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.grey[300],
                     image: const DecorationImage(
-                      image: AssetImage('assests/google_logo.png'),
-                      fit: BoxFit.scaleDown,
+                      image: AssetImage('assets/coffee.jpg'),
+                      fit:  BoxFit.fill,
                     ),
                   ),
                 ),
@@ -106,7 +108,7 @@ class _BodyState extends State<Body> {
                     text: TextSpan(
                         text:'by, ',style: TextStyle(color: Colors.grey,fontSize: 20),
                         children: <TextSpan>[
-                          TextSpan(text: 'name ', style: TextStyle(color: Colors.orange,fontWeight: FontWeight.bold ,fontSize: 25),
+                          TextSpan(text: 'name ', style: TextStyle(color: Color(0xFFFFC857),fontWeight: FontWeight.bold ,fontSize: 25),
 
                           )
                         ]
@@ -167,7 +169,7 @@ class _BodyState extends State<Body> {
           minWidth:100, // width of the button
           height: 50,
           onPressed: () async {
-            // go to edit page
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Editinglist_page()));
           }
           ,color: Colors.grey[300],
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),

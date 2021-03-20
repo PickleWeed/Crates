@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/ui/Newlisting_page.dart';
 import 'package:flutter_application_1/ui/SearchResult_page.dart';
+
 
 class LandingPage extends StatefulWidget {
   final String name;
@@ -15,7 +17,7 @@ class _LandingPageState extends State<LandingPage> {
         appBar: AppBar(
             centerTitle: true,
             automaticallyImplyLeading: false,
-            backgroundColor: Colors.orange,
+            backgroundColor: Color(0xFFFFC857),
             title: Text(
               "Landing Page",
             ),
@@ -23,13 +25,14 @@ class _LandingPageState extends State<LandingPage> {
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(70.0))),
             actions: <Widget>[
+
               IconButton(
                 alignment: Alignment.center,
                 icon: new Icon(Icons.search,size:35),
                 color:Colors.black,
                 onPressed: () {
                   // pressed to execute search in the search field the user has entered
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SearchResult_page()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  SearchResult_page()));
                 },
               ),
             ]
@@ -52,6 +55,28 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+        body: SingleChildScrollView(
+
+        child: Column(
+        children: <Widget>[
+
+          IconButton(
+            alignment: Alignment.center,
+            icon: new Icon(Icons.add_circle_outline,size:35),
+            color:Colors.black,
+            onPressed: () {
+              // pressed to execute search in the search field the user has entered
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Newlisting_page()));
+            },
+          ),
+
+
+
+      ]
+        )
+        )
+    );
+
   }
 }
