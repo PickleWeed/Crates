@@ -34,7 +34,7 @@ class Body extends StatefulWidget {
   _BodyState createState() => _BodyState();
 }
 
-Widget notificationHeader() {
+Widget notificationHeader(BuildContext context) {
   return Container(
       child: Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -53,7 +53,9 @@ Widget notificationHeader() {
               child: TextButton.icon(
                 icon: Icon(Icons.sort),
                 label: Text('Sort'),
-                onPressed: () {},
+                onPressed: () {
+                  showAlertDialog(context);
+                },
               )))
     ],
   ));
@@ -102,7 +104,7 @@ class _BodyState extends State<Body> {
               Column(
                 // mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  notificationHeader(),
+                  notificationHeader(context),
                   Container(
                       child: SingleChildScrollView(
                     child: // CHILD 1
