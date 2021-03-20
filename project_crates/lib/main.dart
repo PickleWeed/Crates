@@ -1,5 +1,6 @@
 //import packages, modules, tools
 import 'package:flutter/material.dart';
+import 'DatabaseTesting/CloudStorageTest.dart';
 import 'DatabaseTesting/CreateListingTest.dart';
 import 'DatabaseTesting/RetrieveListingTest.dart';
 import 'login.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber,
         platform: TargetPlatform.android,
       ),
-      home: RetrieveListingTest(),
+      home: CloudStorageTest(),
     );
   }
 }
