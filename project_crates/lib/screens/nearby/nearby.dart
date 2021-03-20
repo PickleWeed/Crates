@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import '../common/widgets.dart';
 import '../common/theme.dart';
 import 'dart:async';
-
-//gmaps
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 
@@ -23,27 +22,7 @@ class _NearbyState extends State<Nearby> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                DrawerHeader(
-                  child: Text('Drawer Header'),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                  ),
-                ),
-                ListTile(
-                  title: Text('Item 1'),
-                  onTap: () {
-                    // Update the state of the app.
-                    // ...
-                  },
-                ),
-              ]// Populate the Drawer in the next step.
-          ),
-        ),
+      drawer: MenuDrawer(),
       key: _globalKey,
       backgroundColor: offWhite,
       body: Stack(
