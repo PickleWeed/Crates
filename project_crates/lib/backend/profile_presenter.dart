@@ -4,9 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'models/Listing.dart';
-import 'models/Review.dart';
-import 'models/User.dart';
+import '../models/Listing.dart';
+import '../models/Review.dart';
+import '../models/user.dart';
 
 class ProfilePresenter{
   static final ProfilePresenter _imagePresenter = ProfilePresenter._internal();
