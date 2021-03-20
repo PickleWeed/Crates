@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/Listing.dart';
 import '../common/theme.dart';
 import 'dart:async';
 
 //gmaps
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'nearby_MapHandler.dart';
+import '../../backend/map_DataHandler.dart';
 
 class Nearby extends StatefulWidget {
   @override
@@ -14,14 +17,39 @@ class Nearby extends StatefulWidget {
 class _NearbyState extends State<Nearby> {
   GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
+  MapHandler mapHandler = new MapHandler();
+  DataHandler dataHandler = new DataHandler();
   Completer<GoogleMapController> _controller = Completer();
-  static const LatLng _center = const LatLng(1.3521, 103.8198);
+
+  LatLng _center;
+  BitmapDescriptor customIcon1;
+  Set<Marker> markers;
+  List<Listing> listing;
+
+  double _longitude, _latitude;
+  double distance;
+
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
   }
-
+  _NearbyState(){
+    mapHandler.getLatitudeDouble().then((value) => setState((){
+      _latitude = value;
+    }));
+    mapHandler.getLongitudeDouble().then((value) => setState((){
+      _longitude = value;
+    }));
+    mapHandler.getCurrentLocation().then((value) => setState(() {
+      _center = value;
+    }));
+    dataHandler.retrieveUserListing(_latitude, _longitude, distance).then((value) => setState(() {
+      listing = value;
+    }));
+  }
   @override
   Widget build(BuildContext context) {
+    mapHandler.createMarker(context, customIcon1);
+    //print(dataHandler.haversine( 1.4267489378462697, 103.72670044012453, 1.4336990577109694, 103.70837558813479));
     return Scaffold(
       drawer: Drawer(
           child: ListView(
@@ -50,9 +78,11 @@ class _NearbyState extends State<Nearby> {
         children: <Widget>[
           GoogleMap(
             onMapCreated: _onMapCreated,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
             initialCameraPosition: CameraPosition(
               target: _center,
-              zoom: 11.0,
+              zoom: 15.0,
             ),
           ),
 

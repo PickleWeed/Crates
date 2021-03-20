@@ -83,7 +83,7 @@ class _NaviMap extends State<Navi> {
         body: GoogleMap(
           onMapCreated: _onMapCreated,
           myLocationEnabled: true,
-          myLocationButtonEnabled: true,
+          //myLocationButtonEnabled: true,
           initialCameraPosition: CameraPosition(
             target: LatLng(_latitudeData, _longitudeData),
             zoom: 15.0,
