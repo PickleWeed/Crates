@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import '../common/theme.dart';
+import 'dart:async';
+
+//gmaps
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 
 class Nearby extends StatefulWidget {
   @override
@@ -8,6 +13,13 @@ class Nearby extends StatefulWidget {
 
 class _NearbyState extends State<Nearby> {
   GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
+
+  Completer<GoogleMapController> _controller = Completer();
+  static const LatLng _center = const LatLng(1.3521, 103.8198);
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,10 +48,14 @@ class _NearbyState extends State<Nearby> {
       backgroundColor: offWhite,
       body: Stack(
         children: <Widget>[
-          //TODO: Put map here
-          Container(
-            color: Colors.red[100],
+          GoogleMap(
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: _center,
+              zoom: 11.0,
+            ),
           ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
