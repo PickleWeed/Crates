@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'file:///D:/GitHub%20Repositories/CZ3003_Crates/project_crates/lib/screens/common/widgets.dart';
-import 'file:///D:/GitHub%20Repositories/CZ3003_Crates/project_crates/lib/screens/common/theme.dart';
+import '../common/widgets.dart';
+import '../common/theme.dart';
 
 // Contains all three widget trees for the registration process
 // Register, RegisterNext and RegisterFinal
