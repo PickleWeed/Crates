@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/home/home.dart';
 
-import '../landingPage.dart';
+import '../Navigationbar.dart';
+
+
 
 
 
@@ -268,7 +271,7 @@ class _BodyState extends State<Body> {
                     height: 50,
                     onPressed: () async {
                       //execute upadate
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LandingPage(null)));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Home()));
                     }
                     ,color: Color(0xFFFFC857),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
@@ -292,7 +295,9 @@ class _BodyState extends State<Body> {
 
                 //////////////////////////////////////////////////////////////////////////////////////
               ]),
-        ));
+        ),
+        bottomNavigationBar: Navigationbar(2),
+    );
   }
 }
 

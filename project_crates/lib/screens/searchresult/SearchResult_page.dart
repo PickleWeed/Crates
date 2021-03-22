@@ -4,7 +4,10 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/ui/Selectedlisting_page.dart';
+
+
+import '../Navigationbar.dart';
+import 'Selectedlisting_page.dart';
 
 
 
@@ -67,7 +70,8 @@ class SearchResult_page extends StatelessWidget {
         ),
 
 
-        body: Body()
+        body: Body(),
+        bottomNavigationBar: Navigationbar(0),
 
 
     );
@@ -521,8 +525,8 @@ Widget NearbyList(context){
         children: [
           Row(
             children: [
-              ListingCard( "Old Town White Coffee",  "leejunwei",  'assets/coffee.jpg',  'assets/icons/default.png',context),
-              ListingCard( "Korean Spicy Noodles Samyang",  "Eggxactly",  'assets/noodles.jpg', 'assets/icons/default.png',context),
+              ListingCard1( "Old Town White Coffee",  "leejunwei",  'assets/coffee.jpg',  'assets/icons/default.png',context),
+              ListingCard1( "Korean Spicy Noodles Samyang",  "Eggxactly",  'assets/noodles.jpg', 'assets/icons/default.png',context),
             ],
           ),
           Row(
@@ -536,7 +540,7 @@ Widget NearbyList(context){
   );
 }
 
-Widget ListingCard(title, owner, listingImg, ownerImg, context){
+Widget ListingCard1(title, owner, listingImg, ownerImg, context){
   return Expanded(
       child: Container(
         child: InkWell(

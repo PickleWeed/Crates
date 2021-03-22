@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/listing/Editinglist_page.dart';
 
-import 'Editinglist_page.dart';
+import '../Navigationbar.dart';
+
+
+
 
 
 
@@ -42,7 +46,11 @@ class Selectedlisting_page extends StatelessWidget {
 
         ),
         backgroundColor: Color(0xFFFFC857),
-        body: Body()
+
+        body: Body(),
+        bottomNavigationBar: Navigationbar(0),
+
+
 
 
     );
@@ -60,7 +68,7 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
+        body:SingleChildScrollView(child: Center(
          child: Column(
           children: <Widget>[
             Container(
@@ -146,8 +154,11 @@ class _BodyState extends State<Body> {
 
 
 
-      ]))
-
+      ]
+         )
+        ),
+        //bottomNavigationBar: Navigationbar(0),
+    )
     );
   }
 

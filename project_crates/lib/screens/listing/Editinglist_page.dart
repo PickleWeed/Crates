@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/home/home.dart';
 
 
 
@@ -266,6 +267,7 @@ class _BodyState extends State<Body> {
                 height: 50,
                 onPressed: () async {
                   //execute upadate
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
                 }
                 ,color: Color(0xFFFFC857),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
