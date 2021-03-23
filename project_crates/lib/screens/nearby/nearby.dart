@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/Listing.dart';
-import '../common/widgets.dart';
+import '../common/NavigationBar.dart';
 import '../common/theme.dart';
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -14,7 +14,6 @@ class Nearby extends StatefulWidget {
 }
 
 class _NearbyState extends State<Nearby> {
-  GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
   MapHandler mapHandler = new MapHandler();
   DataHandler dataHandler = new DataHandler();
@@ -50,8 +49,7 @@ class _NearbyState extends State<Nearby> {
     mapHandler.createMarker(context, customIcon1);
     //print(dataHandler.haversine( 1.4267489378462697, 103.72670044012453, 1.4336990577109694, 103.70837558813479));
     return Scaffold(
-      drawer: MenuDrawer(),
-      key: _globalKey,
+      bottomNavigationBar: NavigationBar(2),
       backgroundColor: offWhite,
       body: Stack(
         children: <Widget>[
@@ -168,17 +166,6 @@ class _NearbyState extends State<Nearby> {
                 ),
               ),
             ],
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(10, 35, 0,0),
-            child: IconButton(
-              iconSize: 30,
-              icon: Icon(Icons.menu),
-              color: Colors.black,
-              onPressed: (){
-                _globalKey.currentState.openDrawer();
-              },
-            ),
           ),
         ]
       )

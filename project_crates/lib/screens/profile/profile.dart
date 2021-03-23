@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../common/NavigationBar.dart';
 import '../common/theme.dart';
 import '../common/widgets.dart';
 
@@ -9,7 +10,6 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
-  GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   TabController _tabController;
 
   @override
@@ -21,14 +21,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _globalKey,
-        drawer: MenuDrawer(),
+        bottomNavigationBar: NavigationBar(2),
         backgroundColor: offWhite,
         body: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              topCard(_globalKey, 'assets/icons/default.png', 'leejunwei', 86),
+              topCard('assets/icons/default.png', 'leejunwei', 86),
               SizedBox(height: 50),
               TabBar(
                   tabs: [
@@ -131,7 +130,7 @@ Widget reviewCard(reviewer, reviewerImg, review, time){
   );
 }
 
-Widget topCard(_globalKey, ownerImg, username, n_reviews){
+Widget topCard(ownerImg, username, n_reviews){
   return Stack(
       clipBehavior: Clip.none,
       children: <Widget>[
@@ -198,18 +197,6 @@ Widget topCard(_globalKey, ownerImg, username, n_reviews){
             radius: 60,
           ),
         ),
-        Padding(
-          padding: EdgeInsets.fromLTRB(10, 35, 0,0),
-          child: IconButton(
-            iconSize: 30,
-            icon: Icon(Icons.menu),
-            color: Colors.black,
-            onPressed: (){
-              _globalKey.currentState.openDrawer();
-            },
-          ),
-        ),
-
       ]
   );
 

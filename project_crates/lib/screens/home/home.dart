@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../common/NavigationBar.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
 
@@ -9,19 +10,17 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _globalKey,
-        drawer: MenuDrawer(),
+        bottomNavigationBar: NavigationBar(0),
         backgroundColor: offWhite,
         body: SingleChildScrollView(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                topCard(_globalKey),
+                topCard(),
                 SizedBox(height: 50),
                 Padding(
                   padding: EdgeInsets.fromLTRB(25,0,0,10),
@@ -53,7 +52,7 @@ class _HomeState extends State<Home> {
 }
 
 
-Widget topCard(_globalKey){
+Widget topCard(){
   return Stack(
     clipBehavior: Clip.none,
     children: <Widget>[
@@ -125,17 +124,6 @@ Widget topCard(_globalKey){
                   filled: true,
                   fillColor: Colors.white,
                   hintText: 'search')),
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.fromLTRB(10, 35, 0,0),
-        child: IconButton(
-          iconSize: 30,
-          icon: Icon(Icons.menu),
-          color: Colors.black,
-          onPressed: (){
-            _globalKey.currentState.openDrawer();
-          },
         ),
       ),
 
