@@ -1,6 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/backend/auth.dart';
+import '../authenticate/register.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
+import '../home/home.dart';
+
 
 class SignIn extends StatefulWidget {
   @override
@@ -8,6 +13,39 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void registerUserClick() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Register()));
+  }
+
+  void loginUserClick() {
+    FirebaseUser user;
+    signInWithEmailAndPassword(emailController.text, passwordController.text).then((user) =>
+    {
+      //If successful login, navigate to home page
+      if (user != null){
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Home()))
+      } else {
+        //TODO: Show appropriate error messages (eg wrong password) on front-end
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,21 +74,25 @@ class _SignInState extends State<SignIn> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
+                            controller: emailController,
                             decoration: InputDecoration(
                                 filled: true,
                                 fillColor: offWhite,
-                                hintText: 'username')),
+                                hintText: 'Email')),
                         SizedBox(height: 5),
                         TextFormField(
                             obscureText: true,
+                            controller: passwordController,
                             decoration: InputDecoration(
                                 filled: true,
                                 fillColor: offWhite,
-                                hintText: 'password')),
+                                hintText: 'Password')),
                         SizedBox(height: 20),
                         CustomButton(
                             btnText: 'Log In',
-                            btnPressed: (){}
+                            btnPressed: (){
+                              loginUserClick();
+                            }
                         ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(20,10,20,10),
@@ -74,7 +116,9 @@ class _SignInState extends State<SignIn> {
                         ),
                         CustomButton(
                             btnText: 'Register',
-                            btnPressed: (){}
+                            btnPressed: (){
+                              registerUserClick();
+                            }
                         ),
                         SizedBox(height: 100),
                         Text('CRATES',
