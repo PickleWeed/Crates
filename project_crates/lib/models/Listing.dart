@@ -5,6 +5,7 @@ class Listing {
   String description;
   double latitude;
   double longitude;
+  List<String> listingImage;
   DateTime postDateTime;
   String userID;
 
@@ -16,5 +17,6 @@ class Listing {
       this.postDateTime,
       this.userID,
       this.latitude,
-      this.longitude});
+      this.longitude,
+      this.listingImage});
 }
