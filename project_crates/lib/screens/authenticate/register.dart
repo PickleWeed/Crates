@@ -172,6 +172,7 @@ class _RegisterNextState extends State<RegisterNext> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
+                            enabled: false,
                             controller: emailController..text = userEmail,
                             decoration: InputDecoration(
                                 filled: true,
@@ -277,6 +278,7 @@ class _RegisterFinalState extends State<RegisterFinal> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
+                            enabled: false,
                             controller: emailController..text = email,
                             decoration: InputDecoration(
                                 filled: true,
@@ -284,6 +286,7 @@ class _RegisterFinalState extends State<RegisterFinal> {
                                 hintText: 'Email')),
                         SizedBox(height: 10),
                         TextFormField(
+                            enabled: false,
                             controller: usernameController..text = username,
                             decoration: InputDecoration(
                                 filled: true,
