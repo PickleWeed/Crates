@@ -1,22 +1,25 @@
-class Listing {
-  bool isRequest;
-  String category;
-  String listingTitle;
-  String description;
-  double latitude;
-  double longitude;
-  List<String> listingImage;
-  DateTime postDateTime;
-  String userID;
+import 'dart:io';
 
+class Listing {
+  final String listingID;
+  final String userID;
+  final String listingTitle;
+  final double longitude;
+  final double latitude;
+  final String category;
+  final DateTime postDateTime;
+  final bool isRequest;
+  final File listingImage;
+  final String description;
   Listing(
-      {this.isRequest,
-      this.category,
-      this.listingTitle,
-      this.description,
-      this.postDateTime,
+      {this.listingID,
       this.userID,
-      this.latitude,
+      this.listingTitle,
       this.longitude,
-      this.listingImage});
+      this.latitude,
+      this.category,
+      this.postDateTime,
+      this.isRequest,
+      this.listingImage,
+      this.description});
 }
