@@ -14,6 +14,8 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
 
+  final formKey = new GlobalKey<FormState>();
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -34,18 +36,32 @@ class _SignInState extends State<SignIn> {
     FirebaseUser user;
     signInWithEmailAndPassword(emailController.text, passwordController.text).then((user) =>
     {
-      //If successful login, navigate to home page
       //TODO: if user is admin, redirect to moderator page?
+      //If successful login, navigate to home page
       if (user != null){
+        formKey.currentState.reset(),
         displayToastMessage("Login Successful", context),
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => Home()))
+      } else {
+        formKey.currentState.reset(),
+        // if login not successful
+        displayToastMessage("Wrong Email/Password", context)
       }
     });
-    // if login not successful
-    displayToastMessage("Invalid Email/Password", context);
+  }
+
+  bool validate() {
+    final form = formKey.currentState;
+    bool value;
+    if(form.validate()){
+      value = true;
+    }else{
+      value = false;
+    }
+    return value;
   }
 
   @override
@@ -56,6 +72,7 @@ class _SignInState extends State<SignIn> {
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(horizontal: 40.0),
             child: Form(
+                key: formKey,
                 child: SingleChildScrollView(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -76,6 +93,7 @@ class _SignInState extends State<SignIn> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
+                            validator: (value)=> value.isEmpty ? "Email is Required" : !value.contains("@") ? "Invalid Email" : null,
                             controller: emailController,
                             decoration: InputDecoration(
                                 filled: true,
@@ -84,6 +102,7 @@ class _SignInState extends State<SignIn> {
                         SizedBox(height: 5),
                         TextFormField(
                             obscureText: true,
+                            validator: (value)=> value.isEmpty ? "Password is Required": null,
                             controller: passwordController,
                             decoration: InputDecoration(
                                 filled: true,
@@ -94,11 +113,8 @@ class _SignInState extends State<SignIn> {
                             btnText: 'Log In',
                             btnPressed: (){
                               // Login Validation
-                              if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-                                displayToastMessage("Email/Password Field cannot be empty", context);
-                              } else if (!emailController.text.contains("@")) {
-                                displayToastMessage("Invalid Email", context);
-                              } else {
+                              if(validate()) {
+                                // Sign in with email and password
                                 loginUserClick();
                               }
                             }

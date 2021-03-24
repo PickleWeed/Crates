@@ -18,11 +18,23 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
 
+  final formKey = new GlobalKey<FormState>();
   final emailController = TextEditingController();
 
   void dispose() {
     emailController.dispose();
     super.dispose();
+  }
+
+  bool validateEmail() {
+    final form = formKey.currentState;
+    if(form.validate()){
+      print("Email is valid");
+      return true;
+    }else{
+      print("Email is not valid");
+      return false;
+    }
   }
 
   @override
@@ -33,6 +45,7 @@ class _RegisterState extends State<Register> {
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(horizontal: 40.0),
             child: Form(
+                key: formKey,
                 child: SingleChildScrollView(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -53,6 +66,7 @@ class _RegisterState extends State<Register> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
+                            validator: (value)=> value.isEmpty ? "Email is Required" : !value.contains("@") ? "Invalid Email" : null,
                             controller: emailController,
                             decoration: InputDecoration(
                                 filled: true,
@@ -62,18 +76,13 @@ class _RegisterState extends State<Register> {
                         CustomButton(
                             btnText: 'Next',
                             btnPressed: () {
-                              // Email Validation
-                              if (emailController.text.isEmpty) {
-                                displayToastMessage(
-                                    "Email cannot be empty", context);
-                              } else if (!emailController.text.contains("@")) {
-                                displayToastMessage("Invalid Email", context);
-                              } else {
+                              //Email Validation
+                              if (validateEmail()) {
                                 // Navigate to second register page
                                 Navigator.push(
-                                    context, MaterialPageRoute(builder: (
-                                    context) =>
-                                    RegisterNext(emailController.text)));
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        RegisterNext(emailController.text)));
                               }
                             }
                         ),
@@ -140,6 +149,7 @@ class _RegisterNextState extends State<RegisterNext> {
   var userEmail;
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
+  final formKey = new GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -154,6 +164,17 @@ class _RegisterNextState extends State<RegisterNext> {
     super.dispose();
   }
 
+  bool validateUsername() {
+    final form = formKey.currentState;
+    if(form.validate()){
+      print("Username is valid");
+      return true;
+    }else{
+      print("Username is not valid");
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -162,6 +183,7 @@ class _RegisterNextState extends State<RegisterNext> {
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(horizontal: 40.0),
             child: Form(
+                key: formKey,
                 child: SingleChildScrollView(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -190,6 +212,7 @@ class _RegisterNextState extends State<RegisterNext> {
                                 hintText: 'Email')),
                         SizedBox(height: 10),
                         TextFormField(
+                            validator: (value)=> value.isEmpty ? "Username is Required" : value.length < 3 ? "Username must be at least 3 characters" : null,
                             controller: usernameController,
                             decoration: InputDecoration(
                                 filled: true,
@@ -198,16 +221,15 @@ class _RegisterNextState extends State<RegisterNext> {
                         SizedBox(height: 10),
                         CustomButton(
                             btnText: 'Next',
-                            btnPressed: (){
+                            btnPressed: () {
                               // Username validation
-                              if(usernameController.text.isEmpty){
-                                displayToastMessage("Username cannot be empty", context);
-                              } else if(usernameController.text.length < 3){
-                                displayToastMessage("Name must be at least 3 characters", context);
-                              } else{
+                              if (validateUsername()) {
                                 // Navigate to last registration page
                                 Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => RegisterFinal(emailController.text,usernameController.text)));
+                                    context, MaterialPageRoute(
+                                    builder: (context) => RegisterFinal(
+                                        emailController.text,
+                                        usernameController.text)));
                               }
                             }
                         ),
@@ -251,6 +273,8 @@ class _RegisterFinalState extends State<RegisterFinal> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  final formKey = new GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -267,6 +291,17 @@ class _RegisterFinalState extends State<RegisterFinal> {
     super.dispose();
   }
 
+  bool validatePassword() {
+    final form = formKey.currentState;
+    if(form.validate()){
+      print("Password is valid");
+      return true;
+    }else{
+      print("Password is not valid");
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -275,6 +310,7 @@ class _RegisterFinalState extends State<RegisterFinal> {
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(horizontal: 40.0),
             child: Form(
+                key: formKey,
                 child: SingleChildScrollView(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -311,6 +347,7 @@ class _RegisterFinalState extends State<RegisterFinal> {
                                 hintText: 'Username')),
                         SizedBox(height: 10),
                         TextFormField(
+                            validator: (value)=> value.isEmpty ? "Password is Required" : value.length < 6 ? "Password must have at least 6 characters" : null,
                             obscureText: true,
                             controller: passwordController,
                             decoration: InputDecoration(
@@ -320,19 +357,13 @@ class _RegisterFinalState extends State<RegisterFinal> {
                         SizedBox(height: 10),
                         CustomButton(
                             btnText: 'Register',
-                            btnPressed: () async{
+                            btnPressed: () async {
                               // Password Validation
-                              if(passwordController.text.isEmpty){
-                                displayToastMessage("Password cannot be empty", context);
-                              } else if(passwordController.text.length < 6){
-                                displayToastMessage("Password must contain at least 6 characters", context);
-                              } else {
-                                FirebaseUser user = await createUserWithEmailAndPassword(emailController.text, passwordController.text,context);
+                              if (validatePassword()) {
+                                // Register User
+                                FirebaseUser user = await createUserWithEmailAndPassword(emailController.text, passwordController.text, context);
                                 createUserDetails(user, usernameController.text, emailController.text);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => SignIn()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => SignIn()));
                               }
                             }
                         ),
