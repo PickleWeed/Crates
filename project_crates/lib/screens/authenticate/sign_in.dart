@@ -35,15 +35,17 @@ class _SignInState extends State<SignIn> {
     signInWithEmailAndPassword(emailController.text, passwordController.text).then((user) =>
     {
       //If successful login, navigate to home page
+      //TODO: if user is admin, redirect to moderator page?
       if (user != null){
+        displayToastMessage("Login Successful", context),
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => Home()))
-      } else {
-        //TODO: Show appropriate error messages (eg wrong password) on front-end
       }
     });
+    // if login not successful
+    displayToastMessage("Invalid Email/Password", context);
   }
 
   @override
@@ -91,7 +93,14 @@ class _SignInState extends State<SignIn> {
                         CustomButton(
                             btnText: 'Log In',
                             btnPressed: (){
-                              loginUserClick();
+                              // Login Validation
+                              if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+                                displayToastMessage("Email/Password Field cannot be empty", context);
+                              } else if (!emailController.text.contains("@")) {
+                                displayToastMessage("Invalid Email", context);
+                              } else {
+                                loginUserClick();
+                              }
                             }
                         ),
                         Padding(

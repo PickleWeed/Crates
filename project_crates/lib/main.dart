@@ -1,5 +1,6 @@
 //import packages, modules, tools
 import 'package:flutter/material.dart';
+import 'screens/authenticate/sign_in.dart';
 import 'screens/wrapper.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber,
         platform: TargetPlatform.android,
       ),
-      home: Wrapper(),
+      home: SignIn(),
     );
   }
 }

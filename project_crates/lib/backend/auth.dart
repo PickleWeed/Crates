@@ -1,16 +1,26 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../models/user.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 var _firebaseRef = FirebaseDatabase().reference().child('users');
 
-Future<FirebaseUser> createUserWithEmailAndPassword(email, password) async {
+// Display error messages
+displayToastMessage(String message, BuildContext context){
+  Fluttertoast.showToast(msg: message);
+}
+
+Future<FirebaseUser> createUserWithEmailAndPassword(email, password, context) async {
   final FirebaseUser user = (await
   _auth.createUserWithEmailAndPassword(
     email: email,
     password: password,
   )).user;
+  if (user!=null){
+    displayToastMessage("Account Created Successfully", context);
+  }
   return user;
 }
 
@@ -30,6 +40,11 @@ Future<FirebaseUser> signInWithEmailAndPassword(email, password) async {
     password: password,
   )).user;
   return user;
+}
+
+Future<String> currentUser() async {
+  FirebaseUser user = await FirebaseAuth.instance.currentUser();
+  return user.uid;
 }
 
 Future<User> isAdminCheck(userDB) async{

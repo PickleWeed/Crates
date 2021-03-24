@@ -37,7 +37,7 @@ dependencies:
   geolocator: ^5.3.1
   location: ^3.0.0
   vector_math:
-
+  fluttertoast: ^8.0.3
 
 dev_dependencies:
   flutter_test:

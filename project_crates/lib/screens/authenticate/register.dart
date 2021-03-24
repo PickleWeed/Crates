@@ -61,10 +61,20 @@ class _RegisterState extends State<Register> {
                         SizedBox(height: 10),
                         CustomButton(
                             btnText: 'Next',
-                            btnPressed: (){
-                              // Navigate to second register page
-                              Navigator.push(
-                                  context, MaterialPageRoute(builder: (context) => RegisterNext(emailController.text)));
+                            btnPressed: () {
+                              // Email Validation
+                              if (emailController.text.isEmpty) {
+                                displayToastMessage(
+                                    "Email cannot be empty", context);
+                              } else if (!emailController.text.contains("@")) {
+                                displayToastMessage("Invalid Email", context);
+                              } else {
+                                // Navigate to second register page
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (
+                                    context) =>
+                                    RegisterNext(emailController.text)));
+                              }
                             }
                         ),
                         Padding(
@@ -189,9 +199,16 @@ class _RegisterNextState extends State<RegisterNext> {
                         CustomButton(
                             btnText: 'Next',
                             btnPressed: (){
-                              // Navigate to last registration page
-                              Navigator.push(
-                                  context, MaterialPageRoute(builder: (context) => RegisterFinal(emailController.text,usernameController.text)));
+                              // Username validation
+                              if(usernameController.text.isEmpty){
+                                displayToastMessage("Username cannot be empty", context);
+                              } else if(usernameController.text.length < 3){
+                                displayToastMessage("Name must be at least 3 characters", context);
+                              } else{
+                                // Navigate to last registration page
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => RegisterFinal(emailController.text,usernameController.text)));
+                              }
                             }
                         ),
                         SizedBox(height: 160),
@@ -304,12 +321,19 @@ class _RegisterFinalState extends State<RegisterFinal> {
                         CustomButton(
                             btnText: 'Register',
                             btnPressed: () async{
-                              FirebaseUser user = await createUserWithEmailAndPassword(emailController.text, passwordController.text);
-                              createUserDetails(user, usernameController.text, emailController.text);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SignIn()));
+                              // Password Validation
+                              if(passwordController.text.isEmpty){
+                                displayToastMessage("Password cannot be empty", context);
+                              } else if(passwordController.text.length < 6){
+                                displayToastMessage("Password must contain at least 6 characters", context);
+                              } else {
+                                FirebaseUser user = await createUserWithEmailAndPassword(emailController.text, passwordController.text,context);
+                                createUserDetails(user, usernameController.text, emailController.text);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SignIn()));
+                              }
                             }
                         ),
                         SizedBox(height: 120),
