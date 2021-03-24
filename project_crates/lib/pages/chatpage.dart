@@ -55,6 +55,7 @@ Widget chatHeader() {
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     mainAxisSize: MainAxisSize.max,
     children: [
+      //search bar
       Align(
           alignment: Alignment.topLeft,
           child: Container(
@@ -102,7 +103,6 @@ class ChattingPage extends StatelessWidget {
         body: Column(children: <Widget>[
           Text('Name of the dude'),
           secondRow(),
-          //how to put text???,
           chat(),
           enterMessage(),
         ]));
@@ -111,17 +111,25 @@ class ChattingPage extends StatelessWidget {
 
 Widget secondRow() {
   return Container(
+    child: Expanded(
       child: Row(children: <Widget>[
-    Text('picture but I put as text <3'),
-    Column(children: <Widget>[
-      Text('Listing name'),
-      TextButton(onPressed: () {}, child: Text('COmplete Listing'))
-    ]),
-    TextButton(
-      onPressed: () {},
-      child: Text('Leave Review'),
-    )
-  ]));
+        Text('<3'),
+        Column(children: <Widget>[
+          Center(child: Text('Listing name')),
+          Center(
+              child:
+                  TextButton(onPressed: () {}, child: Text('COmplete Listing')))
+        ]),
+        Column(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[
+          Text('empty to align????'),
+          TextButton(
+            onPressed: () {},
+            child: Text('Leave Review'),
+          )
+        ])
+      ]),
+    ),
+  );
 }
 
 Widget chat() {
@@ -130,7 +138,7 @@ Widget chat() {
 
 Widget enterMessage() {
   return Container(
-    child: Row(children: [
+    child: Column(children: [
       TextField(
         decoration: InputDecoration(labelText: 'Message'),
       ),

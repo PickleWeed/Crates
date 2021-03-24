@@ -104,3 +104,63 @@ State<StatefulWidget> createState() {
   // TODO: implement createState
   throw UnimplementedError();
 }
+
+Widget reportFormat(BuildContext context) {
+  return Container(
+      child: Column(
+    children: [
+      Container(
+        alignment: Alignment(-1, -1),
+        child: TextButton.icon(
+            icon: Icon(Icons.keyboard_backspace),
+            label: Text('Back'),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+      ), //backbutton
+      Row(
+        children: [
+          Container(
+            width: 100.0,
+            height: 100.0,
+            margin: const EdgeInsets.all(15.0),
+            decoration:
+                BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+            child: Icon(Icons.favorite,
+                color: Colors.pink,
+                size: 24.0,
+                semanticLabel: 'HERE COMES THE PARTY!'),
+          ),
+          Column(
+            children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text('ListingID:'),
+              ),
+              Container(
+                  alignment: Alignment.centerLeft, child: Text('ListingName'))
+            ],
+          )
+        ],
+      ), //picture + listing id:listing name + listed by
+      Container(
+          margin: const EdgeInsets.only(left: 23.0, top: 15.0),
+          alignment: Alignment.centerLeft,
+          child: Text('Title of report')), // title of report
+      Container(
+          margin: const EdgeInsets.only(left: 23.0, top: 10.0),
+          alignment: Alignment.centerLeft,
+          child: Text('Reported by')), //reported by
+      Container(
+          margin: const EdgeInsets.only(left: 23.0, top: 10.0),
+          alignment: Alignment.centerLeft,
+          child: Text('Reported on')), //date of report
+      Container(
+          margin: const EdgeInsets.only(left: 23.0, top: 10.0),
+          alignment: Alignment.centerLeft,
+          child:
+              Text('Report Description: ')), // text of just report description
+      Text('Descriptions')
+    ],
+  ));
+}

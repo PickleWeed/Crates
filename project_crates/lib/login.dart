@@ -4,6 +4,7 @@ import 'package:projectcrates/registerPage.dart';
 import 'landingPage.dart';
 import 'auth.dart';
 import 'activity.dart';
+import 'package:projectcrates/pages/reportpage.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -150,6 +151,15 @@ class _BodyState extends State<Body> {
     );
   }
 
+  Widget reportButtuon() {
+    return OutlineButton(
+      onPressed: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ReportPage()));
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -191,6 +201,9 @@ class _BodyState extends State<Body> {
       Padding(
           padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0),
           child: activityButtuon()),
+      Padding(
+          padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0),
+          child: reportButtuon()),
       Container(
         height: 250,
         child: Column(
