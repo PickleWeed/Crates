@@ -11,7 +11,7 @@ class _NearbyFilterState extends State<NearbyFilter> {
   GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
   // distance slider
-  double _currentSliderValue = 2;
+  double _currentSliderValue = 20;
 
   // category dropdown
   String _currentCat;
@@ -23,10 +23,15 @@ class _NearbyFilterState extends State<NearbyFilter> {
       super.initState();
       _currentCat = _categories[0];
     }
+  Future<bool> _onBackPressed() {
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: _onBackPressed,
+        child: Scaffold(
         key: _globalKey,
         drawer: MenuDrawer(),
         backgroundColor: offWhite,
@@ -81,7 +86,7 @@ class _NearbyFilterState extends State<NearbyFilter> {
                   child: Slider(
                     value: _currentSliderValue,
                     min: 0,
-                    max: 50,
+                    max: 40,
                     divisions: 100,
                     label: _currentSliderValue.toStringAsFixed(1),
                     onChanged: (double value) {
@@ -141,7 +146,9 @@ class _NearbyFilterState extends State<NearbyFilter> {
                   padding: const EdgeInsets.fromLTRB(120,50,120,0),
                   child: CustomButton(
                     btnText: 'Filter',
-                    btnPressed: (){}
+                    btnPressed: (){
+                      Navigator.of(context).pop({"distance":_currentSliderValue,"category":_currentCat});
+                    }
                   ),
                 )
 
@@ -149,7 +156,7 @@ class _NearbyFilterState extends State<NearbyFilter> {
             )
         )
 
-    );
+    ));
   }
 }
 
