@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:location/location.dart' as LocationManager;
+import 'package:geocoding/geocoding.dart';
+//import 'package:location/location.dart' as LocationManager;
+import 'package:flutter_application_1/models/Listing.dart';
 
 class MapHandler {
-  double _longitudeData;
-  double _latitudeData;
 
   Future<LatLng> getCurrentLocation() async {
-    final geoposition = await Geolocator().getCurrentPosition(
+    final geoposition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    _latitudeData = geoposition.latitude;
-    _longitudeData = geoposition.longitude;
-    //print(_longitudeData);
-    //print(_latitudeData);
+    double _latitudeData = geoposition.latitude;
+    double _longitudeData = geoposition.longitude;
     final _center = LatLng(_latitudeData, _longitudeData);
     return _center;
   }
-  Future<LatLng> getUserLocation() async {
+
+  //TODO same as above, nv use
+  /*Future<LatLng> getUserLocation() async {
     LocationManager.LocationData currentLocation;
     final location = LocationManager.Location();
     try {
@@ -30,17 +30,33 @@ class MapHandler {
       currentLocation = null;
       return null;
     }
+  }*/
+
+  void getAddressFromLatLng() async {
+    try {
+      final geoposition = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          geoposition.latitude,
+          geoposition.longitude
+      );
+      Placemark place = placemarks[0];
+      print('${place.locality}, ${place.postalCode}, ${place.country}');
+    } catch(e){
+      print(e);
+    }
   }
+  // TODO Useless
   Future<double> getLatitudeDouble() async {
-    final geoposition = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-      _latitudeData = geoposition.latitude;
-      return geoposition.longitude;
+    final geoposition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return geoposition.latitude;
   }
+  // TODO Useless
   Future<double> getLongitudeDouble() async {
-    final geoposition = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    final geoposition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     return geoposition.longitude;
   }
-
+  //TODO to be removed
   createMarker(context, customIcon1) {
     if (customIcon1 == null) {
       ImageConfiguration configuration = createLocalImageConfiguration(context);
@@ -53,6 +69,40 @@ class MapHandler {
     else {
       print('cannot find customIcon');
     }
+  }
+  Future<Set<Marker>> generateMarkers(List<LatLng> positions) async {
+    List<Marker> markers = <Marker>[];
+    print('generating markers');
+    for (final location in positions) {
+      if (location != null) {
+        final icon = await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(10, 10)), 'assets/location_icon.png');
+
+        final marker = Marker(
+          markerId: MarkerId(location.toString()),
+          position: LatLng(location.latitude, location.longitude),
+          icon: icon,
+          onTap: () {
+
+          }
+        );
+        print('marker added');
+        markers.add(marker);
+      }
+    }
+    print('output markers');
+    return markers.toSet();
+  }
+  //get position latitude & longitude for markers
+  List<LatLng> getPositionFromListing(List<Listing> listing){
+    print(listing.length);
+    print('getting positions');
+    List<LatLng> positions = [];
+    for (var location in listing) {
+      positions.add(LatLng(location.latitude, location.longitude));
+      print('position: $positions');
+    }
+    return positions;
   }
 
 }
