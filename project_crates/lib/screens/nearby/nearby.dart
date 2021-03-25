@@ -53,6 +53,7 @@ class _NearbyState extends State<Nearby> {
     // TODO: implement initState
     super.initState();
     _runSystem();
+
   }
 
   static final CameraPosition _kLake = CameraPosition(
@@ -107,6 +108,60 @@ class _NearbyState extends State<Nearby> {
     });
   }
 
+  var title;
+  double distance2;
+  var date;
+  var user;
+  String postDateTime;
+
+  Future<Set<Marker>> generateMarkersFeature(_listing) async {
+    print(_listing.length);
+    List<Marker> markers = <Marker>[];
+    print('generating markers');
+    int index = 0;
+    final icon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(size: Size(10, 10)), 'assets/location_icon.png');
+    for(final information in _listing) {
+      print(_listing[0]['userID']);
+      final marker = Marker(
+        markerId: information[0]['userID'],
+        position: LatLng(information['latitude'], information['longitude']),
+        icon: icon,
+        onTap: () {
+          setState(() {
+            postDateTime = information['date'];
+            print(postDateTime);
+            title = information['listingTitle'];
+          });
+        }
+      );
+    }
+    return markers.toSet();
+  }
+
+    /*for (final location in positions) {
+      if (location != null) {
+        final icon = await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(10, 10)), 'assets/location_icon.png');
+
+        final marker = Marker(
+            markerId: MarkerId(location.toString()),
+            position: LatLng(location.latitude, location.longitude),
+            icon: icon,
+            onTap: () {
+
+            }
+        );
+        print('marker added');
+        markers.add(marker);
+      }
+    }
+    print('output markers');
+    return markers.toSet();
+  }*/
+
+
+
   void _runSystem()  async{
     await _checkLocationPermission(); //get GPS permission
     if (_permission == LocationPermission.denied || !_serviceEnabled) {
@@ -122,7 +177,8 @@ class _NearbyState extends State<Nearby> {
       _listing = await dataHandler.retrieveFilteredListing(distance, category, _center);
       if(_listing.isNotEmpty) {
         _positions = mapHandler.getPositionFromListing(_listing);
-        _markers = await mapHandler.generateMarkers(_positions);
+        //_markers = await mapHandler.generateMarkers(_positions);
+        _markers = await generateMarkersFeature(_listing);
         _updateMarkers();
       }
       else

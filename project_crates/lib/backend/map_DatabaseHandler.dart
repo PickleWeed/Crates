@@ -44,7 +44,7 @@ class DataHandler {
           double lati2 = value['latitude'];
           print('lati2: $lati2');
           print('long2: $long2');
-          calculatedDistance = _haversine(
+          calculatedDistance = haversine(
               center.latitude, center.longitude, value['latitude'],
               value['longitude']);
           print('calculated: $calculatedDistance');
@@ -102,7 +102,7 @@ class DataHandler {
     return userNormalListing;
   }
   //return distance
-  double _haversine(double lat1, double lon1, double lat2, double lon2){
+  double haversine(double lat1, double lon1, double lat2, double lon2){
     if(lat1 == null || lat2 == null || lon1 == null || lon2 == null) {
       print('List Error! Null value - GPS position: $lat1, $lon1, listing position: $lat2, $lon2.');
       return null;

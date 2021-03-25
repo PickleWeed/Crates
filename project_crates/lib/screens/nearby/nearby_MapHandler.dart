@@ -82,6 +82,9 @@ class MapHandler {
           markerId: MarkerId(location.toString()),
           position: LatLng(location.latitude, location.longitude),
           icon: icon,
+          onTap: () {
+
+          }
         );
         print('marker added');
         markers.add(marker);

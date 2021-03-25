@@ -40,7 +40,6 @@ dependencies:
   vector_math:
 
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
