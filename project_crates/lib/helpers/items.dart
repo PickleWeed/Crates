@@ -160,7 +160,68 @@ Widget reportFormat(BuildContext context) {
           alignment: Alignment.centerLeft,
           child:
               Text('Report Description: ')), // text of just report description
-      Text('Descriptions')
+      Container(
+          margin: const EdgeInsets.only(left: 23.0, top: 10.0),
+          alignment: Alignment.centerLeft,
+          child: Text('Descriptions')),
+      Container(child: chooseActions(context)),
     ],
   ));
+}
+
+Widget chooseActions(BuildContext context) {
+  return TextButton(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        backgroundColor: Colors.red,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                content: Stack(
+              overflow: Overflow.visible,
+              children: [
+                MyCheckboxTesting(),
+              ],
+            ));
+          },
+        );
+      }, //show popup dialog
+      child: Text('Choose Actions'));
+}
+
+Widget dismissReport(BuildContext context) {
+  return TextButton(
+      style: TextButton.styleFrom(
+          primary: Colors.grey,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+      onPressed: () {
+        ;
+      }, //show popup dialog
+      child: Text('Dimiss Report'));
+}
+
+class MyCheckboxTesting extends StatefulWidget {
+  @override
+  _MyCheckboxTestingState createState() => _MyCheckboxTestingState();
+}
+
+class _MyCheckboxTestingState extends State<MyCheckboxTesting> {
+  bool _isSelected = false;
+  @override
+  Widget build(BuildContext context) {
+    return CheckboxListTile(
+      title: const Text('Seriously I am doomed...'),
+      value: _isSelected,
+      onChanged: (bool newValue) {
+        setState(() {
+          _isSelected = newValue;
+        });
+      },
+    );
+  }
 }
