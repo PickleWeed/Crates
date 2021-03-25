@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'screens/authenticate/root.dart';
 
-import 'login.dart';
 import 'screens/nearby/nearby.dart';
 import 'screens/nearby/nearbyFilter.dart';
 
@@ -23,8 +22,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: <String, WidgetBuilder> {
+        //TODO don't need remove
         '/nearby': (BuildContext context) => new Nearby(),
-        '/login' : (BuildContext context) => new LoginPage(),
+        //'/login' : (BuildContext context) => new LoginPage(),
         //'/nearby/filter' : (BuildContext context) => new NearbyFilter(),
       },
       debugShowCheckedModeBanner: false,
@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
         platform: TargetPlatform.android,
       ),
       home: RootPage(),
+      //Nearby(),
     );
   }
 }

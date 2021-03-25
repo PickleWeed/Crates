@@ -1,5 +1,7 @@
 //import 'dart:html';
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,6 +11,9 @@ import 'nearbyFilter.dart';
 
 //import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart';
+import '../common/NavigationBar.dart';
+import '../common/widgets.dart';
+import '../common/theme.dart';
 
 
 class Nearby extends StatefulWidget {
@@ -21,6 +26,8 @@ class _NearbyState extends State<Nearby> {
   //LocationData _locationData;
   //bool _serviceEnabled;
   //Location location = new Location();
+  //final Completer _completer = new Completer();
+  Completer<GoogleMapController> _controller = new Completer();
 
   Position _locationData;
   bool _serviceEnabled;
@@ -30,7 +37,6 @@ class _NearbyState extends State<Nearby> {
 
   MapHandler mapHandler = new MapHandler();
   DataHandler dataHandler = new DataHandler();
-  Completer<GoogleMapController> _controller = Completer();
 
   //BitmapDescriptor customIcon1;
 
@@ -40,8 +46,8 @@ class _NearbyState extends State<Nearby> {
   static LatLng _center;
 
   //initial preset values
-  double distance = 20;
-  String category = '';
+  final double distance = 20;
+  final String category = '';
 
 
   @override
@@ -57,7 +63,7 @@ class _NearbyState extends State<Nearby> {
       zoom : 15);
   static final GoogleMap _map = GoogleMap(
     myLocationEnabled: true,
-    myLocationButtonEnabled: true
+    myLocationButtonEnabled: true,
   );
 
   Future<void> _updateMap() async {
@@ -68,9 +74,6 @@ class _NearbyState extends State<Nearby> {
     final GoogleMapController controller = await _controller.future;
     print('my location: $_center');
     controller.moveCamera(CameraUpdate.newCameraPosition(_kLake));
-    //controller.isMarkerInfoWindowShown(_markers);
-
-
   }
   Future<void> _updateMarkers() async {
       setState(() {
@@ -173,8 +176,8 @@ class _NearbyState extends State<Nearby> {
       _listing = await dataHandler.retrieveFilteredListing(distance, category, _center);
       if(_listing.isNotEmpty) {
         _positions = mapHandler.getPositionFromListing(_listing);
-        //_markers = await mapHandler.generateMarkers(_positions);
-        _markers = await generateMarkersFeature(_listing);
+        _markers = await mapHandler.generateMarkers(_positions);
+        //_markers = await generateMarkersFeature(_listing);
         _updateMarkers();
       }
       else
@@ -186,7 +189,7 @@ class _NearbyState extends State<Nearby> {
   Widget build(BuildContext context) {
     //mapHandler.createMarker(context, customIcon1);
     return Scaffold(
-        //bottomNavigationBar: NavigationBar(2),
+        bottomNavigationBar: NavigationBar(2),
         backgroundColor: offWhite,
         body: Stack(
             children: <Widget>[
