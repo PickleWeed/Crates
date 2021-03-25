@@ -4,6 +4,7 @@ import 'screens/authenticate/sign_in.dart';
 import 'screens/wrapper.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
+import 'screens/authenticate/root.dart';
 
 
 void main() {
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber,
         platform: TargetPlatform.android,
       ),
-      home: SignIn(),
+      home: RootPage(),
     );
   }
 }

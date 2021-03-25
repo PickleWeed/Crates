@@ -11,13 +11,10 @@ var _firebaseRef = FirebaseDatabase().reference().child('users');
 displayToastMessage(String message, BuildContext context){
   Fluttertoast.showToast(msg: message);
 }
+
 // For Register Page
 Future<FirebaseUser> createUserWithEmailAndPassword(email, password, context) async {
-  final FirebaseUser user = (await
-  _auth.createUserWithEmailAndPassword(
-    email: email,
-    password: password,
-  )).user;
+  final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(email: email, password: password,)).user;
   if (user!=null){
     print('Registered: ${user.uid}');
     displayToastMessage("Account Created Successfully", context);
@@ -39,10 +36,7 @@ void createUserDetails(userDB, username, email){
 // For Sign In Page
 Future<FirebaseUser> signInWithEmailAndPassword(email, password) async {
   try {
-    final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    )).user;
+    final FirebaseUser user = (await _auth.signInWithEmailAndPassword(email: email, password: password,)).user;
     print('Signed in: ${user.uid}');
     return user;
   }
@@ -58,8 +52,19 @@ Future<String> isAdminCheck(userDB) async{
   return snapshot.value['isAdmin'];
 }
 
-// For Other Screens
+// Get Current Login UserID
 Future<String> currentUser() async {
-  FirebaseUser user = await FirebaseAuth.instance.currentUser();
+  /* Example Usage:
+   currentUser().then((value) => {
+    print("LoginUserID:" + value)
+   });
+*/
+  FirebaseUser user = await _auth.currentUser();
   return user.uid;
+}
+
+//For Sign Out Button
+//TODO: Merge with Sign Out Button.
+Future<void> signOut() async {
+  await _auth.signOut();
 }

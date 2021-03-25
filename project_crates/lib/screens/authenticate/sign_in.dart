@@ -8,6 +8,9 @@ import '../home/home.dart';
 
 
 class SignIn extends StatefulWidget {
+  SignIn({this.onSignedIn});
+  final VoidCallback onSignedIn;
+
   @override
   _SignInState createState() => _SignInState();
 }
@@ -41,10 +44,8 @@ class _SignInState extends State<SignIn> {
       if (user != null){
         formKey.currentState.reset(),
         displayToastMessage("Login Successful", context),
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Home()))
+        widget.onSignedIn()
+        //Navigator.push(context,MaterialPageRoute(builder: (context) => Home()))
       } else {
         formKey.currentState.reset(),
         // if login not successful
@@ -93,7 +94,7 @@ class _SignInState extends State<SignIn> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
-                            validator: (value)=> value.isEmpty ? "Email is Required" : !value.contains("@") ? "Invalid Email" : null,
+                            validator: (value)=> value.isEmpty ? "Email Required" : !value.contains("@") ? "Invalid Email" : null,
                             controller: emailController,
                             decoration: InputDecoration(
                                 filled: true,
@@ -102,7 +103,7 @@ class _SignInState extends State<SignIn> {
                         SizedBox(height: 5),
                         TextFormField(
                             obscureText: true,
-                            validator: (value)=> value.isEmpty ? "Password is Required": null,
+                            validator: (value)=> value.isEmpty ? "Password Required": null,
                             controller: passwordController,
                             decoration: InputDecoration(
                                 filled: true,

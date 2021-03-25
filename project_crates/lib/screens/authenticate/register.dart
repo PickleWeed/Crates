@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/auth.dart';
 import 'package:flutter_application_1/models/user.dart';
 import '../authenticate/sign_in.dart';
+import '../authenticate/root.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
 
@@ -66,7 +67,7 @@ class _RegisterState extends State<Register> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
-                            validator: (value)=> value.isEmpty ? "Email is Required" : !value.contains("@") ? "Invalid Email" : null,
+                            validator: (value)=> value.isEmpty ? "Email Required" : !value.contains("@") ? "Invalid Email" : null,
                             controller: emailController,
                             decoration: InputDecoration(
                                 filled: true,
@@ -111,7 +112,7 @@ class _RegisterState extends State<Register> {
                             btnPressed: (){
                               //Navigate to Sign In Page
                               Navigator.push(
-                                  context, MaterialPageRoute(builder: (context) => SignIn()));
+                                  context, MaterialPageRoute(builder: (context) => RootPage()));
                             }
                         ),
                         SizedBox(height: 120),
@@ -212,7 +213,7 @@ class _RegisterNextState extends State<RegisterNext> {
                                 hintText: 'Email')),
                         SizedBox(height: 10),
                         TextFormField(
-                            validator: (value)=> value.isEmpty ? "Username is Required" : value.length < 3 ? "Username must be at least 3 characters" : null,
+                            validator: (value)=> value.isEmpty ? "Username Required" : value.length < 3 ? "Username must be at least 3 characters" : null,
                             controller: usernameController,
                             decoration: InputDecoration(
                                 filled: true,
@@ -347,7 +348,7 @@ class _RegisterFinalState extends State<RegisterFinal> {
                                 hintText: 'Username')),
                         SizedBox(height: 10),
                         TextFormField(
-                            validator: (value)=> value.isEmpty ? "Password is Required" : value.length < 6 ? "Password must have at least 6 characters" : null,
+                            validator: (value)=> value.isEmpty ? "Password Required" : value.length < 6 ? "Password must have at least 6 characters" : null,
                             obscureText: true,
                             controller: passwordController,
                             decoration: InputDecoration(
@@ -363,7 +364,7 @@ class _RegisterFinalState extends State<RegisterFinal> {
                                 // Register User
                                 FirebaseUser user = await createUserWithEmailAndPassword(emailController.text, passwordController.text, context);
                                 createUserDetails(user, usernameController.text, emailController.text);
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => SignIn()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => RootPage()));
                               }
                             }
                         ),
