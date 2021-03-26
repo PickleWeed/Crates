@@ -66,8 +66,18 @@ class _BodyState extends State<Body> {
          child: Column(
             children: <Widget>[
               SizedBox(height: 20),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: Container(
+                  height: 200.0,
+                  width: 200.0,
+                  color: Colors.grey[300],
+                  child: Icon(Icons.photo_camera, color: Colors.white, size: 50.0),
+                ),
+              ),
+              SizedBox(height: 20),
               Align(
-                  alignment: Alignment(-0.7,0),
+                  alignment: Alignment(-0.8,0),
                   child:
                   Text('I am...',        // Text placement will change depend on the search result
                       textAlign: TextAlign.left,
@@ -80,18 +90,18 @@ class _BodyState extends State<Body> {
                   children:[
                     Container(
                       padding:EdgeInsets.fromLTRB(20, 20, 20, 10),
-                      //color: Colors.grey,
+
 
 
                       child:
                       Container(
-                        color: Colors.grey[300],
+                        color: Colors.transparent,
 
 
                         child: ToggleButtons(
                           borderRadius: BorderRadius.circular(10.0),
                           isSelected: isselected,
-                          color: Colors.white,
+                          color: Colors.grey,
                           selectedColor: Color(0xFFFFC857),
 
                           fillColor: Colors.grey,
@@ -129,7 +139,7 @@ class _BodyState extends State<Body> {
             ]
         ),
               Align(
-                  alignment: Alignment(-0.8,0),
+                  alignment: Alignment(-0.85,0),
                   child:
                   Text('a',        // Text placement will change depend on the search result
                       textAlign: TextAlign.left,
@@ -143,12 +153,12 @@ class _BodyState extends State<Body> {
 
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: Colors.transparent,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Colors.grey)
               ),
               child:DropdownButton(
-                hint: Text('Option', style: TextStyle(color: Colors.white,fontSize: 20),),
+                hint: Text('Option', style: TextStyle(color: Colors.grey,fontSize: 20),),
                 value: valueChoose,
                 isExpanded: true,
                 onChanged: (newValue){
@@ -182,10 +192,10 @@ class _BodyState extends State<Body> {
               child: Container(
 
                 child:
-                TextField(style: TextStyle(fontSize: 10),
+                TextField(style: TextStyle(fontSize: 20,color: Colors.grey),
                     decoration: InputDecoration(
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),),
-                        hintText: 'Name of the product',
+                        hintText: 'Name of the product',hintStyle: TextStyle(color: Colors.grey),
                     )
                 ),
               ),
@@ -207,16 +217,18 @@ class _BodyState extends State<Body> {
 
                     child:
                     TextField(
-                        style: TextStyle(fontSize: 10),
+                        style: TextStyle(fontSize: 15,color: Colors.grey),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
                         decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.fromLTRB(10,40,10,40),
+                            contentPadding: const EdgeInsets.fromLTRB(10,10,10,60),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),),
-                            hintText: 'Description of the product')),
+                            hintText: 'Description of the product',hintStyle: TextStyle(color: Colors.grey))),
                   ),
                 ),
               ),
               Align(
-                  alignment: Alignment(-0.8,0),
+                  alignment: Alignment(-0.77,0),
                   child:
                   Text("Address",        // Text placement will change depend on the search result
                       textAlign: TextAlign.left,
@@ -232,26 +244,19 @@ class _BodyState extends State<Body> {
 
                     child:
                     TextField(
-                        style: TextStyle(fontSize: 10),
+                        style: TextStyle(fontSize: 10,color: Colors.grey),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
                         decoration: InputDecoration(
                             contentPadding: const EdgeInsets.fromLTRB(10,30,10,30),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),),
-                            hintText: 'Address')),
+                            hintText: 'Address',hintStyle: TextStyle(color: Colors.grey))),
                   ),
                 ),
               ),
 
 
               SizedBox(height: 20),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20.0),
-                child: Container(
-                  height: 200.0,
-                  width: 200.0,
-                  color: Colors.grey[300],
-                  child: Icon(Icons.photo_camera, color: Colors.white, size: 50.0),
-                ),
-              ),
 
             Container(
               padding:EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -270,7 +275,7 @@ class _BodyState extends State<Body> {
 
 
                 child: Text('Update',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 35)),
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20)),
               ),
 
             ),
