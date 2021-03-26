@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/services/storageAccess.dart';
@@ -26,6 +28,33 @@ class DatabaseAccess {
     });
     print('Created postKey: $postKey');
     return postKey;
+  }
+
+  Future<Listing> getListing(String key) async {
+    Listing listing;
+    await databaseRef
+        .child('Listing')
+        .orderByKey()
+        .equalTo(key)
+        .once()
+        .then((DataSnapshot snapshot) async {
+      Map<dynamic, dynamic> data = snapshot.value;
+      Map listingData = data[key];
+      File listingImageFile =
+          await storageAccess.fileFromImageUrl(listingData['listingImage']);
+      listing = Listing(
+        category: listingData['category'],
+        isRequest: listingData['isRequest'],
+        listingImage: listingImageFile,
+        latitude: listingData['latitude'],
+        listingTitle: listingData['listingTitle'],
+        description: listingData['description'],
+        postDateTime: DateTime.parse(listingData['postDateTime']),
+        userID: listingData['userID'],
+        longitude: listingData['longitude'],
+      );
+    });
+    return listing;
   }
 
   Stream retrieveListingStream() {

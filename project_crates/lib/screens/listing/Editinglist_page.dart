@@ -1,16 +1,15 @@
+import 'dart:io';
+import 'package:flutter_application_1/services/databaseAccess.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/services/storageAccess.dart';
 import '../home/home.dart';
 
 class Editinglist_page extends StatelessWidget {
   String _search;
 
-  Map passedData = {};
-
   @override
   Widget build(BuildContext context) {
-    passedData = ModalRoute.of(context).settings.arguments;
-    print(passedData);
-
     return Scaffold(
         appBar: AppBar(
             centerTitle: true,
@@ -44,6 +43,21 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  @override
+  initState() {
+    super.initState();
+    dao.getListing('-MWgwTUIGOENUbfuziaF').then((selectedListing) {
+      //TODO change hardcode
+      setState(() {
+        listing = selectedListing;
+        listingTitleController.text = listing.listingTitle;
+        descriptionController.text = listing.description;
+        valueChoose = listing.category;
+        image = listing.listingImage;
+      });
+    });
+  }
+
   //String isSelected;
   List<bool> isselected = [true, false];
   List listItem = [
@@ -52,9 +66,21 @@ class _BodyState extends State<Body> {
     'Can food',
   ];
   String valueChoose;
+  File image;
+
+  final listingTitleController = TextEditingController();
+  final descriptionController = TextEditingController();
+  DatabaseAccess dao = new DatabaseAccess();
+
+  Listing listing;
+  Map passedData = {};
 
   @override
   Widget build(BuildContext context) {
+    passedData = ModalRoute.of(context)
+        .settings
+        .arguments; //TODO previous page to pass in the selectedListing listingID
+
     return Scaffold(
         body: SingleChildScrollView(
       //body: Center(
@@ -166,6 +192,7 @@ class _BodyState extends State<Body> {
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: Container(
             child: TextField(
+                controller: listingTitleController,
                 style: TextStyle(fontSize: 10),
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -189,6 +216,7 @@ class _BodyState extends State<Body> {
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Container(
               child: TextField(
+                  controller: descriptionController,
                   style: TextStyle(fontSize: 10),
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.fromLTRB(10, 40, 10, 40),
@@ -225,13 +253,19 @@ class _BodyState extends State<Body> {
         ),
 
         SizedBox(height: 20),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(20.0),
-          child: Container(
-            height: 200.0,
-            width: 200.0,
-            color: Colors.grey[300],
-            child: Icon(Icons.photo_camera, color: Colors.white, size: 50.0),
+        InkWell(
+          onTap: () {},
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20.0),
+            child: image != null
+                ? Image.file(image, height: 200.0, width: 200.0)
+                : Container(
+                    height: 200.0,
+                    width: 200.0,
+                    color: Colors.grey[300],
+                    child: Icon(Icons.photo_camera,
+                        color: Colors.white, size: 50.0),
+                  ),
           ),
         ),
 
@@ -243,6 +277,10 @@ class _BodyState extends State<Body> {
             minWidth: 100, // width of the button
             height: 50,
             onPressed: () async {
+              StorageAccess storageAccess = new StorageAccess();
+              File asdf = await storageAccess.fileFromImageUrl(
+                  "https://firebasestorage.googleapis.com/v0/b/test-firebase-c99c0.appspot.com/o/Listing%2Fimage_picker5345999116458626025.jpg?alt=media&token=470d7fb7-0979-4896-8675-2cedfc0baa71");
+              print(asdf);
               //execute upadate
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => Home()));
