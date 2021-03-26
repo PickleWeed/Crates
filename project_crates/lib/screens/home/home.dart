@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/searchresult/SearchResult_page.dart';
-import 'package:flutter_application_1/screens/searchresult/Selectedlisting_page.dart';
-import '../Navigationbar.dart';
+import '../common/NavigationBar.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
 
@@ -12,40 +10,17 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int _currentIndex = 0;
-  GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _globalKey,
-        drawer: Drawer(
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                DrawerHeader(
-                  child: Text('Drawer Header'),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                  ),
-                ),
-                ListTile(
-                  title: Text('Item 1'),
-                  onTap: () {
-                    // Update the state of the app.
-                    // ...
-                  },
-                ),
-              ]// Populate the Drawer in the next step.
-          ),
-        ),
+        bottomNavigationBar: NavigationBar(0),
         backgroundColor: offWhite,
         body: SingleChildScrollView(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                topCard(_globalKey),
+                topCard(),
                 SizedBox(height: 50),
                 Padding(
                   padding: EdgeInsets.fromLTRB(25,0,0,10),
@@ -57,7 +32,7 @@ class _HomeState extends State<Home> {
                       )
                   ),
                 ),
-                CategoryList(context),
+                CategoryList(),
                 SizedBox(height:15),
                 Padding(
                   padding: EdgeInsets.fromLTRB(25,0,0,10),
@@ -70,26 +45,14 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 NearbyList(),
-                SizedBox(height:20),
-
-
-              ]
-            ),
-
-            ),
-      bottomNavigationBar: Navigationbar(0),
-
-
-
-
-
-    );
-
+                SizedBox(height:30),
+              ]),
+        ));
   }
 }
 
 
-Widget topCard(_globalKey){
+Widget topCard(){
   return Stack(
     clipBehavior: Clip.none,
     children: <Widget>[
@@ -157,23 +120,10 @@ Widget topCard(_globalKey){
                   prefixIcon: Icon(Icons.search),
                   prefixStyle: TextStyle(
                     decorationColor: Colors.red,
-
                   ),
-
                   filled: true,
                   fillColor: Colors.white,
                   hintText: 'search')),
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.fromLTRB(10, 35, 0,0),
-        child: IconButton(
-          iconSize: 30,
-          icon: Icon(Icons.menu),
-          color: Colors.black,
-          onPressed: (){
-            _globalKey.currentState.openDrawer();
-          },
         ),
       ),
 
@@ -182,7 +132,7 @@ Widget topCard(_globalKey){
 
 }
 
-Widget CategoryList(context){
+Widget CategoryList(){
   return SizedBox(
     height:140,
     child: ListView(
@@ -192,44 +142,32 @@ Widget CategoryList(context){
         Container(
           height:140.0,
           width: 140.0,
-          child: InkWell(
-            onTap: (){Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  SearchResult_page()));},
-            child: Card(
-
-              color: Colors.grey[350],
-              margin: EdgeInsets.all(5),
-
-
-                    child:Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
-                            child: Text('All',
-                                style: TextStyle(
-                                  color: Colors.grey[800],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                )
-                            ),
-                          ),
-                          Padding(
-
-                            padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
-                            child: Image(
-                              image: AssetImage('assets/icons/groceries.png'),
-
-                            ),
-                          )
-
-                        ]
-                    )
-
-
+          child: Card(
+            color: Colors.grey[350],
+            margin: EdgeInsets.all(5),
+            child:Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                  child: Text('All',
+                      style: TextStyle(
+                        color: Colors.grey[800],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      )
+                  ),
                 ),
-
-            ),
-          ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                  child: Image(
+                    image: AssetImage('assets/icons/groceries.png')
+                  ),
+                )
+              ]
+            )
+          )
+        ),
         Container(
             height:140.0,
             width: 140.0,
@@ -345,3 +283,54 @@ Widget NearbyList(){
   );
 }
 
+// Widget ListingCard(title, owner, listingImg, ownerImg){
+//   return Expanded(
+//       child: Container(
+//         child: InkWell(
+//           //TODO: Edit this function to add listing page logic
+//           onTap: (){print(title + " tapped!");},
+//           child: Card(
+//               color: Colors.grey[350],
+//               margin: EdgeInsets.all(5),
+//               child: Padding(
+//                 padding: const EdgeInsets.all(5.0),
+//                 child: Column(
+//                     mainAxisAlignment: MainAxisAlignment.start,
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: <Widget>[
+//                       AspectRatio(
+//                         aspectRatio: 1/1,
+//                         child: Image.asset(
+//                           listingImg,
+//                           fit: BoxFit.fill,
+//                         ),
+//                       ),
+//                       SizedBox(height:10),
+//                       Text(title,
+//                         maxLines: 1, // ensure long titles do not make card taller
+//                         overflow: TextOverflow.ellipsis, // adds the '...' at the end of long titles
+//                         style: TextStyle(
+//                           color: Colors.grey[800],
+//                           fontWeight: FontWeight.bold,
+//                           fontSize: 14,
+//                         )
+//                       ),
+//                       SizedBox(height:5),
+//                       Row(
+//                         children: [
+//                           CircleAvatar(
+//                             backgroundImage: AssetImage(ownerImg),
+//                             radius:15,
+//                           ),
+//                           SizedBox(width: 6),
+//                           Text(owner),
+//                         ],
+//                       ),
+//                     ]
+//                 ),
+//               )
+//           ),
+//         ),
+//       )
+//   );
+// }

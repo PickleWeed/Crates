@@ -6,7 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 
-import '../Navigationbar.dart';
+import '../common/NavigationBar.dart';
 import 'Selectedlisting_page.dart';
 
 
@@ -71,7 +71,7 @@ class SearchResult_page extends StatelessWidget {
 
 
         body: Body(),
-        bottomNavigationBar: Navigationbar(0),
+        bottomNavigationBar: NavigationBar(0),
 
 
     );

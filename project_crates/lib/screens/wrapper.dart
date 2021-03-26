@@ -7,15 +7,12 @@ import 'package:flutter_application_1/screens/nearby/nearby.dart';
 import 'package:flutter_application_1/screens/nearby/nearby_filter.dart';
 import 'package:flutter_application_1/screens/profile/profile.dart';
 
-import '../NotUsed/login.dart';
-import 'authenticate/sign_in.dart';
-
 // SignIn, Register, RegisterNext, RegisterFinal, Home, Nearby
 
 class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // return either Home or Authentication Widget
-    return SignIn();
+    return Home();
   }
 }

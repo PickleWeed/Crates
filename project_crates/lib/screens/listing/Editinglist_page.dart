@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/home/home.dart';
-
-
+import '../home/home.dart';
 
 class Editinglist_page extends StatelessWidget {
-
-
 
   String _search;
   @override

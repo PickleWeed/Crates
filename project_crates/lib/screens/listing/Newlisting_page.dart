@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/home/home.dart';
-
-import '../Navigationbar.dart';
-
-
-
-
+import '../home/home.dart';
+import '../common/NavigationBar.dart';
 
 class Newlisting_page extends StatelessWidget {
-
-
 
   String _search;
   @override
@@ -296,7 +289,7 @@ class _BodyState extends State<Body> {
                 //////////////////////////////////////////////////////////////////////////////////////
               ]),
         ),
-        bottomNavigationBar: Navigationbar(2),
+        bottomNavigationBar: NavigationBar(2),
     );
   }
 }

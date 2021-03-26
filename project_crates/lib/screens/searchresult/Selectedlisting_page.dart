@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/listing/Editinglist_page.dart';
-
-import '../Navigationbar.dart';
-
-
-
-
-
+import '../listing/Editinglist_page.dart';
+import '../common/NavigationBar.dart';
 
 
 class Selectedlisting_page extends StatelessWidget {
-
-
 
   String _search;
   @override
@@ -48,9 +40,7 @@ class Selectedlisting_page extends StatelessWidget {
         backgroundColor: Color(0xFFFFC857),
 
         body: Body(),
-        bottomNavigationBar: Navigationbar(0),
-
-
+        bottomNavigationBar: NavigationBar(0),
 
 
     );
