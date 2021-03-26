@@ -21,15 +21,15 @@ class ProfilePresenter{
   final _storageRef = FirebaseStorage.instance.ref();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<void> retrieveUserProfile(String uid) async {
+  Future<User> retrieveUserProfile(String uid) async {
     DataSnapshot snapshot = await _databaseRef.child("users").child(uid).once();
-    String url = await getImg("profileImages", uid);
-    User user = new User(username: snapshot.value['username'],email: snapshot.value['email'],imagePath: url, isAdmin: false);
+    User user = new User(username: snapshot.value['username'],email: snapshot.value['email'],imagePath: snapshot.value['imagePath'], isAdmin: false);
+    print(user);
     return user;
   }
   Future<void> updateUserProfile(User user) async {
     FirebaseUser currentUser = await _firebaseAuth.currentUser();
-    uploadImage(user.imagePath);
+    uploadImage(File(user.imagePath));
     _databaseRef.child('Users').child(currentUser.uid).update({
       'username': user.username,
       'email': user.email,
@@ -58,23 +58,24 @@ class ProfilePresenter{
     return url;
   }
 
-  Future<void> retrieveUserListing(String uid) async {
+  Future<List<Listing>> retrieveUserListing(String uid) async {
     List<Listing> userNormalListing = new List<Listing>();
-    String url = "";
     await _databaseRef.child("Listing").once().then((DataSnapshot snapshot){
       Map<dynamic, dynamic> map = snapshot.value;
       map.forEach((key, value) {
-        if(value['isRequest']== false && value['userID'] == uid){
-          url = getImg("normalListings", snapshot.key).toString();
+        if(value['userID'] == uid){
           Listing normalListing = new Listing(listingID: snapshot.key,listingTitle: value['listingTitle'],category: value['category']
-              ,postDateTime: value['postDateTime'],description: value['description'],isRequest: value['isRequest'],
-              listingImage: File(url),longitude: value['longitude'],latitude:value['latitude'] );
+              ,postDateTime: DateTime.parse(value['postDateTime']),description: value['description'],isRequest: value['isRequest'],
+              listingImage: value['listingImage'],longitude: value['longitude'],latitude:value['latitude'] );
           userNormalListing.add(normalListing);
         }
       });
     });
 
     return userNormalListing;
+  }
+  Future<String> getUserName(String uid) async{
+
   }
 
   Future<List<Listing>> retrieveUserRequestListing(String uid) async {
@@ -87,7 +88,7 @@ class ProfilePresenter{
           url = getImg("normalListings", snapshot.key).toString();
           Listing normalListing = new Listing(listingID: snapshot.key,listingTitle: value['listingTitle'],category: value['category']
               ,postDateTime: value['postDateTime'],description: value['description'],isRequest: value['isRequest'],
-              listingImage: File(url),longitude: value['longitude'],latitude:value['latitude'] );
+              listingImage: value['listingImage'],longitude: value['longitude'],latitude:value['latitude'] );
           userRequestListing.add(normalListing);
         }
       });

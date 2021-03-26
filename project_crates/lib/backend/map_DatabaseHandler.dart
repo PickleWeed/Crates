@@ -58,7 +58,8 @@ class DataHandler {
                 postDateTime: DateTime.parse(value['postDateTime']),
                 description: value['description'],
                 isRequest: value['isRequest'],
-                listingImage: File(url),
+                //listingImage: File(url),
+                listingImage: value['listingImage'],
                 longitude: value['longitude'],
                 latitude: value['latitude']);
             userNormalListing.add(normalListing);
@@ -89,7 +90,8 @@ class DataHandler {
                 postDateTime: DateTime.parse(value['postDateTime']),
                 description: value['description'],
                 isRequest: value['isRequest'],
-                listingImage: File(url),
+                //listingImage: File(url),
+                listingImage: value['listingImage'],
                 longitude: value['longitude'],
                 latitude: value['latitude']);
             userNormalListing.add(normalListing);
