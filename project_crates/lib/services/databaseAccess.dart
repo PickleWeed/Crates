@@ -1,19 +1,18 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/services/storageAccess.dart';
 
 class DatabaseAccess {
   final databaseRef = FirebaseDatabase.instance.reference();
+  StorageAccess storageAccess = new StorageAccess();
 
   //add a listing to firebase database, returns the unique key identifier of the created node as a String
-  String addListing(Listing newListing) {
+  Future<String> addListing(Listing newListing) async {
     DatabaseReference pushedPostRef = databaseRef.child("Listing").push();
     String postKey = pushedPostRef.key;
-    print(newListing.listingImage);
-    String imageString = '';
-    newListing.listingImage.forEach((element) {
-      imageString += element;
-      imageString += '||'; //divider
-    });
+    String imageString = newListing.listingImage == null
+        ? null
+        : await storageAccess.uploadFile(newListing.listingImage);
     pushedPostRef.set({
       "isRequest": newListing.isRequest,
       "category": newListing.category,

@@ -13,6 +13,6 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // return either Home or Authentication Widget
-    return Home();
+    return Authenticate();
   }
 }

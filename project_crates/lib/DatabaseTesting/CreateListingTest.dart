@@ -25,7 +25,7 @@ class _CreateListingTestState extends State<CreateListingTest> {
   List<String> _categories = ['Canned Food', 'Vegetables', 'Raw Meat'];
   final itemNameController = TextEditingController();
   final descController = TextEditingController();
-  List<File> image = [];
+  File image;
   List<String> imageURL = [];
   final imagePicker = ImagePicker();
   StorageAccess storageAccess = new StorageAccess();
@@ -120,10 +120,6 @@ class _CreateListingTestState extends State<CreateListingTest> {
                 onPressed: () async {
                   List location = await loc.getLatLong();
 
-                  for (var item in image) {
-                    imageURL.add(await storageAccess.uploadFile(item));
-                  }
-
                   //Modify the postDateTime and userID attribute values below, the rest are read from the user interface
                   Listing listing = new Listing(
                       isRequest: isSelected[0],
@@ -132,7 +128,7 @@ class _CreateListingTestState extends State<CreateListingTest> {
                       description: descController.text,
                       latitude: location[0],
                       longitude: location[1],
-                      listingImage: imageURL,
+                      listingImage: image,
                       userID: uid,
                       postDateTime:
                           DateTime.parse("2021-03-15T08:26:25.276101"));
@@ -156,9 +152,8 @@ class _CreateListingTestState extends State<CreateListingTest> {
       print('No image selected.');
       return;
     }
-    File file = File(pickedFile.path);
     setState(() {
-      image.add(file);
+      image = File(pickedFile.path);
     });
   }
 

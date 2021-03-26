@@ -27,7 +27,6 @@ dependencies:
   firebase_auth: ^0.14.0+5
   google_sign_in: ^4.4.4
   firebase_core:
-  location: ^3.0.0
   firebase_database:
   firebase_storage:
   image_picker:

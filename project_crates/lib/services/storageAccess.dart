@@ -1,7 +1,6 @@
 import 'package:path/path.dart' as Path;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
-import 'package:flutter/material.dart';
 
 class StorageAccess {
   FirebaseStorage storage = FirebaseStorage.instance;
