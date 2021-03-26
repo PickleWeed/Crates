@@ -31,39 +31,35 @@ class _HomeState extends State<Home> {
     return Scaffold(
         bottomNavigationBar: NavigationBar(0),
         backgroundColor: offWhite,
-        body: SingleChildScrollView(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                topCard(),
-                SizedBox(height: 50),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(25,0,0,10),
-                  child: Text('Categories',
-                      style: TextStyle(
-                        color: Colors.grey[800],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      )
-                  ),
+        body: ListView(
+            children: <Widget>[
+              topCard(),
+              SizedBox(height: 50),
+              Padding(
+                padding: EdgeInsets.fromLTRB(25,0,0,10),
+                child: Text('Categories',
+                    style: TextStyle(
+                      color: Colors.grey[800],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    )
                 ),
-                CategoryList(),
-                SizedBox(height:15),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(25,0,0,10),
-                  child: Text('Nearby',
-                      style: TextStyle(
-                        color: Colors.grey[800],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      )
-                  ),
+              ),
+              CategoryList(),
+              SizedBox(height:15),
+              Padding(
+                padding: EdgeInsets.fromLTRB(25,0,0,10),
+                child: Text('Nearby',
+                    style: TextStyle(
+                      color: Colors.grey[800],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    )
                 ),
-                NearbyList(),
-                SizedBox(height:30),
-              ]),
-        ));
+              ),
+              NearbyList(),
+              SizedBox(height:30),
+            ]));
   }
 }
 
@@ -277,76 +273,25 @@ Widget CategoryList(){
 }
 
 Widget NearbyList(){
-  return Container(
-      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
-              ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
-            ],
-          ),
-          Row(
-            children: [
-              ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
-              ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
-            ],
-          ),
-        ],
-      )
+  // TODO: this is hardcoded data, to remove
+  List<ListingCard> listing_list = [
+    ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
+    ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
+    ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
+    ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
+    ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png')];
+
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: GridView.count(
+      shrinkWrap : true,
+      physics: NeverScrollableScrollPhysics(),
+      crossAxisCount: 2 ,
+      scrollDirection: Axis.vertical,
+      // TODO for backend person: modify here to return CustomListingCard() instead!
+      children: List.generate(listing_list.length,(index){
+        return listing_list[index];
+      }),
+    ),
   );
 }
-
-// Widget ListingCard(title, owner, listingImg, ownerImg){
-//   return Expanded(
-//       child: Container(
-//         child: InkWell(
-//           //TODO: Edit this function to add listing page logic
-//           onTap: (){print(title + " tapped!");},
-//           child: Card(
-//               color: Colors.grey[350],
-//               margin: EdgeInsets.all(5),
-//               child: Padding(
-//                 padding: const EdgeInsets.all(5.0),
-//                 child: Column(
-//                     mainAxisAlignment: MainAxisAlignment.start,
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: <Widget>[
-//                       AspectRatio(
-//                         aspectRatio: 1/1,
-//                         child: Image.asset(
-//                           listingImg,
-//                           fit: BoxFit.fill,
-//                         ),
-//                       ),
-//                       SizedBox(height:10),
-//                       Text(title,
-//                         maxLines: 1, // ensure long titles do not make card taller
-//                         overflow: TextOverflow.ellipsis, // adds the '...' at the end of long titles
-//                         style: TextStyle(
-//                           color: Colors.grey[800],
-//                           fontWeight: FontWeight.bold,
-//                           fontSize: 14,
-//                         )
-//                       ),
-//                       SizedBox(height:5),
-//                       Row(
-//                         children: [
-//                           CircleAvatar(
-//                             backgroundImage: AssetImage(ownerImg),
-//                             radius:15,
-//                           ),
-//                           SizedBox(width: 6),
-//                           Text(owner),
-//                         ],
-//                       ),
-//                     ]
-//                 ),
-//               )
-//           ),
-//         ),
-//       )
-//   );
-// }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'theme.dart';
 
@@ -57,7 +58,8 @@ class CustomCurvedButton extends StatelessWidget {
   }
 }
 
-// Listing Card widget
+// Listing Card widget (Uses local asset image, therefore will not work for dynamically loaded data)
+// TODO: Replace all instances of this ListingCard() class with CustomListingCard()
 class ListingCard extends StatelessWidget {
   final String title, owner, listingImg, ownerImg;
 
@@ -66,58 +68,55 @@ class ListingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Container(
-          child: InkWell(
-            //TODO: Edit this function to add listing page logic
-            onTap: (){print(title + " tapped!");},
-            child: Card(
-                color: Colors.grey[350],
-                margin: EdgeInsets.all(5),
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        AspectRatio(
-                          aspectRatio: 1/1,
-                          child: Image.asset(
-                            listingImg,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        SizedBox(height:10),
-                        Text(title,
-                            maxLines: 1, // ensure long titles do not make card taller
-                            overflow: TextOverflow.ellipsis, // adds the '...' at the end of long titles
-                            style: TextStyle(
-                              color: Colors.grey[800],
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            )
-                        ),
-                        SizedBox(height:5),
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: AssetImage(ownerImg),
-                              radius:15,
-                            ),
-                            SizedBox(width: 6),
-                            Text(owner),
-                          ],
-                        ),
-                      ]
+    return Container(
+      child: Card(
+        color: Colors.grey[350],
+        margin: EdgeInsets.all(5),
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Image.asset(
+                      listingImg,
+                      width: 150,
+                      height: 150,
+                    ),
                   ),
-                )
-            ),
+                ),
+                SizedBox(height:10),
+                Text(title,
+                    maxLines: 1, // ensure long titles do not make card taller
+                    overflow: TextOverflow.ellipsis, // adds the '...' at the end of long titles
+                    style: TextStyle(
+                      color: Colors.grey[800],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    )
+                ),
+                SizedBox(height:5),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: AssetImage(ownerImg),
+                      radius:15,
+                    ),
+                    SizedBox(width: 6),
+                    Text(owner),
+                  ],
+                ),
+              ]
           ),
-        )
+        ),
+      ),
     );
   }
 }
 
+// TODO: Remove this widget when all pages have removed this as it is not longer in use
 class MenuDrawer extends StatelessWidget {
 
   @override
@@ -217,4 +216,60 @@ class MenuDrawer extends StatelessWidget {
   }
 }
 
+// Updated Listing Card that supports GridView and uses NetworkImage
+// TODO: Try to make image fit to card!!!! omg
+class CustomListingCard extends StatelessWidget {
+  final String title, owner, listingImg, ownerImg;
 
+  // constructor
+  CustomListingCard({this.title, this.owner, this.listingImg, this.ownerImg});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Card(
+        color: Colors.grey[350],
+        margin: EdgeInsets.all(5),
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Image.network(
+                      listingImg,
+                      width: 150,
+                      height: 150,
+                    ),
+                  ),
+                ),
+                SizedBox(height:10),
+                Text(title,
+                    maxLines: 1, // ensure long titles do not make card taller
+                    overflow: TextOverflow.ellipsis, // adds the '...' at the end of long titles
+                    style: TextStyle(
+                      color: Colors.grey[800],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    )
+                ),
+                SizedBox(height:5),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(ownerImg),
+                      radius:15,
+                    ),
+                    SizedBox(width: 6),
+                    Text(owner),
+                  ],
+                ),
+              ]
+          ),
+        ),
+      ),
+    );
+  }
+}

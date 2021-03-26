@@ -70,31 +70,21 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   children: [
 
                     SingleChildScrollView(
-                        child: Column(
-                            children:[
-                              Row(
-                                children: [
-                                  ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
-                                  ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
-                                  ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
-                                  ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
-                                ],
-                              ),
-                            ]
-                        )),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GridView.count(
+                            shrinkWrap : true,
+                            physics: NeverScrollableScrollPhysics(),
+                            crossAxisCount: 2 ,
+                            scrollDirection: Axis.vertical,
+                            children: List.generate(userListings.length,(index){
+                              return CustomListingCard(title: userListings[index].listingTitle, owner: userDetails.username, listingImg: userListings[index].listingImage, ownerImg:userDetails.imagePath);
+                            }),
+                    ),
                   //TODO DYNAMIC LISTING
                   //ListingProfileCard(userListings[index].listingTitle,userDetails.username, userListings[index].listingImage,userDetails.imagePath);
-
+                ),
+                    ),
                     ListView(
                       padding:  EdgeInsets.all(8),
                       children: <Widget>[
@@ -233,61 +223,5 @@ Widget topCard(ownerImg, username, n_reviews){
         ),
       ]
   );
-
 }
 
-//listing card for profile
-Widget ListingProfileCard(title,owner,listingImg,ownerImg){
-  return Expanded(
-      child: Container(
-        child: InkWell(
-          //TODO: Edit this function to add listing page logic
-          onTap: (){print(title + " tapped!");},
-          child: Card(
-              color: Colors.grey[350],
-              margin: EdgeInsets.all(5),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      //***********///
-                      AspectRatio(
-                        aspectRatio: 1/1,
-                        child: Image.network(
-                          listingImg,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      SizedBox(height:10),
-                      Text(title,
-                          maxLines: 1, // ensure long titles do not make card taller
-                          overflow: TextOverflow.ellipsis, // adds the '...' at the end of long titles
-                          style: TextStyle(
-                            color: Colors.grey[800],
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          )
-                      ),
-                      SizedBox(height:5),
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            //***********///
-                            backgroundImage: NetworkImage(ownerImg),
-                            radius:15,
-                          ),
-                          SizedBox(width: 6),
-                          Text(owner),
-                        ],
-                      ),
-                    ]
-                ),
-              )
-          ),
-        ),
-      )
-  );
-
-}
