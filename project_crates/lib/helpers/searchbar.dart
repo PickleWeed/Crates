@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
@@ -26,7 +28,18 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
-    return Container();
+    return Container()
+    // return StreamBuilder<UnmodifiableListView<Whateverlistcalled>>(
+    //     stream: whatweneed,
+    //     builder: (context,
+    //         AsyncSnapshot<UnmodifiableListView<Whateverlistcalled>> snapshot) {
+    //       if (!snapshot.hasData) {
+    //         return Center(
+    //           child: Text('NO data!'),
+    //         );
+    //       }
+    //       return ListView(children:snapshot.data.map<Widget>((a)=?Text(a.title),)
+    // );});
   }
 
   @override
