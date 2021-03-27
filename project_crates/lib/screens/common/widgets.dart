@@ -82,8 +82,10 @@ class ListingCard extends StatelessWidget {
                   child: Center(
                     child: Image.asset(
                       listingImg,
-                      width: 150,
-                      height: 150,
+                      fit:BoxFit.fitWidth,
+                      alignment: Alignment.center,
+                      height:150,
+                      width: MediaQuery.of(context).size.width,
                     ),
                   ),
                 ),
@@ -240,8 +242,10 @@ class CustomListingCard extends StatelessWidget {
                   child: Center(
                     child: Image.network(
                       listingImg,
-                      width: 150,
-                      height: 150,
+                      fit:BoxFit.fitWidth,
+                      alignment: Alignment.center,
+                      height:150,
+                      width: MediaQuery.of(context).size.width,
                     ),
                   ),
                 ),
