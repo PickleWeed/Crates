@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:projectcrates/helpers/navigationbar.dart';
 import 'package:projectcrates/pages/chatpage.dart';
 import 'package:projectcrates/pages/notificationpage.dart';
 import 'package:projectcrates/activity.dart';
 import 'package:projectcrates/helpers/reportlisting.dart';
 import 'package:projectcrates/helpers/searchbar.dart';
 import 'package:projectcrates/helpers/reportchat.dart';
+import 'package:projectcrates/helpers/reportcompleted.dart';
 
 List<int> nums = [1, 3, 2];
 
@@ -23,12 +25,7 @@ class ReportPage extends StatelessWidget {
               borderRadius:
                   BorderRadius.vertical(bottom: Radius.circular(40.0))),
         ),
-        bottomNavigationBar: BottomAppBar(
-          child: Container(
-            height: 0,
-            color: Colors.pink,
-          ),
-        ),
+        bottomNavigationBar: ModeratorNavigationBar(1),
         body: ReportState());
     // body: Body());
   }
@@ -74,12 +71,9 @@ class _ReportState extends State<ReportState> {
                   //list of stuff
                 ],
               ),
-              Card(child: InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ReportListing()));
-                },
-              )), //
+              Column(
+                children: [reportHeader(context), completedreports()],
+              ), //
             ],
           ),
         ));
@@ -133,12 +127,7 @@ class ReportListing extends StatelessWidget {
               borderRadius:
                   BorderRadius.vertical(bottom: Radius.circular(40.0))),
         ),
-        bottomNavigationBar: BottomAppBar(
-          child: Container(
-            height: 20,
-            color: Colors.pink,
-          ),
-        ),
+        bottomNavigationBar: ModeratorNavigationBar(1),
         body: reportListingFormat(context));
     // body: Body());
   }
@@ -152,19 +141,55 @@ class ReportChat extends StatelessWidget {
           centerTitle: false,
           automaticallyImplyLeading: false,
           backgroundColor: Colors.amber[400],
-          title: Text("Reported Listing",
+          title: Text("Reported Chat",
               style: TextStyle(fontSize: 30, color: Colors.white)),
           shape: RoundedRectangleBorder(
               borderRadius:
                   BorderRadius.vertical(bottom: Radius.circular(40.0))),
         ),
-        bottomNavigationBar: BottomAppBar(
-          child: Container(
-            height: 20,
-            color: Colors.pink,
-          ),
-        ),
+        bottomNavigationBar: ModeratorNavigationBar(1),
         body: reportChatFormat(context));
+    // body: Body());
+  }
+}
+
+class CompletedListingReport extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: false,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.amber[400],
+          title: Text("Completed Listing Report",
+              style: TextStyle(fontSize: 30, color: Colors.white)),
+          shape: RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.vertical(bottom: Radius.circular(40.0))),
+        ),
+        bottomNavigationBar: ModeratorNavigationBar(1),
+        body: reportListingCompleted(context));
+    // body: Body());
+  }
+}
+
+class CompletedChatReport extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    int chat = 0;
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: false,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.amber[400],
+          title: Text("Completed Chat Report",
+              style: TextStyle(fontSize: 30, color: Colors.white)),
+          shape: RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.vertical(bottom: Radius.circular(40.0))),
+        ),
+        bottomNavigationBar: ModeratorNavigationBar(1),
+        body: reportChatCompleted(context));
     // body: Body());
   }
 }
