@@ -57,6 +57,20 @@ class DatabaseAccess {
     return listing;
   }
 
+  //to access an individual listing, use list[index].attributeName
+  Future<List<Listing>> retrieveAllListings() async {
+    List<Listing> list = [];
+    DatabaseReference ref = databaseRef.child('Listing');
+    await ref.once().then((DataSnapshot snapshot) async {
+      Map<dynamic, dynamic> data = snapshot.value;
+      for (var entry in data.entries) {
+        Listing listing = await getListing(entry.key);
+        list.add(listing);
+      }
+    });
+    return list;
+  }
+
   Stream retrieveListingStream() {
     Stream stream = databaseRef.child("Listing").onValue;
     return stream;
@@ -94,7 +108,16 @@ class DatabaseAccess {
   // }
 
   //delete listing node using its unique key
-  void deleteListingOnKey(String key) {
+  void deleteListingOnKey(String key) async {
+    DatabaseReference entryRef = databaseRef.child("Listing").child(key);
+    //delete image from storage if it exists
+    await entryRef.once().then((DataSnapshot snapshot) async {
+      Map<dynamic, dynamic> data = snapshot.value;
+      if (data['listingImage'] != null) {
+        await storageAccess.deleteListingImage(data['listingImage']);
+      }
+    });
+    //after storage deletion, delete database entry
     try {
       databaseRef.child("Listing").child(key).remove();
     } catch (e) {
@@ -109,7 +132,10 @@ class DatabaseAccess {
   // }
 
   //update an entire listing node with a new listing, postDateTime updated to DateTime.now()
-  void updateListing(String existingListingID, Listing updatedListing) {
+  void updateListing(String existingListingID, Listing updatedListing) async {
+    String imageString = updatedListing.listingImage == null
+        ? null
+        : await storageAccess.uploadFile(updatedListing.listingImage);
     Map<String, dynamic> map = {
       "isRequest": updatedListing.isRequest,
       "category": updatedListing.category,
@@ -117,6 +143,7 @@ class DatabaseAccess {
       "description": updatedListing.description,
       "latitude": updatedListing.latitude,
       "longitude": updatedListing.longitude,
+      "listingImage": imageString,
       "postDateTime": DateTime.now().toIso8601String(),
       "userID": updatedListing.userID,
     };

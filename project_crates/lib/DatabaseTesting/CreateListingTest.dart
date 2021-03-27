@@ -118,26 +118,31 @@ class _CreateListingTestState extends State<CreateListingTest> {
             ElevatedButton(
                 child: Text("Test function"),
                 onPressed: () async {
-                  List location = await loc.getLatLong();
+                  // List location = await loc.getLatLong();
 
                   //Modify the postDateTime and userID attribute values below, the rest are read from the user interface
-                  Listing listing = new Listing(
-                      isRequest: isSelected[0],
-                      category: _selectedCategory,
-                      listingTitle: itemNameController.text,
-                      description: descController.text,
-                      latitude: location[0],
-                      longitude: location[1],
-                      listingImage: image,
-                      userID: uid,
-                      postDateTime:
-                          DateTime.parse("2021-03-15T08:26:25.276101"));
+                  // Listing listing = new Listing(
+                  //     isRequest: isSelected[0],
+                  //     category: _selectedCategory,
+                  //     listingTitle: itemNameController.text,
+                  //     description: descController.text,
+                  //     latitude: location[0],
+                  //     longitude: location[1],
+                  //     listingImage: image,
+                  //     userID: uid,
+                  //     postDateTime:
+                  //         DateTime.parse("2021-03-15T08:26:25.276101"));
 
-                  dao.addListing(listing);
+                  // dao.addListing(listing);
 
-                  // dao.deleteListingOnKey("-MVozP1mmCHPKI1JfPlG");
+                  dao.deleteListingOnKey("-MWmtJHYl4N3FbYTdl3G");
 
                   // dao.updateListing("-MVozP1mmCHPKI1JfPlG", listing);
+
+                  // List listingList = await dao.retrieveAllListings();
+                  // for (int i = 0; i < listingList.length; i++) {
+                  //   print(listingList[i].listingTitle);
+                  // }
                 }),
           ],
         ),

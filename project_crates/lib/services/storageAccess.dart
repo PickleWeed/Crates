@@ -20,16 +20,24 @@ class StorageAccess {
   }
 
   Future<File> fileFromImageUrl(String url) async {
+    if (url == null) return null;
     StorageReference storageRef = await storage.getReferenceFromUrl(url);
 
     Uint8List image = await storageRef.getData(10 * 1024 * 1024); //10MB limit
 
     Directory tempDir = await getTemporaryDirectory();
 
-    File imageFile = await new File('${tempDir.path}/image.jpg').create();
+    File imageFile =
+        await new File('${tempDir.path}/crates_image.jpg').create();
 
     imageFile.writeAsBytesSync(image);
 
     return imageFile;
+  }
+
+  Future<void> deleteListingImage(String url) async {
+    StorageReference storageRef = await storage.getReferenceFromUrl(url);
+    await storageRef.delete();
+    print("Storage Image deleted");
   }
 }

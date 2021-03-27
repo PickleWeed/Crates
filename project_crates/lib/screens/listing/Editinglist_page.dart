@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:flutter_application_1/services/databaseAccess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/services/locationService.dart';
 import 'package:flutter_application_1/services/storageAccess.dart';
+import 'package:image_picker/image_picker.dart';
 import '../home/home.dart';
 
 class Editinglist_page extends StatelessWidget {
@@ -46,14 +48,22 @@ class _BodyState extends State<Body> {
   @override
   initState() {
     super.initState();
-    dao.getListing('-MWgwTUIGOENUbfuziaF').then((selectedListing) {
-      //TODO change hardcode
+
+    // passedData = ModalRoute.of(context)
+    //     .settings
+    //     .arguments; //TODO previous page to pass in the selectedListing listingID
+
+    //TODO change hardcode after previous page pass in listingID
+    dao.getListing('-MWmtJHYl4N3FbYTdl3G').then((selectedListing) {
       setState(() {
         listing = selectedListing;
         listingTitleController.text = listing.listingTitle;
         descriptionController.text = listing.description;
         valueChoose = listing.category;
         image = listing.listingImage;
+        isselected[1] = listing.isRequest;
+        isselected[0] = !listing.isRequest;
+        uid = listing.userID;
       });
     });
   }
@@ -67,9 +77,12 @@ class _BodyState extends State<Body> {
   ];
   String valueChoose;
   File image;
+  String uid;
 
   final listingTitleController = TextEditingController();
   final descriptionController = TextEditingController();
+  final imagePicker = ImagePicker();
+  LocationService loc = new LocationService();
   DatabaseAccess dao = new DatabaseAccess();
 
   Listing listing;
@@ -77,10 +90,6 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    passedData = ModalRoute.of(context)
-        .settings
-        .arguments; //TODO previous page to pass in the selectedListing listingID
-
     return Scaffold(
         body: SingleChildScrollView(
       //body: Center(
@@ -254,7 +263,7 @@ class _BodyState extends State<Body> {
 
         SizedBox(height: 20),
         InkWell(
-          onTap: () {},
+          onTap: chooseFile,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20.0),
             child: image != null
@@ -277,11 +286,28 @@ class _BodyState extends State<Body> {
             minWidth: 100, // width of the button
             height: 50,
             onPressed: () async {
-              StorageAccess storageAccess = new StorageAccess();
-              File asdf = await storageAccess.fileFromImageUrl(
-                  "https://firebasestorage.googleapis.com/v0/b/test-firebase-c99c0.appspot.com/o/Listing%2Fimage_picker5345999116458626025.jpg?alt=media&token=470d7fb7-0979-4896-8675-2cedfc0baa71");
-              print(asdf);
-              //execute upadate
+              if (listingTitleController.text == "") {
+                print("no listing title inputted");
+                return; //TODO frontend user warning for empty listingTitle/itemName
+              }
+
+              List location = await loc.getLatLong();
+              if (location == null)
+                return; //TODO location and address optional?
+
+              Listing updatedListing = Listing(
+                userID: uid,
+                listingTitle: listingTitleController.text,
+                longitude: location[1],
+                latitude: location[0],
+                category: valueChoose,
+                isRequest: isselected[1],
+                listingImage: image,
+                description: descriptionController.text,
+              );
+              //TODO change hardcode after selectedListing passed in from previous page
+              dao.updateListing('-MWmtJHYl4N3FbYTdl3G', updatedListing);
+
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => Home()));
             },
@@ -297,5 +323,17 @@ class _BodyState extends State<Body> {
         //////////////////////////////////////////////////////////////////////////////////////
       ]),
     ));
+  }
+
+  Future chooseFile() async {
+    PickedFile pickedFile =
+        await imagePicker.getImage(source: ImageSource.gallery);
+    if (pickedFile == null) {
+      print('No image selected.');
+      return;
+    }
+    setState(() {
+      image = File(pickedFile.path);
+    });
   }
 }
