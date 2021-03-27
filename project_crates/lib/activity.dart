@@ -67,13 +67,6 @@ List<NotifItem> hello = [
   MessageItem('Sender hello!', 'but really I am still testing only')
 ];
 
-//testing chat with notif stuff
-List<NotifItem> hello2 = [
-  HeadingItem('hello world!'),
-  MessageItem('Sender Edan :)', 'Message body is empty!'),
-  MessageItem('Sender hello!', 'but really I am still testing only')
-];
-
 class _BodyState extends State<Body> {
   final List<Tab> myTabs = <Tab>[
     Tab(text: 'Notification'),
@@ -141,14 +134,3 @@ class _BodyState extends State<Body> {
         ));
   }
 }
-
-// now we implement a notif item that contains data to display msg
-
-//open up one to one chat
-// class ChatOneToOne extends StatelessWidget{
-
-//   @override
-//   Widget build(BuildContext context){
-
-//   }
-// }

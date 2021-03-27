@@ -5,6 +5,7 @@ import 'package:projectcrates/pages/notificationpage.dart';
 import 'package:projectcrates/activity.dart';
 import 'package:projectcrates/helpers/reportlisting.dart';
 import 'package:projectcrates/helpers/searchbar.dart';
+import 'package:projectcrates/helpers/reportchat.dart';
 
 List<int> nums = [1, 3, 2];
 
@@ -65,13 +66,14 @@ class _ReportState extends State<ReportState> {
           ),
           body: TabBarView(
             children: [
-              Column(children: [
-                reportHeader(context),
-                Container(
-                  child: Text('hello'), //list of stuff?
-                ),
-              ]),
-              ChatPage(),
+              Column(children: [reportHeader(context), listofreports()]),
+              Column(
+                children: [
+                  reportHeader(context),
+                  listofreportedchats()
+                  //list of stuff
+                ],
+              ),
               Card(child: InkWell(
                 onTap: () {
                   Navigator.push(context,
@@ -125,7 +127,7 @@ class ReportListing extends StatelessWidget {
           centerTitle: false,
           automaticallyImplyLeading: false,
           backgroundColor: Colors.amber[400],
-          title: Text("Reported",
+          title: Text("Reported Listing",
               style: TextStyle(fontSize: 30, color: Colors.white)),
           shape: RoundedRectangleBorder(
               borderRadius:
@@ -133,11 +135,36 @@ class ReportListing extends StatelessWidget {
         ),
         bottomNavigationBar: BottomAppBar(
           child: Container(
-            height: 0,
+            height: 20,
             color: Colors.pink,
           ),
         ),
         body: reportListingFormat(context));
+    // body: Body());
+  }
+}
+
+class ReportChat extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: false,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.amber[400],
+          title: Text("Reported Listing",
+              style: TextStyle(fontSize: 30, color: Colors.white)),
+          shape: RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.vertical(bottom: Radius.circular(40.0))),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          child: Container(
+            height: 20,
+            color: Colors.pink,
+          ),
+        ),
+        body: reportChatFormat(context));
     // body: Body());
   }
 }
