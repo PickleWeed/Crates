@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/auth.dart';
 import 'package:flutter_application_1/backend/profile_presenter.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/models/Review.dart';
 import 'package:flutter_application_1/models/user.dart';
 import '../common/NavigationBar.dart';
 import '../common/theme.dart';
@@ -19,6 +20,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   User userDetails;
   bool dataLoadingStatus = false;
   List<Listing> userListings;
+  List<Review> userReviews;
+  List<User> reviewerDetails;
   ProfilePresenter _profilePresenter = new ProfilePresenter();
 
 
@@ -35,12 +38,15 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     currentUserID = await currentUser();
     userDetails = await _profilePresenter.retrieveUserProfile(currentUserID);
     userListings = await _profilePresenter.retrieveUserListing(currentUserID);
-    print(userListings);
-    print(currentUserID);
+    userReviews = await _profilePresenter.reviewList(currentUserID);
+    reviewerDetails = await _profilePresenter.reviewerProfilePictures(currentUserID);
+    print(userReviews);
     setState(() {
       currentUserID = currentUserID;
       userDetails = userDetails;
       userListings = userListings;
+      userReviews = userReviews;
+      reviewerDetails = reviewerDetails;
       dataLoadingStatus = false;
     });
 
@@ -56,7 +62,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              topCard(userDetails.imagePath, userDetails.username, 86),
+              topCard(userDetails.imagePath, userDetails.username, userReviews.length),
               SizedBox(height: 50),
               TabBar(
                   tabs: [
@@ -80,22 +86,33 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             children: List.generate(userListings.length,(index){
                               return CustomListingCard(title: userListings[index].listingTitle, owner: userDetails.username, listingImg: userListings[index].listingImage, ownerImg:userDetails.imagePath);
                             }),
+                          ),
+                        ),
                     ),
-                  //TODO DYNAMIC LISTING
-                  //ListingProfileCard(userListings[index].listingTitle,userDetails.username, userListings[index].listingImage,userDetails.imagePath);
-                ),
-                    ),
-                    ListView(
-                      padding:  EdgeInsets.all(8),
-                      children: <Widget>[
-                        reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
-                        reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
-                        reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
-                        reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
-                        reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
-                        SizedBox(height:20),
-                      ],
-                    ),
+                    //TODO LOAD REVIEW DYNAMICALLY
+                    // children: List.generate(userReviews.length, (index){
+                    //   return reviewCard(reviewerDetails[index].username, reviewerDetails[index].imagePath, userReviews[index].description, '5 days');
+                    // }),
+                    userReviews != null? //checking wether user have reviews.
+                    ListView.builder(
+                        itemCount: userReviews.length,
+                        itemBuilder: (context, index){
+                          return  reviewCard(reviewerDetails[index].username, reviewerDetails[index].imagePath, userReviews[index].description, _profilePresenter.countDays(userReviews[index].postedDateTime).toString()+' days');
+                    }): Container(
+                      child: Text('no reviews'),
+                    )
+
+                    // ListView(
+                    //   padding:  EdgeInsets.all(8),
+                    //   children: <Widget>[
+                    //     reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
+                    //     reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
+                    //     reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
+                    //     reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
+                    //     reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
+                    //     SizedBox(height:20),
+                    //   ],
+                    // ),
                   ],
                   controller: _tabController,
                 ),
@@ -115,7 +132,7 @@ Widget reviewCard(reviewer, reviewerImg, review, time){
         child: Row(
           children: [
             CircleAvatar(
-            backgroundImage: AssetImage(reviewerImg),
+            backgroundImage: NetworkImage(reviewerImg),
             radius: 30,
             ),
             SizedBox(width:15),

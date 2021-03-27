@@ -52,6 +52,7 @@ class ProfilePresenter{
 
     return;
   }
+
   Future<dynamic> getImg(String imageType,String imageName) async {
     String url = await FirebaseStorage.instance.ref().child("$imageType/$imageName").getDownloadURL();
     print("url retrieve successfully $url");
@@ -74,18 +75,13 @@ class ProfilePresenter{
 
     return userNormalListing;
   }
-  Future<String> getUserName(String uid) async{
-
-  }
 
   Future<List<Listing>> retrieveUserRequestListing(String uid) async {
     List<Listing> userRequestListing = new List<Listing>();
-    String url = "";
     await _databaseRef.child("Listing").once().then((DataSnapshot snapshot){
       Map<dynamic, dynamic> map = snapshot.value;
       map.forEach((key, value) {
         if(value['isRequest']== true && value['userID'] == uid){
-          url = getImg("normalListings", snapshot.key).toString();
           Listing normalListing = new Listing(listingID: snapshot.key,listingTitle: value['listingTitle'],category: value['category']
               ,postDateTime: value['postDateTime'],description: value['description'],isRequest: value['isRequest'],
               listingImage: value['listingImage'],longitude: value['longitude'],latitude:value['latitude'] );
@@ -95,30 +91,42 @@ class ProfilePresenter{
     });
     return userRequestListing;
   }
-  Future<int> reviewCounts(String uid) async {
-    int reviewCount = 0;
-    await _databaseRef.child("Review").once().then((DataSnapshot snapshot){
-      Map<dynamic, dynamic> map = snapshot.value;
-      map.forEach((key, value) {
-        if(value['revieweeID'] == uid){
-          reviewCount++;
-        }
-      });
-    });
-    return reviewCount;
-  }
+
   Future<List<Review>> reviewList(String uid) async {
     List<Review> reviewList = new List<Review>();
     await _databaseRef.child("Review").once().then((DataSnapshot snapshot){
       Map<dynamic, dynamic> map = snapshot.value;
       map.forEach((key, value) {
         if(value['revieweeID'] == uid){
-          Review review = new Review(description: value['description'], listingID: value['listingID'],
-          revieweeID: value['revieweeID'], reviewerID: value['reviewerID']);
+          Review review = new Review(reviewID: snapshot.key,description: value['description'], listingID: value['listingID'],
+          revieweeID: value['revieweeID'], reviewerID: value['reviewerID'],
+              postedDateTime: DateTime.parse(value['postedDateTime']));
+          print(review);
           reviewList.add(review);
         }
       });
     });
     return reviewList;
   }
+  Future<List<User>> reviewerProfilePictures(String uid) async {
+    List<User> reviewerDetails = new List<User>();
+    await _databaseRef.child("Review").once().then((DataSnapshot snapshot){
+      Map<dynamic, dynamic> map = snapshot.value;
+      map.forEach((key, value) {
+        if(value['revieweeID'] == uid){
+          _databaseRef.child("users").child(value['reviewerID']).once().then((DataSnapshot snapshot){
+            User user = new User(username: snapshot.value['username'],email: snapshot.value['email'],imagePath: snapshot.value['imagePath'], isAdmin: false);
+            reviewerDetails.add(user);
+          });
+        }
+      });
+    });
+    return reviewerDetails;
+  }
+  int countDays (DateTime date){
+    final currentDate = DateTime.now();
+    int days = currentDate.difference(date).inDays;
+    return days;
+  }
+
 }
