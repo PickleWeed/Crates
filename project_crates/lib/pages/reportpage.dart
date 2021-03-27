@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:projectcrates/helpers/items.dart';
 import 'package:projectcrates/pages/chatpage.dart';
 import 'package:projectcrates/pages/notificationpage.dart';
 import 'package:projectcrates/activity.dart';
+import 'package:projectcrates/helpers/reportlisting.dart';
+import 'package:projectcrates/helpers/searchbar.dart';
+
+List<int> nums = [1, 3, 2];
 
 class ReportPage extends StatelessWidget {
   @override
@@ -65,20 +68,8 @@ class _ReportState extends State<ReportState> {
               Column(children: [
                 reportHeader(context),
                 Container(
-                  child: ListView.builder(
-                      itemCount: 1, // insert a number,
-                      itemBuilder: (context, integer) {
-                        return Card(
-                            child: ListTile(
-                                onTap: () {
-                                  print('checkmate');
-                                },
-                                title: Text('Hello!'),
-                                subtitle: Text('Subtitle')));
-                      } //list of stuff?
-
-                      ),
-                )
+                  child: Text('hello'), //list of stuff?
+                ),
               ]),
               ChatPage(),
               Card(child: InkWell(
@@ -104,7 +95,12 @@ Widget reportHeader(BuildContext context) {
     children: [
       Align(
         alignment: Alignment.centerLeft,
-        child: Text('hello'), //change to search later
+        child: TextButton(
+          onPressed: () {
+            showSearch(context: context, delegate: CustomSearchDelegate());
+          },
+          child: Text('Search'),
+        ), //change to search later
       ),
       Align(
           alignment: Alignment.centerRight,
@@ -114,7 +110,7 @@ Widget reportHeader(BuildContext context) {
                 icon: Icon(Icons.sort),
                 label: Text('Sort'),
                 onPressed: () {
-                  showAlertDialog(context);
+                  nums.sort();
                 },
               )))
     ],
@@ -141,7 +137,7 @@ class ReportListing extends StatelessWidget {
             color: Colors.pink,
           ),
         ),
-        body: reportFormat(context));
+        body: reportListingFormat(context));
     // body: Body());
   }
 }

@@ -1,221 +1,130 @@
 import 'package:flutter/material.dart';
 
-abstract class NotifItem {
-  //The title line to show in the list
-  Widget buildTitle(BuildContext context);
-
-  // to build the subtitle if there is any
-  Widget buildSubtitle(BuildContext context);
-}
-
-class MessageItem implements NotifItem {
-  final String sender;
-  final String body;
-
-  MessageItem(this.sender, this.body);
-
-  Widget buildTitle(BuildContext context) {
-    return Text(sender);
-  }
-
-  Widget buildSubtitle(BuildContext context) {
-    return Text(body, overflow: TextOverflow.ellipsis);
-  }
-}
-
-// do we need heading? probabl not
-class HeadingItem implements NotifItem {
-  final String heading;
-  HeadingItem(this.heading);
-
-  Widget buildTitle(BuildContext context) {
-    return Text(
-      heading,
-      style: Theme.of(context).textTheme.headline5,
-    );
-  }
-
-  Widget buildSubtitle(BuildContext context) => null;
-}
-
-showAlertDialog(BuildContext context) {
-  // set up button
-  Widget report = TextButton(
-    onPressed: () {
-      //TODO add function to add report into database
-    },
-    child: Text('Report'),
-    style: TextButton.styleFrom(primary: Colors.red),
-  );
-
-  Widget cancel = TextButton(
-    onPressed: () {}, //TODO ADD FUNCTION TO GO BACK
-    child: Text('Cancel'),
-    style: TextButton.styleFrom(primary: Colors.blue),
-  );
-
-  String dropdownValue = 'One';
-  //set up alert dialog
-  AlertDialog alerting = AlertDialog(
-      actions: [report, cancel],
-      title: Text('seriously hard'),
-      content: Column(children: [
-        TextField(
-          decoration: InputDecoration(labelText: 'Report Title'),
-        ),
-        DropdownButton<String>(
-          value: dropdownValue,
-          icon: const Icon(Icons.arrow_downward),
-          iconSize: 24,
-          elevation: 16,
-          style: const TextStyle(color: Colors.deepPurple),
-          underline: Container(
-            height: 2,
-            color: Colors.deepPurpleAccent,
-          ),
-          onChanged: (String newValue) {
-            {
-              dropdownValue = newValue;
-            }
-            ;
-          },
-          items: <String>['One', 'Two', 'Free', 'Four']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
-        TextField(
-          decoration: InputDecoration(labelText: 'Additional Comment'),
-        ),
-      ]));
-  //show dialog
-  showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alerting;
-      });
-}
-
-@override
-State<StatefulWidget> createState() {
-  // TODO: implement createState
-  throw UnimplementedError();
-}
-
-Widget reportFormat(BuildContext context) {
+Widget reportListingFormat(BuildContext context) {
+  //pass in respective parameters?
   String listingname, listedby, reporttitle, reportby, reporton;
   return SingleChildScrollView(
-    child: Container(
-        child: Column(
-      children: [
-        Container(
-          alignment: Alignment(-1, -1),
-          child: TextButton.icon(
-              icon: Icon(Icons.keyboard_backspace),
-              label: Text('Back'),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-        ), //backbutton
-        Row(
-          children: [
-            Container(
-              width: 100.0,
-              height: 100.0,
-              margin: const EdgeInsets.all(15.0),
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-              child: Icon(Icons.favorite,
-                  color: Colors.pink,
-                  size: 24.0,
-                  semanticLabel: 'HERE COMES THE PARTY!'),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  width: 200.0,
-                  height: 30.0,
+    child: Expanded(
+      child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              Container(
+                alignment: Alignment(-1, -1),
+                child: TextButton.icon(
+                    icon: Icon(Icons.keyboard_backspace),
+                    label: Text('Back'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+              ), //backbutton
+              Row(
+                children: [
+                  Container(
+                    width: 100.0,
+                    height: 100.0,
+                    margin: const EdgeInsets.all(15.0),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent)),
+                    child: Icon(Icons.favorite,
+                        color: Colors.pink,
+                        size: 24.0,
+                        semanticLabel: 'HERE COMES THE PARTY!'),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 200.0,
+                        height: 30.0,
+                        alignment: Alignment.centerLeft,
+                        child: Text.rich(TextSpan(
+                            text: 'Listing ID:',
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: listingname,
+                                  style: TextStyle(fontWeight: FontWeight.bold))
+                            ])),
+                      ),
+                      Container(
+                        width: 200.0,
+                        alignment: Alignment.centerLeft,
+                        child: Text.rich(TextSpan(
+                            text: 'Listed by: ',
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: listedby,
+                                  style: TextStyle(fontWeight: FontWeight.bold))
+                            ])),
+                      )
+                    ],
+                  ),
+                ],
+              ), //picture + listing id:listing name + listed by
+              Container(
+                  margin: const EdgeInsets.only(left: 23.0, top: 15.0),
                   alignment: Alignment.centerLeft,
                   child: Text.rich(TextSpan(
-                      text: 'Listing ID:',
+                      text: 'Title of report: ',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                       children: <TextSpan>[
                         TextSpan(
-                            text: listingname,
+                            text: reporttitle,
                             style: TextStyle(fontWeight: FontWeight.bold))
-                      ])),
+                      ]))), // title of report + TODO replace gg in textspan with variable
+              Container(
+                  margin: const EdgeInsets.only(left: 23.0, top: 10.0),
+                  alignment: Alignment.centerLeft,
+                  child: Text.rich(TextSpan(
+                      text: 'Reported by: ',
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: reportby,
+                            style: TextStyle(fontWeight: FontWeight.bold))
+                      ]))), //reported by + TODO text: gg replacement
+              Container(
+                  margin: const EdgeInsets.only(left: 23.0, top: 10.0),
+                  alignment: Alignment.centerLeft,
+                  child: Text.rich(TextSpan(
+                      text: 'Reported on: ',
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: reporton,
+                            style: TextStyle(fontWeight: FontWeight.bold))
+                      ]))), //date of report +TODO text replacement for gg
+              Container(
+                  margin: const EdgeInsets.only(left: 23.0, top: 10.0),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      'Report Description: ')), // text of just report description
+              Container(
+                  margin: const EdgeInsets.only(left: 23.0, top: 10.0),
+                  alignment: Alignment.centerLeft,
+                  child: Text('Descriptions')),
+
+              Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        child: chooseActions(context),
+                        decoration: myBoxDecoration(),
+                      ),
+                      Container(
+                        child: dismissReport(context),
+                        decoration: myBoxDecoration(),
+                      )
+                    ],
+                  ),
                 ),
-                Container(
-                  width: 200.0,
-                  alignment: Alignment.centerLeft,
-                  child: Text.rich(TextSpan(
-                      text: 'Listed by: ',
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: listedby,
-                            style: TextStyle(fontWeight: FontWeight.bold))
-                      ])),
-                )
-              ],
-            ),
-          ],
-        ), //picture + listing id:listing name + listed by
-        Container(
-            margin: const EdgeInsets.only(left: 23.0, top: 15.0),
-            alignment: Alignment.centerLeft,
-            child: Text.rich(TextSpan(
-                text: 'Title of report: ',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                children: <TextSpan>[
-                  TextSpan(
-                      text: reporttitle,
-                      style: TextStyle(fontWeight: FontWeight.bold))
-                ]))), // title of report + TODO replace gg in textspan with variable
-        Container(
-            margin: const EdgeInsets.only(left: 23.0, top: 10.0),
-            alignment: Alignment.centerLeft,
-            child: Text.rich(TextSpan(
-                text: 'Reported by: ',
-                children: <TextSpan>[
-                  TextSpan(
-                      text: reportby,
-                      style: TextStyle(fontWeight: FontWeight.bold))
-                ]))), //reported by + TODO text: gg replacement
-        Container(
-            margin: const EdgeInsets.only(left: 23.0, top: 10.0),
-            alignment: Alignment.centerLeft,
-            child: Text.rich(TextSpan(
-                text: 'Reported on: ',
-                children: <TextSpan>[
-                  TextSpan(
-                      text: reporton,
-                      style: TextStyle(fontWeight: FontWeight.bold))
-                ]))), //date of report +TODO text replacement for gg
-        Container(
-            margin: const EdgeInsets.only(left: 23.0, top: 10.0),
-            alignment: Alignment.centerLeft,
-            child: Text(
-                'Report Description: ')), // text of just report description
-        Container(
-            margin: const EdgeInsets.only(left: 23.0, top: 10.0),
-            alignment: Alignment.centerLeft,
-            child: Text('Descriptions')),
-        Row(
-          children: [
-            Container(
-              child: chooseActions(context),
-              alignment: Alignment.bottomCenter,
-            ),
-            Container(
-                child: dismissReport(context),
-                alignment: Alignment.bottomCenter),
-          ],
-        ),
-      ],
-    )),
+              ),
+            ],
+          )),
+    ),
   );
 }
 
@@ -273,6 +182,7 @@ Widget dismissReport(BuildContext context) {
   return TextButton(
       style: TextButton.styleFrom(
           primary: Colors.grey,
+          backgroundColor: Colors.grey[300],
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
       onPressed: () {
@@ -446,4 +356,11 @@ Widget submit(BuildContext context) {
         ; //TODO Dismiss report
       }, //show popup dialog
       child: Text('Submit'));
+}
+
+//for tester to look at container borders.
+BoxDecoration myBoxDecoration() {
+  return BoxDecoration(
+    border: Border.all(),
+  );
 }
