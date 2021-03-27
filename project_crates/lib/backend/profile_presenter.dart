@@ -9,10 +9,10 @@ import '../models/Review.dart';
 import '../models/user.dart';
 
 class ProfilePresenter{
-  static final ProfilePresenter _imagePresenter = ProfilePresenter._internal();
+  static final ProfilePresenter _profilePresenter = ProfilePresenter._internal();
 
   factory ProfilePresenter() {
-    return _imagePresenter;
+    return _profilePresenter;
   }
   // singleton boilerplate
   ProfilePresenter._internal();
