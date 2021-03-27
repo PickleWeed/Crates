@@ -113,8 +113,8 @@ class ProfilePresenter{
       Map<dynamic, dynamic> map = snapshot.value;
       map.forEach((key, value) {
         if(value['revieweeID'] == uid){
-          Review review = new Review(rating: value['rating'],description: value['description'], listingID: value['listingID'],
-          revieweeID: value['revieweeID'], reviewerID: value['reviewerID'], reviewTitle: value['reviewTitle']);
+          Review review = new Review(description: value['description'], listingID: value['listingID'],
+          revieweeID: value['revieweeID'], reviewerID: value['reviewerID']);
           reviewList.add(review);
         }
       });
