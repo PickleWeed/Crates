@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/models/user.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'nearby_MapHandler.dart';
 import '../../backend/map_DatabaseHandler.dart';
@@ -16,16 +17,14 @@ import '../common/widgets.dart';
 import '../common/theme.dart';
 
 
+
 class Nearby extends StatefulWidget {
   @override
   _NearbyState createState() => _NearbyState();
 }
 
 class _NearbyState extends State<Nearby> {
-  //PermissionStatus _permissionGranted;
   //LocationData _locationData;
-  //bool _serviceEnabled;
-  //Location location = new Location();
   //final Completer _completer = new Completer();
   Completer<GoogleMapController> _controller = new Completer();
 
@@ -38,7 +37,6 @@ class _NearbyState extends State<Nearby> {
   MapHandler mapHandler = new MapHandler();
   DataHandler dataHandler = new DataHandler();
 
-  //BitmapDescriptor customIcon1;
 
   Set<Marker> _markers = {};
   List<Listing> _listing;
@@ -55,6 +53,7 @@ class _NearbyState extends State<Nearby> {
     // TODO: implement initState
     super.initState();
     _runSystem();
+    //Provider.of<ListingListViewModel>(context, listen: false).fetchListings();
 
   }
 
@@ -107,57 +106,53 @@ class _NearbyState extends State<Nearby> {
     });
   }
 
-  var title;
-  double distance2;
-  var date;
-  var user;
-  String postDateTime;
 
-  Future<Set<Marker>> generateMarkersFeature(_listing) async {
-    print(_listing.length);
+  String title ='';
+  String textDistance = '';
+  double markerDistance;
+  String date = '';
+  String user = '';
+
+  Future<Set<Marker>> generateMarkersFeature() async {
     List<Marker> markers = <Marker>[];
     print('generating markers');
-    int index = 0;
     final icon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(size: Size(10, 10)), 'assets/location_icon.png');
-    for(final information in _listing) {
-      print(_listing[0]['userID']);
+    //List<User> userNames = await dataHandler.getUserList();
+
+
+
+    for (int i=0; i<_listing.length; i++) {
+      markerDistance = dataHandler.haversine(_listing[i].latitude, _listing[i].longitude, _center.latitude, _center.longitude);
+      dataHandler.getUserName(_listing[i].userID).then((value) => user);
+
+      print(user);
+
       final marker = Marker(
-        markerId: information[0]['userID'],
-        position: LatLng(information['latitude'], information['longitude']),
-        icon: icon,
-        onTap: () {
-          setState(() {
-            postDateTime = information['date'];
-            print(postDateTime);
-            title = information['listingTitle'];
-          });
-        }
+          markerId: MarkerId(LatLng(_listing[i].latitude, _listing[i].longitude).toString()),
+          position: LatLng(_listing[i].latitude, _listing[i].longitude),
+          icon: icon,
+          onTap: () {
+            String convertedDateTime = "${_listing[i].postDateTime.day.toString().padLeft(2,'0')}-${_listing[i].postDateTime.month.toString().padLeft(2,'0')}-${_listing[i].postDateTime.year.toString()}";
+
+            setState(() {
+              // ignore: unnecessary_statements
+              user;
+              date = convertedDateTime;
+              title = _listing[i].listingTitle;
+              if(markerDistance >= 1) {
+                textDistance = markerDistance.toStringAsFixed(2)+'km';
+              }
+              else {
+                textDistance = (markerDistance*100).toInt().toString()+'m';
+              }
+            });
+          }
       );
+      markers.add(marker);
     }
     return markers.toSet();
   }
-
-    /*for (final location in positions) {
-      if (location != null) {
-        final icon = await BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(10, 10)), 'assets/location_icon.png');
-
-        final marker = Marker(
-            markerId: MarkerId(location.toString()),
-            position: LatLng(location.latitude, location.longitude),
-            icon: icon,
-            onTap: () {
-
-            }
-        );
-        print('marker added');
-        markers.add(marker);
-      }
-    }
-    print('output markers');
-    return markers.toSet();
-  }*/
 
 
 
@@ -177,7 +172,7 @@ class _NearbyState extends State<Nearby> {
       if(_listing.isNotEmpty) {
         _positions = mapHandler.getPositionFromListing(_listing);
         _markers = await mapHandler.generateMarkers(_positions);
-        //_markers = await generateMarkersFeature(_listing);
+        _markers = await generateMarkersFeature();
         _updateMarkers();
       }
       else
@@ -185,8 +180,10 @@ class _NearbyState extends State<Nearby> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
+
     //mapHandler.createMarker(context, customIcon1);
     return Scaffold(
         bottomNavigationBar: NavigationBar(2),
@@ -252,7 +249,7 @@ class _NearbyState extends State<Nearby> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      Text("Old Town White Coffee",
+                                      Text(title,
                                           style: TextStyle(
                                             color: Colors.grey[800],
                                             fontWeight: FontWeight.bold,
@@ -264,7 +261,7 @@ class _NearbyState extends State<Nearby> {
                                         children: [
                                           Icon(Icons.directions),
                                           SizedBox(width:5),
-                                          Text("200m away",
+                                          Text(textDistance,
                                               style: TextStyle(
                                                 color: Colors.grey[800],
                                                 fontWeight: FontWeight.bold,
@@ -278,7 +275,7 @@ class _NearbyState extends State<Nearby> {
                                         children: [
                                           Icon(Icons.date_range),
                                           SizedBox(width:5),
-                                          Text("12/02/2021",
+                                          Text(date,
                                               style: TextStyle(
                                                 color: Colors.grey[800],
                                                 fontWeight: FontWeight.bold,
@@ -292,7 +289,7 @@ class _NearbyState extends State<Nearby> {
                                         children: [
                                           Icon(Icons.person),
                                           SizedBox(width:5),
-                                          Text("HoneyBee",
+                                          Text('HoneyBee',
                                               style: TextStyle(
                                                 color: Colors.grey[800],
                                                 fontWeight: FontWeight.bold,

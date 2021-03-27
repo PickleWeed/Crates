@@ -7,7 +7,6 @@ import 'dart:io';
 import 'screens/authenticate/root.dart';
 
 import 'screens/nearby/nearby.dart';
-import 'screens/nearby/nearbyFilter.dart';
 
 
 void main() {
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: <String, WidgetBuilder> {
-        //TODO don't need remove
+        //TODO if don't need remove
         '/nearby': (BuildContext context) => new Nearby(),
         //'/login' : (BuildContext context) => new LoginPage(),
         //'/nearby/filter' : (BuildContext context) => new NearbyFilter(),
@@ -32,8 +31,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber,
         platform: TargetPlatform.android,
       ),
-      home: RootPage(),
-      //Nearby(),
+      home: //RootPage(),
+      Nearby(),
     );
   }
 }

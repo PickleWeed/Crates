@@ -80,7 +80,7 @@ class MapHandler {
 
         final marker = Marker(
           markerId: MarkerId(location.toString()),
-          position: LatLng(location.latitude, location.longitude),
+          position: location,
           icon: icon,
           onTap: () {
 
