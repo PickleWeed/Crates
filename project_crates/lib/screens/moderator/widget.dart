@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'theme.dart';
+import '../activity/items.dart';
+import '../common/theme.dart';
 
 // Custom button for login/register pages
 // takes in button text and a function that is performed when button is pressed
@@ -82,36 +83,36 @@ class ListingCard extends StatelessWidget {
                   child: Center(
                     child: Image.asset(
                       listingImg,
-                      fit:BoxFit.fitWidth,
+                      fit: BoxFit.fitWidth,
                       alignment: Alignment.center,
-                      height:150,
+                      height: 150,
                       width: MediaQuery.of(context).size.width,
                     ),
                   ),
                 ),
-                SizedBox(height:10),
+                SizedBox(height: 10),
                 Text(title,
                     maxLines: 1, // ensure long titles do not make card taller
-                    overflow: TextOverflow.ellipsis, // adds the '...' at the end of long titles
+                    overflow: TextOverflow
+                        .ellipsis, // adds the '...' at the end of long titles
                     style: TextStyle(
                       color: Colors.grey[800],
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                    )
-                ),
-                SizedBox(height:5),
+                    )),
+                SizedBox(height: 5),
                 Row(
                   children: [
                     CircleAvatar(
                       backgroundImage: AssetImage(ownerImg),
-                      radius:15,
+                      radius: 15,
                     ),
                     SizedBox(width: 6),
                     Text(owner),
+                    reportbuttonforlisting(context)
                   ],
                 ),
-              ]
-          ),
+              ]),
         ),
       ),
     );
@@ -120,12 +121,11 @@ class ListingCard extends StatelessWidget {
 
 // TODO: Remove this widget when all pages have removed this as it is not longer in use
 class MenuDrawer extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-        // Important: Remove any padding from the ListView.
+          // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
@@ -138,7 +138,7 @@ class MenuDrawer extends StatelessWidget {
               title: Row(
                 children: <Widget>[
                   Icon(Icons.home),
-                  SizedBox(width:8),
+                  SizedBox(width: 8),
                   Text('Home'),
                 ],
               ),
@@ -151,7 +151,7 @@ class MenuDrawer extends StatelessWidget {
               title: Row(
                 children: <Widget>[
                   Icon(Icons.person),
-                  SizedBox(width:8),
+                  SizedBox(width: 8),
                   Text('Profile'),
                 ],
               ),
@@ -164,7 +164,7 @@ class MenuDrawer extends StatelessWidget {
               title: Row(
                 children: <Widget>[
                   Icon(Icons.location_on),
-                  SizedBox(width:8),
+                  SizedBox(width: 8),
                   Text('Nearby'),
                 ],
               ),
@@ -177,7 +177,7 @@ class MenuDrawer extends StatelessWidget {
               title: Row(
                 children: <Widget>[
                   Icon(Icons.notifications),
-                  SizedBox(width:8),
+                  SizedBox(width: 8),
                   Text('Activity'),
                 ],
               ),
@@ -190,7 +190,7 @@ class MenuDrawer extends StatelessWidget {
               title: Row(
                 children: <Widget>[
                   Icon(Icons.library_add),
-                  SizedBox(width:8),
+                  SizedBox(width: 8),
                   Text('New Listing'),
                 ],
               ),
@@ -203,7 +203,7 @@ class MenuDrawer extends StatelessWidget {
               title: Row(
                 children: <Widget>[
                   Icon(Icons.logout),
-                  SizedBox(width:8),
+                  SizedBox(width: 8),
                   Text('Sign Out'),
                 ],
               ),
@@ -212,8 +212,8 @@ class MenuDrawer extends StatelessWidget {
                 // ...
               },
             ),
-          ]// Populate the Drawer in the next step.
-      ),
+          ] // Populate the Drawer in the next step.
+          ),
     );
   }
 }
@@ -242,36 +242,35 @@ class CustomListingCard extends StatelessWidget {
                   child: Center(
                     child: Image.network(
                       listingImg,
-                      fit:BoxFit.fitWidth,
+                      fit: BoxFit.fitWidth,
                       alignment: Alignment.center,
-                      height:150,
+                      height: 150,
                       width: MediaQuery.of(context).size.width,
                     ),
                   ),
                 ),
-                SizedBox(height:10),
+                SizedBox(height: 10),
                 Text(title,
                     maxLines: 1, // ensure long titles do not make card taller
-                    overflow: TextOverflow.ellipsis, // adds the '...' at the end of long titles
+                    overflow: TextOverflow
+                        .ellipsis, // adds the '...' at the end of long titles
                     style: TextStyle(
                       color: Colors.grey[800],
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                    )
-                ),
-                SizedBox(height:5),
+                    )),
+                SizedBox(height: 5),
                 Row(
                   children: [
                     CircleAvatar(
                       backgroundImage: NetworkImage(ownerImg),
-                      radius:15,
+                      radius: 15,
                     ),
                     SizedBox(width: 6),
                     Text(owner),
                   ],
                 ),
-              ]
-          ),
+              ]),
         ),
       ),
     );
