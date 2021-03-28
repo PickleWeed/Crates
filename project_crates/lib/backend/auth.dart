@@ -47,9 +47,8 @@ Future<FirebaseUser> signInWithEmailAndPassword(email, password) async {
   }
 }
 
-Future<String> isAdminCheck(userDB) async{
-  FirebaseUser user = userDB;
-  DataSnapshot snapshot =  await _firebaseRef.child(user.uid).once();
+Future<bool> isAdminCheck(userID) async{
+  DataSnapshot snapshot =  await _firebaseRef.child(userID).once();
   return snapshot.value['isAdmin'];
 }
 

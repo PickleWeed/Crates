@@ -1,17 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/auth.dart';
-import 'package:flutter_application_1/screens/common/user_main.dart';
 import '../authenticate/register.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
-import '../home/home.dart';
 
 
 class SignIn extends StatefulWidget {
   static String tag = 'signin-page';
-  SignIn({this.onSignedIn});
+  SignIn({this.onSignedIn, this.isAdmin});
   final VoidCallback onSignedIn;
+  final VoidCallback isAdmin;
 
   @override
   _SignInState createState() => _SignInState();
@@ -20,7 +19,6 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
 
   final formKey = new GlobalKey<FormState>();
-
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -41,15 +39,27 @@ class _SignInState extends State<SignIn> {
     FirebaseUser user;
     signInWithEmailAndPassword(emailController.text, passwordController.text).then((user) =>
     {
-      //TODO: if user is admin, redirect to moderator page?
-      //If successful login, navigate to home page
-      if (user != null){
-        formKey.currentState.reset(),
-        displayToastMessage("Login Successful", context),
-        widget.onSignedIn(),
+      //If successful login
+      if(user != null){
+        isAdminCheck(user.uid) .then((value) => {
+          if (value == false){
+            // Normal User
+            formKey.currentState.reset(),
+            displayToastMessage("Login Successful", context),
+            //Change AuthStatus
+            widget.onSignedIn()
+          } else {
+            // Admin
+            formKey.currentState.reset(),
+            displayToastMessage("Login Successful", context),
+            //Change AuthStatus & AdminStatus
+            widget.onSignedIn(),
+            widget.isAdmin()
+          }
+        })
       } else {
-        formKey.currentState.reset(),
         // if login not successful
+        formKey.currentState.reset(),
         displayToastMessage("Wrong Email/Password", context)
       }
     });
