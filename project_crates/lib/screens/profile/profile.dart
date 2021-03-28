@@ -5,7 +5,6 @@ import 'package:flutter_application_1/backend/profile_presenter.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/Review.dart';
 import 'package:flutter_application_1/models/user.dart';
-import '../common/NavigationBar.dart';
 import '../common/theme.dart';
 import '../common/widgets.dart';
 
@@ -55,7 +54,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: NavigationBar(2),
         backgroundColor: offWhite,
         body: dataLoadingStatus == false ?
         Column(

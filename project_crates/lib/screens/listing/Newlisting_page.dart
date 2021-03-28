@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../home/home.dart';
-import '../common/NavigationBar.dart';
 
 class Newlisting_page extends StatelessWidget {
 
@@ -289,7 +288,6 @@ class _BodyState extends State<Body> {
                 //////////////////////////////////////////////////////////////////////////////////////
               ]),
         ),
-        bottomNavigationBar: NavigationBar(2),
     );
   }
 }

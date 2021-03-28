@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/auth.dart';
+import 'package:flutter_application_1/screens/common/user_main.dart';
+import 'package:flutter_application_1/screens/home/home.dart';
 import 'sign_in.dart';
-import '../home/home.dart';
 
 class RootPage extends StatefulWidget {
 
@@ -49,10 +50,12 @@ class _RootPageState extends State<RootPage>{
         );
       case AuthStatus.signedIn:
         return new Container(
-          child: Home(
+          child: UserMain(
             // onSignedOut: _signedOut,
           ),
         );
+        //return UserMain();
+        // return Navigator.of(context).pushNamed(UserMain.tag);
     }
   }
 }

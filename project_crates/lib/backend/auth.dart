@@ -38,6 +38,7 @@ Future<FirebaseUser> signInWithEmailAndPassword(email, password) async {
   try {
     final FirebaseUser user = (await _auth.signInWithEmailAndPassword(email: email, password: password,)).user;
     print('Signed in: ${user.uid}');
+
     return user;
   }
   catch(e){

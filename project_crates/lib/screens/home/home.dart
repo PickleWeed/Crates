@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/auth.dart';
-import '../common/NavigationBar.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
 
@@ -29,7 +27,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: NavigationBar(0),
         backgroundColor: offWhite,
         body: ListView(
             children: <Widget>[

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/auth.dart';
+import 'package:flutter_application_1/screens/common/user_main.dart';
 import '../authenticate/register.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
@@ -8,6 +9,7 @@ import '../home/home.dart';
 
 
 class SignIn extends StatefulWidget {
+  static String tag = 'signin-page';
   SignIn({this.onSignedIn});
   final VoidCallback onSignedIn;
 
@@ -44,8 +46,7 @@ class _SignInState extends State<SignIn> {
       if (user != null){
         formKey.currentState.reset(),
         displayToastMessage("Login Successful", context),
-        widget.onSignedIn()
-        //Navigator.push(context,MaterialPageRoute(builder: (context) => Home()))
+        widget.onSignedIn(),
       } else {
         formKey.currentState.reset(),
         // if login not successful

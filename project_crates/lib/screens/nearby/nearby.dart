@@ -12,7 +12,6 @@ import 'nearbyFilter.dart';
 
 //import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart';
-import '../common/NavigationBar.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
 
@@ -186,7 +185,6 @@ class _NearbyState extends State<Nearby> {
 
     //mapHandler.createMarker(context, customIcon1);
     return Scaffold(
-        bottomNavigationBar: NavigationBar(2),
         backgroundColor: offWhite,
         body: Stack(
             children: <Widget>[

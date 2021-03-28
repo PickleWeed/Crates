@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../listing/Editinglist_page.dart';
-import '../common/NavigationBar.dart';
 
 
 class Selectedlisting_page extends StatelessWidget {
@@ -40,7 +39,6 @@ class Selectedlisting_page extends StatelessWidget {
         backgroundColor: Color(0xFFFFC857),
 
         body: Body(),
-        bottomNavigationBar: NavigationBar(0),
 
 
     );
