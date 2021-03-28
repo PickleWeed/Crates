@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projectcrates/activity.dart';
-import 'package:projectcrates/pages/reportpage.dart';
+import '../activity/activity.dart';
+import '../moderator/reportpage.dart';
 
 //TODO need to know completed reports to display in what format, chat or listing format
 Widget completedreports() {

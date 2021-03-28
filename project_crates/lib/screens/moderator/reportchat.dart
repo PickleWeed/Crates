@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:projectcrates/activity.dart';
-import 'package:projectcrates/helpers/items.dart';
-import 'package:projectcrates/pages/reportpage.dart';
+import '../moderator/reportlisting.dart';
+import '../activity/activity.dart';
+import '../moderator/reportpage.dart';
 
-Widget reportListingFormat(BuildContext context) {
-  //TODO need to pass in respective parameters
-  String listingname, listedby, reporttitle, reportby, reporton;
+//TODO pass in parameters respectively, etc details
+Widget reportChatFormat(BuildContext context) {
+  //pass in respective parameters?
+  String listingname, listedby, user1, user2, reporttitle, reportby, reporton;
   return SingleChildScrollView(
     child: Container(
         height: MediaQuery.of(context).size.height,
@@ -31,8 +32,7 @@ Widget reportListingFormat(BuildContext context) {
                   child: Icon(Icons.favorite,
                       color: Colors.pink,
                       size: 24.0,
-                      semanticLabel:
-                          'HERE COMES THE PARTY!'), // TODO change to image assert
+                      semanticLabel: 'HERE COMES THE PARTY!'),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -41,20 +41,38 @@ Widget reportListingFormat(BuildContext context) {
                       width: 200.0,
                       height: 30.0,
                       alignment: Alignment.centerLeft,
-                      child: Text.rich(
-                          TextSpan(text: 'Listing ID:', children: <TextSpan>[
-                        TextSpan(
-                            text: listingname, //TODO parameter for listing name
-                            style: TextStyle(fontWeight: FontWeight.bold))
-                      ])),
+                      child: Text.rich(TextSpan(
+                          text: 'Listing Name:',
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: listingname,
+                                style: TextStyle(fontWeight: FontWeight.bold))
+                          ])),
+                    ),
+                    Container(
+                      width: 200.0,
+                      alignment: Alignment.centerLeft,
+                      child: Text.rich(TextSpan(
+                          text: 'Listed by: ',
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: listedby,
+                                style: TextStyle(fontWeight: FontWeight.bold))
+                          ])),
                     ),
                     Container(
                       width: 200.0,
                       alignment: Alignment.centerLeft,
                       child: Text.rich(
-                          TextSpan(text: 'Listed by: ', children: <TextSpan>[
+                          TextSpan(text: 'Chat between: ', children: <TextSpan>[
                         TextSpan(
-                            text: listedby, //TODO parameter for listed by
+                            text: user1,
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(
+                            text: ' & ',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(
+                            text: user2,
                             style: TextStyle(fontWeight: FontWeight.bold))
                       ])),
                     )
@@ -92,8 +110,7 @@ Widget reportListingFormat(BuildContext context) {
                       TextSpan(
                           text: reporton,
                           style: TextStyle(fontWeight: FontWeight.bold))
-                    ]))), //date of report +
-            //TODO text replacement for gg
+                    ]))), //date of report + TODO text replacement for gg
             Container(
                 margin: const EdgeInsets.only(left: 23.0, top: 10.0),
                 alignment: Alignment.centerLeft,
@@ -102,7 +119,7 @@ Widget reportListingFormat(BuildContext context) {
             Container(
                 margin: const EdgeInsets.only(left: 23.0, top: 10.0),
                 alignment: Alignment.centerLeft,
-                child: Text('Descriptions')), //TODO descriptions T.T
+                child: Text('Descriptions')),
 
             Expanded(
               child: Align(
@@ -112,7 +129,7 @@ Widget reportListingFormat(BuildContext context) {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Container(
-                      child: chooseActions(context),
+                      child: chooseChatActions(context),
                       decoration: myBoxDecoration(),
                     ),
                     Container(
@@ -128,9 +145,8 @@ Widget reportListingFormat(BuildContext context) {
   );
 }
 
-String gg = 'you are a bitch'; // TODO for me to delete soon!
-
-Widget chooseActions(BuildContext context) {
+//TODO pass in parameters respectively, etc details
+Widget chooseChatActions(BuildContext context) {
   return TextButton(
       style: TextButton.styleFrom(
         primary: Colors.white,
@@ -149,7 +165,7 @@ Widget chooseActions(BuildContext context) {
                         Text('Actions',
                             textAlign: TextAlign.left,
                             style: TextStyle(fontSize: 24)),
-                        MyCheckboxTesting(),
+                        ChatRestrictedCheckBox(),
                         SecondCheckbox(),
                         Text('Penalties',
                             textAlign: TextAlign.left,
@@ -178,189 +194,33 @@ Widget chooseActions(BuildContext context) {
       child: Text('Choose Actions'));
 }
 
-Widget dismissReport(BuildContext context) {
-  return TextButton(
-      style: TextButton.styleFrom(
-          primary: Colors.grey,
-          backgroundColor: Colors.grey[300],
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
-      onPressed: () {
-        ; //TODO Dismiss report
-      }, //show popup dialog
-      child: Text('Dismiss Report'));
-}
-
-class MyCheckboxTesting extends StatefulWidget {
+class ChatRestrictedCheckBox extends StatefulWidget {
   @override
-  _MyCheckboxTestingState createState() => _MyCheckboxTestingState();
+  _ChatRestrictedCheckBoxState createState() => _ChatRestrictedCheckBoxState();
 }
 
-class _MyCheckboxTestingState extends State<MyCheckboxTesting> {
+class _ChatRestrictedCheckBoxState extends State<ChatRestrictedCheckBox> {
   bool _isSelected = false;
   bool deleted;
-  _MyCheckboxTestingState({this.deleted});
+  _ChatRestrictedCheckBoxState({this.deleted});
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
-      title: const Text('Deleted Listing'),
+      title: const Text('Restrict chat for 1 month'),
       value: _isSelected,
       controlAffinity: ListTileControlAffinity.leading,
       onChanged: (bool newValue) {
         setState(() {
           _isSelected = newValue;
           deleted = true;
-          return deleted;
+          return deleted; //TODO this one return what vlaue to database
         });
       },
     );
   }
 }
 
-class SecondCheckbox extends StatefulWidget {
-  @override
-  _SecondCheckboxState createState() => _SecondCheckboxState();
-}
-
-class _SecondCheckboxState extends State<SecondCheckbox> {
-  bool _isSelected = false;
-  bool givewarning;
-  @override
-  Widget build(BuildContext context) {
-    return CheckboxListTile(
-      contentPadding: EdgeInsets.only(left: 16.0),
-      title: const Text('Give warning to the user'),
-      value: _isSelected,
-      controlAffinity: ListTileControlAffinity.leading,
-      onChanged: (bool newValue) {
-        setState(() {
-          _isSelected = newValue;
-          givewarning = true;
-        });
-      },
-    );
-  }
-}
-
-//Radio button 2 param
-enum Penalties { temporary, permanent }
-
-/// Radio Button widget
-class RadioButton extends StatefulWidget {
-  const RadioButton({Key key}) : super(key: key);
-
-  @override
-  _RadioButtonState createState() => _RadioButtonState();
-}
-
-/// This is the private State class that goes with RadioButton.
-class _RadioButtonState extends State<RadioButton> {
-  Penalties _penalty = Penalties.temporary;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        ListTile(
-          title: const Text('Ban Account for 1 month'),
-          leading: Radio<Penalties>(
-            value: Penalties.temporary,
-            groupValue: _penalty,
-            toggleable: true,
-            onChanged: (Penalties value) {
-              setState(() {
-                _penalty = value;
-              });
-            },
-          ),
-        ),
-        ListTile(
-          title: const Text('Ban Account permanently'),
-          leading: Radio<Penalties>(
-            value: Penalties.permanent,
-            groupValue: _penalty,
-            toggleable: true,
-            onChanged: (Penalties value) {
-              setState(() {
-                _penalty = value;
-              });
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// For text field
-class MyTextField extends StatefulWidget {
-  @override
-  _MyTextFieldState createState() => _MyTextFieldState();
-}
-
-// Define a corresponding State class.
-// This class holds the data related to the Form.
-class _MyTextFieldState extends State<MyTextField> {
-  // Create a text controller and use it to retrieve the current value
-  // of the TextField.
-  final myController = TextEditingController();
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 90,
-      margin: EdgeInsets.all(12),
-      child: TextField(
-          controller: myController,
-          maxLines: 5,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: 'Reason for list of actions',
-            fillColor: Colors.grey[300],
-            filled: true,
-          )),
-    );
-  }
-}
-
-// Cancel button
-Widget cancel(BuildContext context) {
-  return TextButton(
-      style: TextButton.styleFrom(
-          primary: Colors.white,
-          backgroundColor: Colors.grey,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
-      onPressed: () {
-        Navigator.pop(context);
-      }, //show popup dialog
-      child: Text('Cancel'));
-}
-
-// submit button
-Widget submit(BuildContext context) {
-  return TextButton(
-      style: TextButton.styleFrom(
-          primary: Colors.white,
-          backgroundColor: Colors.red,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
-      onPressed: () {
-        ; //TODO Dismiss report
-      }, //show popup dialog
-      child: Text('Submit'));
-}
-
-//Listtile
-
-Widget listofreports() {
+Widget listofreportedchats() {
   return ListView.builder(
     shrinkWrap: true,
     itemCount: hello.length,
@@ -368,24 +228,16 @@ Widget listofreports() {
       final item = hello[index];
       return Card(
           child: ListTile(
-        leading: FlutterLogo(), //  TODO leave as flutter?
+        leading: FlutterLogo(), //  TODO to be removed later
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ReportListing()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ReportChat()));
         },
         title: item.buildTitle(context),
-        subtitle: item.buildSubtitle(
-            context), //TODO I build using the class notif, see above
+        subtitle: item.buildSubtitle(context),
         trailing: Icon(Icons.keyboard_arrow_right),
         isThreeLine: true,
       ));
     },
-  );
-}
-
-//for tester to look at container borders.
-BoxDecoration myBoxDecoration() {
-  return BoxDecoration(
-    border: Border.all(),
   );
 }

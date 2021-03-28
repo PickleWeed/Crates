@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:projectcrates/helpers/items.dart';
-import 'package:projectcrates/pages/chatpage.dart';
-import 'package:projectcrates/pages/notificationpage.dart';
+import '../activity/items.dart';
+import '../activity/chatpage.dart';
+import '../activity/notificationpage.dart';
 
 class ActivityPage extends StatelessWidget {
   @override

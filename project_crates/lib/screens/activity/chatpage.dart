@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:projectcrates/helpers/items.dart';
-import 'package:projectcrates/activity.dart';
-import 'package:projectcrates/pages/notificationpage.dart';
+import '../activity/items.dart';
+import '../activity/activity.dart';
+import '../activity/notificationpage.dart';
 
 class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:projectcrates/helpers/moderatornavigationbar.dart';
-import 'package:projectcrates/pages/chatpage.dart';
-import 'package:projectcrates/pages/notificationpage.dart';
-import 'package:projectcrates/activity.dart';
-import 'package:projectcrates/helpers/reportlisting.dart';
-import 'package:projectcrates/helpers/searchbar.dart';
-import 'package:projectcrates/helpers/reportchat.dart';
-import 'package:projectcrates/helpers/reportcompleted.dart';
+import '../moderator/moderatornavigationbar.dart';
+import '../moderator/reportlisting.dart';
+import '../common/searchbar.dart';
+import '../moderator/reportchat.dart';
+import '../moderator/reportcompleted.dart';
 
 List<int> nums = [1, 3, 2];
 

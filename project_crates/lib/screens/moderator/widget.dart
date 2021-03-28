@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:projectcrates/helpers/items.dart';
-import 'theme.dart';
+import '../activity/items.dart';
+import '../common/theme.dart';
 
 // Custom button for login/register pages
 // takes in button text and a function that is performed when button is pressed

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:projectcrates/helpers/searchlisting.dart';
+import '../moderator/searchlisting.dart';
 
-import 'package:projectcrates/pages/reportpage.dart';
+import '../moderator/reportpage.dart';
 
 class ModeratorNavigationBar extends StatefulWidget {
   final int tab;

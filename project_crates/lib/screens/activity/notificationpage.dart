@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projectcrates/helpers/items.dart';
+import '../activity/items.dart';
 
 //Open notificationpage
 class NotificationPage extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_application_1/backend/auth.dart';
-import 'NavigationBar.dart';
-import 'widget.dart';
-import 'theme.dart';
+import '../moderator/moderatornavigationBar.dart';
+import '../common/widgets.dart';
+import '../common/theme.dart';
 
 class Home extends StatefulWidget {
   //Signed Out
