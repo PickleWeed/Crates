@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 class CustomSearchDelegate extends SearchDelegate {
   @override
   List<Widget> buildActions(BuildContext context) {
-    // TODO: implement buildActions
     return [
       IconButton(
           icon: Icon(Icons.clear),
@@ -17,7 +16,6 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildLeading(BuildContext context) {
-    // TODO: implement buildLeading
     return IconButton(
         icon: Icon(Icons.arrow_back),
         onPressed: () {
@@ -28,7 +26,7 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
-    return Container()
+    return Container();
     // return StreamBuilder<UnmodifiableListView<Whateverlistcalled>>(
     //     stream: whatweneed,
     //     builder: (context,

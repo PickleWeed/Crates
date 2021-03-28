@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projectcrates/helpers/searchlisting.dart';
 
 import 'package:projectcrates/pages/reportpage.dart';
 
@@ -34,7 +35,8 @@ class _ModeratorNavigationBarState extends State<ModeratorNavigationBar> {
           _currentIndex = value;
           switch (value) {
             case 0:
-              //Navigator.push(context, MaterialPageRoute(builder: (context) => ()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Home()));
               break;
             case 1:
               Navigator.push(context,

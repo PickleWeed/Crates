@@ -1,180 +1,189 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:projectcrates/pages/listingpage.dart';
-import 'package:projectcrates/helpers/navigationbar.dart';
+//import 'package:flutter_application_1/backend/auth.dart';
+import 'NavigationBar.dart';
+import 'widget.dart';
+import 'theme.dart';
 
-class Selectedlisting_page extends StatelessWidget {
-  String _search;
+class Home extends StatefulWidget {
+  //Signed Out
+  //Home({this.onSignedOut});
+  //final VoidCallback onSignedOut;
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  //Sign Out: onPressed: _signOut
+/*  void _signOut() async {
+    try {
+      await signOut();
+      widget.onSignedOut();
+    }catch(e){
+      print(e);
+    }
+  }*/
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
-        toolbarHeight: 50,
-        centerTitle: false,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        bottomOpacity: 0.0,
-        elevation: 0.0,
-        title: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+        bottomNavigationBar: ModeratorNavigationBar(0),
+        backgroundColor: offWhite,
+        body: ListView(children: <Widget>[
+          topCard(),
+          SizedBox(height: 15),
+          Row(
+            children: [
               Container(
-                  alignment: Alignment.topLeft,
-                  child: Column(children: <Widget>[
-                    Text('Food',
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold)),
-                  ]))
-            ]),
-      ),
-      backgroundColor: Color(0xFFFFC857),
-      body: Body(),
-      bottomNavigationBar: ModeratorNavigationBar(0),
-    );
-    // body: Body());
-  }
-}
-
-class Body extends StatefulWidget {
-  @override
-  _BodyState createState() => _BodyState();
-}
-
-class _BodyState extends State<Body> {
-  final bool currentuser =
-      true; // this dictate if the user click on his own food or others (true->owner of food), (false->other people food)
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: Center(
-          child: Column(children: <Widget>[
-        Container(
-          color: Color(0xFFFFC857),
-          height: 230,
-          width: 450,
-          child: Container(
-            padding: EdgeInsets.fromLTRB(100, 10, 100, 30),
-            width: 100,
-            height: 230,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey[300],
-                image: const DecorationImage(
-                  image: AssetImage('assets/coffee.jpg'),
-                  fit: BoxFit.fill,
+                width: 150,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(25, 0, 0, 10),
+                  child: filterbutton(),
                 ),
               ),
-            ),
-          ),
-        ),
-        Row(
-            mainAxisAlignment:
-                MainAxisAlignment.start, //change here don't //worked
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
               Container(
-                padding: EdgeInsets.fromLTRB(10, 10, 50, 0),
-                child: Text('Posted 1 week ago ',
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold)),
+                width: 150,
+                child: Padding(
+                    padding: EdgeInsets.fromLTRB(25, 0, 0, 10),
+                    child: sortbutton()),
               ),
-              _Currentuserbutton(currentuser),
-            ]),
-        Container(
-            alignment: Alignment(-0.9, 0.9),
-            child: RichText(
-                text: TextSpan(
-                    text: 'by, ',
-                    style: TextStyle(color: Colors.grey, fontSize: 20),
-                    children: <TextSpan>[
-                  TextSpan(
-                    text: 'name ',
-                    style: TextStyle(
-                        color: Color(0xFFFFC857),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25),
-                  )
-                ]))),
-        SizedBox(height: 20),
-        Container(
-          child: Text('Description of the food ',
-              style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15,
-                  fontWeight: FontWeight.normal)),
-        ),
-        SizedBox(height: 20),
-        Container(
-          alignment: Alignment(-0.9, 0),
-          child: Text('Location ',
-              style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold)),
-        ),
-        SizedBox(height: 20),
-        Container(
-          color: Colors.grey[300],
-          height: 150,
-          width: 350,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.grey[300],
-            ),
+            ],
           ),
-        )
-      ])),
-      //bottomNavigationBar: Navigationbar(0),
-    ));
+          NearbyList(),
+          SizedBox(height: 30),
+        ]));
   }
+}
 
-  _Currentuserbutton(bool currentuser) {
-    if (currentuser == true) {
-      return Container(
-        padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-        alignment: Alignment(0.7, 0),
-        child: MaterialButton(
-          elevation: 1,
-          minWidth: 100, // width of the button
-          height: 50,
-          onPressed: () async {
-            //Navigator.of(context).pushReplacement(
-            //MaterialPageRoute(builder: (context) => Editinglist_page()));
-          },
-          color: Colors.grey[300],
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+Widget topCard() {
+  return Stack(clipBehavior: Clip.none, children: <Widget>[
+    Container(
+      width: double.infinity,
+      height: 80,
+      child: Card(
+          margin: EdgeInsets.zero,
+          color: primaryColor,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+            topLeft: Radius.zero,
+            topRight: Radius.zero,
+            bottomLeft: Radius.circular(50),
+            bottomRight: Radius.circular(50),
+          )),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [],
+          )),
+    ),
+    Positioned(
+      right: 45,
+      left: 45,
+      bottom: 10,
+      child: Container(
+        height: 50,
+        child: TextField(
+            decoration: InputDecoration(
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white, width: 1.0),
+                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white, width: 1.0),
+                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                ),
+                prefixIcon: Icon(Icons.search),
+                prefixStyle: TextStyle(
+                  decorationColor: Colors.red,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'search')),
+      ),
+    ),
+  ]);
+}
 
-          child: Text('Edit',
-              style: TextStyle(color: Colors.grey[600], fontSize: 20)),
-        ),
-      );
-    } else if (currentuser == false) {
-      return Container(
-        padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-        alignment: Alignment(0.7, 0),
-        child: MaterialButton(
-          elevation: 1,
-          minWidth: 100, // width of the button
-          height: 50,
-          onPressed: () async {
-            // go to chat page
-          },
-          color: Colors.grey[300],
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+Widget NearbyList() {
+  // TODO: this is hardcoded data, to remove
+  List<ListingCard> listing_list = [
+    ListingCard(
+        title: "Old Town White Coffee",
+        owner: "leejunwei",
+        listingImg: 'assets/coffee.jpg',
+        ownerImg: 'assets/icons/default.png'),
+    ListingCard(
+        title: "Korean Spicy Noodles Samyang",
+        owner: "Eggxactly",
+        listingImg: 'assets/noodles.jpg',
+        ownerImg: 'assets/icons/default.png'),
+    ListingCard(
+        title: "Old Town White Coffee",
+        owner: "leejunwei",
+        listingImg: 'assets/coffee.jpg',
+        ownerImg: 'assets/icons/default.png'),
+    ListingCard(
+        title: "Korean Spicy Noodles Samyang",
+        owner: "Eggxactly",
+        listingImg: 'assets/noodles.jpg',
+        ownerImg: 'assets/icons/default.png'),
+    ListingCard(
+        title: "Korean Spicy Noodles Samyang",
+        owner: "Eggxactly",
+        listingImg: 'assets/noodles.jpg',
+        ownerImg: 'assets/icons/default.png')
+  ];
 
-          child: Text('chat',
-              style: TextStyle(color: Colors.grey[600], fontSize: 20)),
-        ),
-      );
-    }
-  }
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: GridView.count(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      scrollDirection: Axis.vertical,
+      // TODO for backend person: modify here to return CustomListingCard() instead!
+      children: List.generate(listing_list.length, (index) {
+        return listing_list[index];
+      }),
+    ),
+  );
+}
+
+Widget filterbutton() {
+  return TextButton(
+    child: Text(
+      'Filters',
+      textAlign: TextAlign.left,
+    ),
+    style: TextButton.styleFrom(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      backgroundColor: Colors.grey[400],
+      primary: Colors.black,
+      textStyle: TextStyle(
+        color: Colors.black,
+        fontSize: 20,
+      ),
+    ),
+    onPressed: () {
+      print('Pressed');
+    },
+  );
+}
+
+Widget sortbutton() {
+  return TextButton(
+    child: Text('Sort'),
+    style: TextButton.styleFrom(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      backgroundColor: Colors.grey[400],
+      primary: Colors.black,
+      textStyle: TextStyle(
+        color: Colors.black,
+        fontSize: 20,
+      ),
+    ),
+    onPressed: () {
+      print('Pressed');
+    },
+  );
 }

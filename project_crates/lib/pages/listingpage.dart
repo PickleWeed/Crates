@@ -467,8 +467,8 @@ Widget ListingCard1(title, owner, listingImg, ownerImg, context) {
     child: InkWell(
       //TODO: Edit this function to add listing page logic
       onTap: () {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => Selectedlisting_page()));
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
       },
       child: Card(
           color: Colors.grey[350],

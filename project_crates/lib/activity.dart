@@ -54,7 +54,7 @@ Widget notificationHeader(BuildContext context) {
                 icon: Icon(Icons.sort),
                 label: Text('Sort'),
                 onPressed: () {
-                  showAlertDialog(context);
+                  //TODO LIST.sort() then is sorting done;
                 },
               )))
     ],
