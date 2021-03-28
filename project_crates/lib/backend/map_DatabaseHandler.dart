@@ -12,45 +12,30 @@ import 'package:firebase_storage/firebase_storage.dart';
 import '../models/Listing.dart';
 
 class DataHandler {
-  static final DataHandler _imagePresenter = DataHandler._internal();
+  static final DataHandler _dataHandler = DataHandler._internal();
 
   factory DataHandler() {
-    return _imagePresenter;
+    return _dataHandler;
   }
   // singleton boilerplate
   DataHandler._internal();
 
   final _databaseRef = FirebaseDatabase.instance.reference();
   final _storageRef = FirebaseStorage.instance.ref();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
-  Future<dynamic> getImg(String imageType,String imageName) async {
-    String url = await FirebaseStorage.instance.ref().child("$imageType/$imageName").getDownloadURL();
-    print("url retrieve successfully $url");
-    return url;
-  }
   //insert current location as argument
   Future<List<Listing>> retrieveFilteredListing(double distance, String category, LatLng center) async {
-    print(center.longitude);
-    print(center.latitude);
-    print('retrieve Filtered Listing!');
     List<Listing> userNormalListing = new List<Listing>();
-    //String url = "";
     try {
       await _databaseRef.child("Listing").once().then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> map = snapshot.value;
         map.forEach((key, value) {
 
           double calculatedDistance = 0;
-          double long2 = value['longitude'];
-          double lati2 = value['latitude'];
-          print('lati2: $lati2');
-          print('long2: $long2');
           calculatedDistance = haversine(
               center.latitude, center.longitude, value['latitude'],
               value['longitude']);
           print('calculated: $calculatedDistance');
-          if (value['isRequest'] == true && calculatedDistance <= distance &&
+          if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance &&
               (category == value['category'] || category == '')) {
             //url = getImg("normalListings", snapshot.key).toString();
             Listing normalListing = new Listing(listingID: snapshot.key,
@@ -60,6 +45,7 @@ class DataHandler {
                 postDateTime: DateTime.parse(value['postDateTime']),
                 description: value['description'],
                 isRequest: value['isRequest'],
+                isComplete: value['isComplete'],
                 listingImage: value['listingImage'],
                 longitude: value['longitude'],
                 latitude: value['latitude']);
@@ -82,16 +68,14 @@ class DataHandler {
       await _databaseRef.child("Listing").once().then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> map = snapshot.value;
         map.forEach((key, value) {
-          //print('calculated: $calculatedDistance');
-          if (value['isRequest'] == true) {
-            //url = getImg("normalListings", snapshot.key).toString();
+          if (value['isRequest'] == false && value['isComplete'] == false) {
             Listing normalListing = new Listing(listingID: snapshot.key,
                 listingTitle: value['listingTitle'],
                 category: value['category'],
                 postDateTime: DateTime.parse(value['postDateTime']),
                 description: value['description'],
                 isRequest: value['isRequest'],
-                //listingImage: File(url),
+                isComplete: value['isComplete'],
                 listingImage: value['listingImage'],
                 longitude: value['longitude'],
                 latitude: value['latitude']);
@@ -122,41 +106,16 @@ class DataHandler {
       return R * c;
     }
   }
-  Future<String> getUserName(String uid) async{
-    try {
-      print(uid);
-      await _databaseRef.child("users").once().then((DataSnapshot snapshot) {
-        Map<dynamic, dynamic> map = snapshot.value;
-        map.forEach((key, value) {
-          if (value['userID'] == uid) {
-            //print(value['username']);
-            return value['username'];
-          }
-        });
-        return 'Cannot find user';
-      });
-      }catch(e) {
-        print(e);
-      }
-  }
 
-  Future<List<User>> getUserList() async{
-    List<User> userListing = new List<User>();
-    try {
-      await _databaseRef.child("users").once().then((DataSnapshot snapshot) {
-        Map<dynamic, dynamic> map = snapshot.value;
-        map.forEach((key, value) {
-          User user = new User(userID: snapshot.key,
-              //userID : value['userID'],
-              username: value['username']);
-          userListing.add(user);
-        });
-        return 'Cannot find user';
+
+  Future<List<String>> getUsernameList(List<Listing> list) async{
+    List<String> usernameList = new List<String>();
+    list.forEach((element) {
+      _databaseRef.child("users").child(element.userID).once().then((DataSnapshot snapshot) {
+        usernameList.add(snapshot.value['username']);
       });
-    }catch(e) {
-      print(e);
-    }
-    return userListing;
+    });
+    return usernameList;
   }
 
 }

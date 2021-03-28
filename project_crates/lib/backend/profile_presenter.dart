@@ -66,7 +66,7 @@ class ProfilePresenter{
       map.forEach((key, value) {
         if(value['userID'] == uid){
           Listing normalListing = new Listing(listingID: snapshot.key,listingTitle: value['listingTitle'],category: value['category']
-              ,postDateTime: DateTime.parse(value['postDateTime']),description: value['description'],isRequest: value['isRequest'],
+              ,postDateTime: DateTime.parse(value['postDateTime']),description: value['description'],isRequest: value['isRequest'],isComplete: value['isComplete'],
               listingImage: value['listingImage'],longitude: value['longitude'],latitude:value['latitude'] );
           userNormalListing.add(normalListing);
         }
@@ -83,7 +83,7 @@ class ProfilePresenter{
       map.forEach((key, value) {
         if(value['isRequest']== true && value['userID'] == uid){
           Listing normalListing = new Listing(listingID: snapshot.key,listingTitle: value['listingTitle'],category: value['category']
-              ,postDateTime: value['postDateTime'],description: value['description'],isRequest: value['isRequest'],
+              ,postDateTime: value['postDateTime'],description: value['description'],isRequest: value['isRequest'],isComplete: value['isComplete'],
               listingImage: value['listingImage'],longitude: value['longitude'],latitude:value['latitude'] );
           userRequestListing.add(normalListing);
         }

@@ -1,6 +1,7 @@
 //import 'dart:html';
 
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/Listing.dart';
@@ -30,6 +31,7 @@ class _NearbyState extends State<Nearby> {
   Position _locationData;
   bool _serviceEnabled;
   LocationPermission _permission;
+  bool _cardVisibility = false;
 
   GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
@@ -39,6 +41,7 @@ class _NearbyState extends State<Nearby> {
 
   Set<Marker> _markers = {};
   List<Listing> _listing;
+  List<String> _username;
   List<LatLng> _positions;
   static LatLng _center;
 
@@ -115,28 +118,27 @@ class _NearbyState extends State<Nearby> {
   Future<Set<Marker>> generateMarkersFeature() async {
     List<Marker> markers = <Marker>[];
     print('generating markers');
-    final icon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(10, 10)), 'assets/location_icon.png');
-    //List<User> userNames = await dataHandler.getUserList();
-
+    // final icon = await BitmapDescriptor.fromAssetImage(
+    //     ImageConfiguration(size: Size(10, 10)), 'assets/location_icon.png');
+    final Uint8List markerIcon = await mapHandler.getBytesFromAsset('assets/location_icon.png', 100);
+    // final marker = Marker(icon: BitmapDescriptor.fromBytes(markerIcon));
 
 
     for (int i=0; i<_listing.length; i++) {
       markerDistance = dataHandler.haversine(_listing[i].latitude, _listing[i].longitude, _center.latitude, _center.longitude);
-      dataHandler.getUserName(_listing[i].userID).then((value) => user);
 
       print(user);
 
       final marker = Marker(
           markerId: MarkerId(LatLng(_listing[i].latitude, _listing[i].longitude).toString()),
           position: LatLng(_listing[i].latitude, _listing[i].longitude),
-          icon: icon,
+          icon: BitmapDescriptor.fromBytes(markerIcon),
           onTap: () {
             String convertedDateTime = "${_listing[i].postDateTime.day.toString().padLeft(2,'0')}-${_listing[i].postDateTime.month.toString().padLeft(2,'0')}-${_listing[i].postDateTime.year.toString()}";
 
             setState(() {
               // ignore: unnecessary_statements
-              user;
+              user = _username[i];
               date = convertedDateTime;
               title = _listing[i].listingTitle;
               if(markerDistance >= 1) {
@@ -161,6 +163,8 @@ class _NearbyState extends State<Nearby> {
       _listing = await dataHandler.retrieveAllListing();
       _positions = mapHandler.getPositionFromListing(_listing);
       _markers = await mapHandler.generateMarkers(_positions);
+      _username = await dataHandler.getUsernameList(_listing);
+      print(_username);
       _updateMarkers();
     }
     else if (_permission == LocationPermission.always && _serviceEnabled == true) {
@@ -168,6 +172,7 @@ class _NearbyState extends State<Nearby> {
       _center = await mapHandler.getCurrentLocation();
       _goToMyLocation();
       _listing = await dataHandler.retrieveFilteredListing(distance, category, _center);
+      _username = await dataHandler.getUsernameList(_listing);
       if(_listing.isNotEmpty) {
         _positions = mapHandler.getPositionFromListing(_listing);
         _markers = await mapHandler.generateMarkers(_positions);
@@ -287,7 +292,7 @@ class _NearbyState extends State<Nearby> {
                                         children: [
                                           Icon(Icons.person),
                                           SizedBox(width:5),
-                                          Text('HoneyBee',
+                                          Text(user,
                                               style: TextStyle(
                                                 color: Colors.grey[800],
                                                 fontWeight: FontWeight.bold,

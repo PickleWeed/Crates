@@ -1,8 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-//import 'package:location/location.dart' as LocationManager;
+import 'dart:ui' as ui;
 import 'package:flutter_application_1/models/Listing.dart';
 
 class MapHandler {
@@ -16,21 +19,6 @@ class MapHandler {
     return _center;
   }
 
-  //TODO same as above, nv use
-  /*Future<LatLng> getUserLocation() async {
-    LocationManager.LocationData currentLocation;
-    final location = LocationManager.Location();
-    try {
-      currentLocation = await location.getLocation();
-      final lat = currentLocation.latitude;
-      final lng = currentLocation.longitude;
-      final center = LatLng(lat, lng);
-      return center;
-    } on Exception {
-      currentLocation = null;
-      return null;
-    }
-  }*/
 
   void getAddressFromLatLng() async {
     try {
@@ -46,30 +34,7 @@ class MapHandler {
       print(e);
     }
   }
-  // TODO Useless
-  Future<double> getLatitudeDouble() async {
-    final geoposition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    return geoposition.latitude;
-  }
-  // TODO Useless
-  Future<double> getLongitudeDouble() async {
-    final geoposition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    return geoposition.longitude;
-  }
-  //TODO to be removed
-  createMarker(context, customIcon1) {
-    if (customIcon1 == null) {
-      ImageConfiguration configuration = createLocalImageConfiguration(context);
-      BitmapDescriptor.fromAssetImage(configuration, 'assets/location_icon.png')
-          .then((icon) {
-        customIcon1 = icon;
-      });
-      print('Found Image');
-    }
-    else {
-      print('cannot find customIcon');
-    }
-  }
+
   Future<Set<Marker>> generateMarkers(List<LatLng> positions) async {
     List<Marker> markers = <Marker>[];
     print('generating markers');
@@ -92,6 +57,12 @@ class MapHandler {
     }
     print('output markers');
     return markers.toSet();
+  }
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png)).buffer.asUint8List();
   }
   //get position latitude & longitude for markers
   List<LatLng> getPositionFromListing(List<Listing> listing){
