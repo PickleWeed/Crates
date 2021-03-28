@@ -39,6 +39,8 @@ dependencies:
   #location: ^3.0.0
   vector_math:
   fluttertoast: ^8.0.3
+  tflite:
+  meta:
 
 dev_dependencies:
   flutter_test:
@@ -59,6 +61,8 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/labels_mobilenet_quant_v1_224.txt
+    - assets/mobilenet_v1_1.0_224_quant.tflite
   #  - images/google_logo.png
   #   - images/a_dot_ham.jpeg
 
