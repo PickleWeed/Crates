@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projectcrates/activity.dart';
 import 'package:projectcrates/pages/reportpage.dart';
 
+//TODO need to know completed reports to display in what format, chat or listing format
 Widget completedreports() {
   int chat = 1;
   return ListView.builder(
@@ -11,7 +12,7 @@ Widget completedreports() {
       final item = hello[index];
       return Card(
           child: ListTile(
-        leading: FlutterLogo(), //  TODO leave as flutter?
+        leading: FlutterLogo(), //  TODO change or remove leading
         onTap: () {
           if (chat == 1)
             Navigator.push(context,
@@ -31,6 +32,7 @@ Widget completedreports() {
   );
 }
 
+//TODO pass in parameters respectively, etc details
 Widget reportListingCompleted(BuildContext context) {
   //pass in respective parameters?
   String listingname, listedby, reporttitle, reportby, reporton;
@@ -137,6 +139,7 @@ Widget reportListingCompleted(BuildContext context) {
   );
 }
 
+//TODO pass in parameters respectively, etc details
 Widget reportChatCompleted(BuildContext context) {
   //pass in respective parameters?
   String listingname, listedby, user1, user2, reporttitle, reportby, reporton;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:projectcrates/helpers/navigationbar.dart';
+import 'package:projectcrates/helpers/moderatornavigationbar.dart';
 import 'package:projectcrates/pages/chatpage.dart';
 import 'package:projectcrates/pages/notificationpage.dart';
 import 'package:projectcrates/activity.dart';
@@ -56,7 +56,6 @@ class _ReportState extends State<ReportState> {
               tabs: myTab,
               isScrollable: false,
               indicatorWeight: 3.0,
-              //TODO OnTap Function
             ),
             automaticallyImplyLeading: false,
             toolbarHeight: 60,
@@ -89,14 +88,17 @@ Widget reportHeader(BuildContext context) {
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     mainAxisSize: MainAxisSize.max,
     children: [
-      Align(
-        alignment: Alignment.centerLeft,
-        child: TextButton(
-          onPressed: () {
-            showSearch(context: context, delegate: CustomSearchDelegate());
-          },
-          child: Text('Search'),
-        ), //change to search later
+      Icon(Icons.search),
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton(
+            onPressed: () {
+              showSearch(context: context, delegate: CustomSearchDelegate());
+            },
+            child: Text('Search'),
+          ), //change to search later
+        ),
       ),
       Align(
           alignment: Alignment.centerRight,
@@ -106,7 +108,7 @@ Widget reportHeader(BuildContext context) {
                 icon: Icon(Icons.sort),
                 label: Text('Sort'),
                 onPressed: () {
-                  nums.sort();
+                  nums.sort(); //TODO need to change sorting later
                 },
               )))
     ],
@@ -149,7 +151,6 @@ class ReportChat extends StatelessWidget {
         ),
         bottomNavigationBar: ModeratorNavigationBar(1),
         body: reportChatFormat(context));
-    // body: Body());
   }
 }
 
@@ -169,7 +170,6 @@ class CompletedListingReport extends StatelessWidget {
         ),
         bottomNavigationBar: ModeratorNavigationBar(1),
         body: reportListingCompleted(context));
-    // body: Body());
   }
 }
 
@@ -190,6 +190,5 @@ class CompletedChatReport extends StatelessWidget {
         ),
         bottomNavigationBar: ModeratorNavigationBar(1),
         body: reportChatCompleted(context));
-    // body: Body());
   }
 }

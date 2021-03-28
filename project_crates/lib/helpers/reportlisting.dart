@@ -4,7 +4,7 @@ import 'package:projectcrates/helpers/items.dart';
 import 'package:projectcrates/pages/reportpage.dart';
 
 Widget reportListingFormat(BuildContext context) {
-  //pass in respective parameters?
+  //TODO need to pass in respective parameters
   String listingname, listedby, reporttitle, reportby, reporton;
   return SingleChildScrollView(
     child: Container(
@@ -31,7 +31,8 @@ Widget reportListingFormat(BuildContext context) {
                   child: Icon(Icons.favorite,
                       color: Colors.pink,
                       size: 24.0,
-                      semanticLabel: 'HERE COMES THE PARTY!'),
+                      semanticLabel:
+                          'HERE COMES THE PARTY!'), // TODO change to image assert
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -40,24 +41,22 @@ Widget reportListingFormat(BuildContext context) {
                       width: 200.0,
                       height: 30.0,
                       alignment: Alignment.centerLeft,
-                      child: Text.rich(TextSpan(
-                          text: 'Listing ID:',
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: listingname,
-                                style: TextStyle(fontWeight: FontWeight.bold))
-                          ])),
+                      child: Text.rich(
+                          TextSpan(text: 'Listing ID:', children: <TextSpan>[
+                        TextSpan(
+                            text: listingname, //TODO parameter for listing name
+                            style: TextStyle(fontWeight: FontWeight.bold))
+                      ])),
                     ),
                     Container(
                       width: 200.0,
                       alignment: Alignment.centerLeft,
-                      child: Text.rich(TextSpan(
-                          text: 'Listed by: ',
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: listedby,
-                                style: TextStyle(fontWeight: FontWeight.bold))
-                          ])),
+                      child: Text.rich(
+                          TextSpan(text: 'Listed by: ', children: <TextSpan>[
+                        TextSpan(
+                            text: listedby, //TODO parameter for listed by
+                            style: TextStyle(fontWeight: FontWeight.bold))
+                      ])),
                     )
                   ],
                 ),
@@ -93,7 +92,8 @@ Widget reportListingFormat(BuildContext context) {
                       TextSpan(
                           text: reporton,
                           style: TextStyle(fontWeight: FontWeight.bold))
-                    ]))), //date of report +TODO text replacement for gg
+                    ]))), //date of report +
+            //TODO text replacement for gg
             Container(
                 margin: const EdgeInsets.only(left: 23.0, top: 10.0),
                 alignment: Alignment.centerLeft,
@@ -102,7 +102,7 @@ Widget reportListingFormat(BuildContext context) {
             Container(
                 margin: const EdgeInsets.only(left: 23.0, top: 10.0),
                 alignment: Alignment.centerLeft,
-                child: Text('Descriptions')),
+                child: Text('Descriptions')), //TODO descriptions T.T
 
             Expanded(
               child: Align(
@@ -128,7 +128,7 @@ Widget reportListingFormat(BuildContext context) {
   );
 }
 
-String gg = 'you are a bitch';
+String gg = 'you are a bitch'; // TODO for me to delete soon!
 
 Widget chooseActions(BuildContext context) {
   return TextButton(
@@ -374,7 +374,8 @@ Widget listofreports() {
               MaterialPageRoute(builder: (context) => ReportListing()));
         },
         title: item.buildTitle(context),
-        subtitle: item.buildSubtitle(context),
+        subtitle: item.buildSubtitle(
+            context), //TODO I build using the class notif, see above
         trailing: Icon(Icons.keyboard_arrow_right),
         isThreeLine: true,
       ));

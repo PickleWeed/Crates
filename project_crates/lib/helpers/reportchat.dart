@@ -3,6 +3,7 @@ import 'package:projectcrates/helpers/reportlisting.dart';
 import 'package:projectcrates/activity.dart';
 import 'package:projectcrates/pages/reportpage.dart';
 
+//TODO pass in parameters respectively, etc details
 Widget reportChatFormat(BuildContext context) {
   //pass in respective parameters?
   String listingname, listedby, user1, user2, reporttitle, reportby, reporton;
@@ -144,6 +145,7 @@ Widget reportChatFormat(BuildContext context) {
   );
 }
 
+//TODO pass in parameters respectively, etc details
 Widget chooseChatActions(BuildContext context) {
   return TextButton(
       style: TextButton.styleFrom(
@@ -211,7 +213,7 @@ class _ChatRestrictedCheckBoxState extends State<ChatRestrictedCheckBox> {
         setState(() {
           _isSelected = newValue;
           deleted = true;
-          return deleted;
+          return deleted; //TODO this one return what vlaue to database
         });
       },
     );
@@ -226,7 +228,7 @@ Widget listofreportedchats() {
       final item = hello[index];
       return Card(
           child: ListTile(
-        leading: FlutterLogo(), //  TODO leave as flutter?
+        leading: FlutterLogo(), //  TODO to be removed later
         onTap: () {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => ReportChat()));

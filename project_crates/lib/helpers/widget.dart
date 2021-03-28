@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:projectcrates/helpers/items.dart';
 import 'theme.dart';
 
 // Custom button for login/register pages
@@ -108,6 +109,7 @@ class ListingCard extends StatelessWidget {
                     ),
                     SizedBox(width: 6),
                     Text(owner),
+                    reportbuttonforlisting(context)
                   ],
                 ),
               ]),
