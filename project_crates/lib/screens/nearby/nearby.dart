@@ -32,6 +32,7 @@ class _NearbyState extends State<Nearby> {
   bool _serviceEnabled;
   LocationPermission _permission;
   bool _cardVisibility = false;
+  bool dataLoadingStatus = false;
 
   GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
@@ -145,6 +146,10 @@ class _NearbyState extends State<Nearby> {
 
 
   void _runSystem()  async{
+    setState(() {
+      _center = LatLng(1.3521, 103.8198);
+      dataLoadingStatus = true;
+    });
     await _checkLocationPermission(); //get GPS permission
     if (_permission == LocationPermission.denied || !_serviceEnabled) {
       _listing = await dataHandler.retrieveAllListing();
@@ -154,11 +159,15 @@ class _NearbyState extends State<Nearby> {
       print(_username);
       setState(() {
         _markers = _markers;
+        dataLoadingStatus = false;
       });
     }
     else if (_permission == LocationPermission.always && _serviceEnabled == true) {
       print('go to my location');
       _center = await mapHandler.getCurrentLocation();
+      setState(() {
+        dataLoadingStatus = false;
+      });
       _goToMyLocation();
       _listing = await dataHandler.retrieveFilteredListing(distance, category, _center);
       _username = await dataHandler.getUsernameList(_listing);
@@ -182,7 +191,7 @@ class _NearbyState extends State<Nearby> {
     //mapHandler.createMarker(context, customIcon1);
     return Scaffold(
         backgroundColor: offWhite,
-        body: Stack(
+        body: dataLoadingStatus == false ? Stack(
             children: <Widget>[
               GoogleMap(
                 onMapCreated: (GoogleMapController controller) async {
@@ -191,7 +200,7 @@ class _NearbyState extends State<Nearby> {
                 myLocationEnabled: _serviceEnabled,
                 myLocationButtonEnabled: _serviceEnabled,
                 initialCameraPosition: CameraPosition(
-                target: _center = LatLng(1.3521, 103.8198), //initial default camera position
+                target: _center , //initial default camera position
                 zoom: 13.0,
                 ),
                 markers: _markers,
@@ -306,7 +315,7 @@ class _NearbyState extends State<Nearby> {
                 ],
               ),
             ]
-        )
+        ):Center(child: CircularProgressIndicator())
     );
   }
 }
