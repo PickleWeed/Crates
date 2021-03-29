@@ -1,30 +1,40 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/backend/profile_presenter.dart';
 import 'package:flutter_application_1/models/user.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/backend/home_presenter.dart';
-import 'package:flutter_application_1/backend/profile_presenter.dart';
+import 'category_page.dart';
 
-class CategoryPage extends StatefulWidget {
-
-  CategoryPage (this.categoryName);
-  final String categoryName;
+class Home extends StatefulWidget {
+  //Signed Out
+  //Home({this.onSignedOut});
+  //final VoidCallback onSignedOut;
 
   @override
-  _CategoryPageState createState() =>  _CategoryPageState();
+  _HomeState createState() => _HomeState();
 }
 
-class _CategoryPageState extends State<CategoryPage> {
+class _HomeState extends State<Home> {
 
-  String category;
+  String category = '';
   User userDetail;
   List<Listing> listings;
   List<User> userDetailList = [];
   bool dataLoadingStatus = false;
+  List<Listing> reversedList;
 
+  //Sign Out: onPressed: _signOut
+/*  void _signOut() async {
+    try {
+      await signOut();
+      widget.onSignedOut();
+    }catch(e){
+      print(e);
+    }
+  }*/
 
   @override
   void initState() {
@@ -35,21 +45,20 @@ class _CategoryPageState extends State<CategoryPage> {
   loadData() async{
     setState(() {
       dataLoadingStatus = true;
-      category = widget.categoryName;
     });
     listings = await ListingData().getListings(category);
-    for (int i=0; i< listings.length;i++) {
-      userDetail = await ProfilePresenter().retrieveUserProfile(listings[i].userID);
+    reversedList = listings.reversed.toList();
+    for (int i=0;i<4;i++) {
+      userDetail = await ProfilePresenter().retrieveUserProfile(reversedList[i].userID);
       userDetailList.add(userDetail);
     }
     setState(() {
-      listings = listings;
+      listings = reversedList;
       userDetailList = userDetailList;
       dataLoadingStatus = false;
     });
 
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +70,7 @@ class _CategoryPageState extends State<CategoryPage> {
               SizedBox(height: 50),
               Padding(
                 padding: EdgeInsets.fromLTRB(25,0,0,10),
-                child: Text(category,
+                child: Text('Categories',
                     style: TextStyle(
                       color: Colors.grey[800],
                       fontWeight: FontWeight.bold,
@@ -69,8 +78,19 @@ class _CategoryPageState extends State<CategoryPage> {
                     )
                 ),
               ),
+              CategoryList(context),
               SizedBox(height:15),
-              CategoryList(userDetailList, listings),
+              Padding(
+                padding: EdgeInsets.fromLTRB(25,0,0,10),
+                child: Text('Lastest',
+                    style: TextStyle(
+                      color: Colors.grey[800],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    )
+                ),
+              ),
+              LastestList(userDetailList, listings),
               SizedBox(height:30),
             ]):Center(child: CircularProgressIndicator())
     );
@@ -158,7 +178,186 @@ Widget topCard(){
 
 }
 
-Widget CategoryList(List<User> userDetailList, List<Listing> listings) {
+Widget CategoryList(context){
+  return SizedBox(
+      height:140,
+      child: ListView(
+        // This next line does the trick.
+        scrollDirection: Axis.horizontal,
+        children: <Widget>[
+          Container(
+              height:140.0,
+              width: 140.0,
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('All Categories')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('All',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                  image: AssetImage('assets/icons/groceries.png')
+                              ),
+                            )
+                          ]
+                      )
+                  )
+              )),
+          Container(
+              height:140.0,
+              width: 140.0,
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Vegetables')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('Vegetables',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                  image: AssetImage('assets/icons/broccoli.png')
+                              ),
+                            )
+                          ]
+                      )
+                  )
+              )),
+          Container(
+              height:140.0,
+              width: 140.0,
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Canned Food')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('Canned Food',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                  image: AssetImage('assets/icons/cream.png')
+                              ),
+                            )
+                          ]
+                      )
+                  )
+              )),
+          Container(
+              height:140.0,
+              width: 140.0,
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Snacks')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('Snacks',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                //TODO: Change icon
+                                  image: AssetImage('assets/icons/cream.png')
+                              ),
+                            )
+                          ]
+                      )
+                  )
+              )),
+          Container(
+              height:140.0,
+              width: 140.0,
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Beverages')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('Beverages',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                //TODO: Change icon
+                                  image: AssetImage('assets/icons/cream.png')
+                              ),
+                            )
+                          ]
+                      )
+                  )
+              )),
+        ],
+      )
+  );
+}
+
+Widget LastestList(List<User> userDetailList,List<Listing> listings){
 
   List<CustomListingCard> listing_list = [];
 
@@ -166,22 +365,22 @@ Widget CategoryList(List<User> userDetailList, List<Listing> listings) {
   if(listings.isEmpty){
     print('empty');
   }
-
-  for(int i=0; i< listings.length;i++){
+  // Get First 4 Newest Listings only
+  for(int i=0;i<4;i++){
     listing_list.add(CustomListingCard(title: listings[i].listingTitle, owner: userDetailList[i].username, listingImg: listings[i].listingImage, ownerImg: userDetailList[i].imagePath));
   }
 
-  //TODO: Merge with view a listing page
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: GridView.count(
-        shrinkWrap : true,
-        physics: NeverScrollableScrollPhysics(),
-        crossAxisCount: 2 ,
-        scrollDirection: Axis.vertical,
-        children: List.generate(listing_list.length,(index){
-          return listing_list[index];
-        })
+      shrinkWrap : true,
+      physics: NeverScrollableScrollPhysics(),
+      crossAxisCount: 2 ,
+      scrollDirection: Axis.vertical,
+      children: List.generate(listing_list.length,(index){
+        return listing_list[index];
+      }),
     ),
   );
 }
+
