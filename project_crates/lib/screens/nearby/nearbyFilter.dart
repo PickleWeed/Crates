@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/MapFilter.dart';
+import 'package:flutter_application_1/screens/nearby/nearby_MapHandler.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
 
@@ -8,13 +13,17 @@ class NearbyFilter extends StatefulWidget {
 }
 
 class _NearbyFilterState extends State<NearbyFilter> {
-  GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
+  // GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
+  MapHandler _mapHandler = new MapHandler();
+  Prediction _prediction;
 
   // distance slider
   double _currentSliderValue = 20;
 
   // category dropdown
   String _currentCat;
+
+  LatLng _currentLocation;
   final List<String> _categories = <String>["All", "Vegetables", "Canned Foods", "Dairy Products"];
 
   @override
@@ -26,21 +35,52 @@ class _NearbyFilterState extends State<NearbyFilter> {
   Future<bool> _onBackPressed() {
     Navigator.pop(context);
   }
+  var searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: _onBackPressed,
-        child: Scaffold(
-        key: _globalKey,
-        drawer: MenuDrawer(),
+    return  Scaffold(
         backgroundColor: offWhite,
         body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                topCard(_globalKey),
+                Container(
+                  width: double.infinity,
+                  height: 100,
+                  child: Card(
+                      margin: EdgeInsets.zero,
+                      color: primaryColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.zero,
+                            topRight: Radius.zero,
+                            bottomLeft: Radius.circular(50),
+                            bottomRight: Radius.circular(50),
+                          )
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height:52),
+                          Center(
+                            child: Text(
+                              "Filter",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                letterSpacing: 2,
+                                color: offWhite,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                  ),
+                ),
                 SizedBox(height:50),
+                ///Location
                 Padding(
                   padding: EdgeInsets.fromLTRB(25,0,0,0),
                   child: Text('location',
@@ -54,6 +94,21 @@ class _NearbyFilterState extends State<NearbyFilter> {
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: TextField(
+                      onTap: ()async{
+                        _prediction = await PlacesAutocomplete.show(
+                            context: context,
+                            apiKey: _mapHandler.LocationAPIkey,
+                            mode: Mode.overlay, // Mode.fullscreen
+                            language: "en");
+                        LatLng _selected = await _mapHandler.getLatLng(_prediction);
+
+                       setState(() {
+                         _currentLocation = _selected;
+                         searchController.text = _prediction.description;
+                       });
+
+                      },
+                      controller: searchController,
                       decoration: InputDecoration(
                           focusedBorder :OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white, width: 1.0),
@@ -69,7 +124,8 @@ class _NearbyFilterState extends State<NearbyFilter> {
                           ),
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: 'search')),
+                          hintText: 'search')
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(25,0,0,10),
@@ -86,7 +142,7 @@ class _NearbyFilterState extends State<NearbyFilter> {
                   child: Slider(
                     value: _currentSliderValue,
                     min: 0,
-                    max: 40,
+                    max: 20,
                     divisions: 100,
                     label: _currentSliderValue.toStringAsFixed(1),
                     onChanged: (double value) {
@@ -142,12 +198,14 @@ class _NearbyFilterState extends State<NearbyFilter> {
                     ),
                   )
                 ),
+                ///Filter button
                 Padding(
                   padding: const EdgeInsets.fromLTRB(120,50,120,0),
                   child: CustomButton(
                     btnText: 'Filter',
                     btnPressed: (){
-                      Navigator.of(context).pop({"distance":_currentSliderValue,"category":_currentCat});
+                      Navigator.pop(context,MapFilter(distance: _currentSliderValue, category: _currentCat,center: _currentLocation));
+                      print(_currentLocation);
                     }
                   ),
                 )
@@ -156,10 +214,10 @@ class _NearbyFilterState extends State<NearbyFilter> {
             )
         )
 
-    ));
+    );
   }
 }
-
+///remove putting menu drawer bar suddenly is abit inconsistent for UI
 Widget topCard(_globalKey){
   return Stack(
       clipBehavior: Clip.none,

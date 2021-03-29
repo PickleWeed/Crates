@@ -1,14 +1,8 @@
-import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
-import 'package:flutter_application_1/models/user.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vector_math/vector_math.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
 import '../models/Listing.dart';
 
 class DataHandler {
@@ -26,34 +20,65 @@ class DataHandler {
   Future<List<Listing>> retrieveFilteredListing(double distance, String category, LatLng center) async {
     List<Listing> userNormalListing = new List<Listing>();
     try {
-      await _databaseRef.child("Listing").once().then((DataSnapshot snapshot) {
-        Map<dynamic, dynamic> map = snapshot.value;
-        map.forEach((key, value) {
+      if(category == "All" || category ==''){
+        await _databaseRef.child("Listing").once().then((DataSnapshot snapshot) {
+          Map<dynamic, dynamic> map = snapshot.value;
+          map.forEach((key, value) {
 
-          double calculatedDistance = 0;
-          calculatedDistance = haversine(
-              center.latitude, center.longitude, value['latitude'],
-              value['longitude']);
-          print('calculated: $calculatedDistance');
-          if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance &&
-              (category == value['category'] || category == '')) {
-            //url = getImg("normalListings", snapshot.key).toString();
-            Listing normalListing = new Listing(listingID: snapshot.key,
-                userID : value['userID'],
-                listingTitle: value['listingTitle'],
-                category: value['category'],
-                postDateTime: DateTime.parse(value['postDateTime']),
-                description: value['description'],
-                isRequest: value['isRequest'],
-                isComplete: value['isComplete'],
-                listingImage: value['listingImage'],
-                longitude: value['longitude'],
-                latitude: value['latitude']);
-            userNormalListing.add(normalListing);
-            print(userNormalListing.length);
-          }
+            double calculatedDistance = 0;
+            calculatedDistance = haversine(
+                center.latitude, center.longitude, value['latitude'],
+                value['longitude']);
+            print('calculated: $calculatedDistance');
+            if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance) {
+              //url = getImg("normalListings", snapshot.key).toString();
+              Listing normalListing = new Listing(listingID: snapshot.key,
+                  userID : value['userID'],
+                  listingTitle: value['listingTitle'],
+                  category: value['category'],
+                  postDateTime: DateTime.parse(value['postDateTime']),
+                  description: value['description'],
+                  isRequest: value['isRequest'],
+                  isComplete: value['isComplete'],
+                  listingImage: value['listingImage'],
+                  longitude: value['longitude'],
+                  latitude: value['latitude']);
+              userNormalListing.add(normalListing);
+              print(userNormalListing.length);
+            }
+          });
         });
-      });
+      }else{
+        await _databaseRef.child("Listing").once().then((DataSnapshot snapshot) {
+          Map<dynamic, dynamic> map = snapshot.value;
+          map.forEach((key, value) {
+
+            double calculatedDistance = 0;
+            calculatedDistance = haversine(
+                center.latitude, center.longitude, value['latitude'],
+                value['longitude']);
+            print('calculated: $calculatedDistance');
+            if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance &&
+                (category == value['category'])) {
+              //url = getImg("normalListings", snapshot.key).toString();
+              Listing normalListing = new Listing(listingID: snapshot.key,
+                  userID : value['userID'],
+                  listingTitle: value['listingTitle'],
+                  category: value['category'],
+                  postDateTime: DateTime.parse(value['postDateTime']),
+                  description: value['description'],
+                  isRequest: value['isRequest'],
+                  isComplete: value['isComplete'],
+                  listingImage: value['listingImage'],
+                  longitude: value['longitude'],
+                  latitude: value['latitude']);
+              userNormalListing.add(normalListing);
+              print(userNormalListing.length);
+            }
+          });
+        });
+
+      }
     } catch (e){
       print(e);
     }
@@ -107,7 +132,7 @@ class DataHandler {
     }
   }
 
-
+  ///Get username of the listing owner
   Future<List<String>> getUsernameList(List<Listing> list) async{
     List<String> usernameList = new List<String>();
     list.forEach((element) {

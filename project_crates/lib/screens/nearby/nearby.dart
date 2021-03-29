@@ -1,19 +1,13 @@
-//import 'dart:html';
-
 import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/Listing.dart';
-import 'package:flutter_application_1/models/user.dart';
+import 'package:flutter_application_1/models/MapFilter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'nearby_MapHandler.dart';
 import '../../backend/map_DatabaseHandler.dart';
 import 'nearbyFilter.dart';
-
-//import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart';
-import '../common/widgets.dart';
 import '../common/theme.dart';
 
 
@@ -32,7 +26,9 @@ class _NearbyState extends State<Nearby> {
   bool _serviceEnabled;
   LocationPermission _permission;
   bool _cardVisibility = false;
+  bool _filterMode = false;
   bool dataLoadingStatus = false;
+  MapFilter _mapFilter;
 
   GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
@@ -56,21 +52,8 @@ class _NearbyState extends State<Nearby> {
     // TODO: implement initState
     super.initState();
     _runSystem();
-    //Provider.of<ListingListViewModel>(context, listen: false).fetchListings();
 
   }
-
-  static final CameraPosition _kLake = CameraPosition(
-      target: _center,
-      zoom : 15);
-
-
-  Future<void> _goToMyLocation() async {
-    final GoogleMapController controller = await _controller.future;
-    print('my location: $_center');
-    controller.moveCamera(CameraUpdate.newCameraPosition(_kLake));
-  }
-
    Future<void> _checkLocationPermission() async {
       _serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if(!_serviceEnabled){
@@ -88,13 +71,7 @@ class _NearbyState extends State<Nearby> {
       print('got permission');
       _locationData = await Geolocator.getCurrentPosition();
   }
-  void _getMyLocation(){
-    Future.delayed(Duration(milliseconds: 1000), () {
-      mapHandler.getCurrentLocation().then((value) => setState(() {
-        _center = value;
-      }));
-    });
-  }
+
 
 
   String title ='';
@@ -102,33 +79,28 @@ class _NearbyState extends State<Nearby> {
   double markerDistance;
   String date = '';
   String user = '';
+  String imageUrl;
 
   Future<Set<Marker>> generateMarkersFeature() async {
     List<Marker> markers = <Marker>[];
     print('generating markers');
-    // final icon = await BitmapDescriptor.fromAssetImage(
-    //     ImageConfiguration(size: Size(10, 10)), 'assets/location_icon.png');
     final Uint8List markerIcon = await mapHandler.getBytesFromAsset('assets/location_icon.png', 100);
-    // final marker = Marker(icon: BitmapDescriptor.fromBytes(markerIcon));
-
-
     for (int i=0; i<_listing.length; i++) {
-      markerDistance = dataHandler.haversine(_listing[i].latitude, _listing[i].longitude, _center.latitude, _center.longitude);
-
       print(user);
-
       final marker = Marker(
           markerId: MarkerId(LatLng(_listing[i].latitude, _listing[i].longitude).toString()),
           position: LatLng(_listing[i].latitude, _listing[i].longitude),
           icon: BitmapDescriptor.fromBytes(markerIcon),
           onTap: () {
+            markerDistance = dataHandler.haversine(_listing[i].latitude, _listing[i].longitude, _center.latitude, _center.longitude);
             String convertedDateTime = "${_listing[i].postDateTime.day.toString().padLeft(2,'0')}-${_listing[i].postDateTime.month.toString().padLeft(2,'0')}-${_listing[i].postDateTime.year.toString()}";
-
             setState(() {
+              _cardVisibility = true;
               // ignore: unnecessary_statements
               user = _username[i];
               date = convertedDateTime;
               title = _listing[i].listingTitle;
+              imageUrl = _listing[i].listingImage;
               if(markerDistance >= 1) {
                 textDistance = markerDistance.toStringAsFixed(2)+'km';
               }
@@ -147,42 +119,66 @@ class _NearbyState extends State<Nearby> {
 
   void _runSystem()  async{
     setState(() {
-      _center = LatLng(1.3521, 103.8198);
-      dataLoadingStatus = true;
+       dataLoadingStatus = true;
+      _markers = {};
+      _cardVisibility = false;
     });
-    await _checkLocationPermission(); //get GPS permission
-    if (_permission == LocationPermission.denied || !_serviceEnabled) {
-      _listing = await dataHandler.retrieveAllListing();
-      _positions = mapHandler.getPositionFromListing(_listing);
-      _markers = await mapHandler.generateMarkers(_positions);
-      _username = await dataHandler.getUsernameList(_listing);
-      print(_username);
+    if(_filterMode == false){
+      await _checkLocationPermission(); //get GPS permission
+      if (_permission == LocationPermission.denied || !_serviceEnabled) {
+        _listing = await dataHandler.retrieveAllListing();
+        _positions = mapHandler.getPositionFromListing(_listing);
+        _markers = await mapHandler.generateMarkers(_positions);
+        _username = await dataHandler.getUsernameList(_listing);
+        print(_username);
+        setState(() {
+          _markers = _markers;
+          dataLoadingStatus = false;
+        });
+      }
+      else if (_permission == LocationPermission.always && _serviceEnabled == true) {
+        print('go to my location');
+        _center = await mapHandler.getCurrentLocation();
+        setState(() {
+          dataLoadingStatus = false;
+        });
+        mapHandler.goToMyLocation(_controller, _center);
+        _listing = await dataHandler.retrieveFilteredListing(distance, category, _center);
+        _username = await dataHandler.getUsernameList(_listing);
+        if(_listing.isNotEmpty) {
+          _positions = mapHandler.getPositionFromListing(_listing);
+          _markers = await generateMarkersFeature();
+          setState(() {
+            _markers = _markers;
+          });
+        } else
+          print('listing is empty!');
+      }
+    }else if(_filterMode == true){
+      if(_mapFilter.center == null){
+        _center = await mapHandler.getCurrentLocation();
+      }else{
+        setState(() {
+          _center = _mapFilter.center;
+        });
+      }
       setState(() {
-        _markers = _markers;
         dataLoadingStatus = false;
       });
-    }
-    else if (_permission == LocationPermission.always && _serviceEnabled == true) {
-      print('go to my location');
-      _center = await mapHandler.getCurrentLocation();
-      setState(() {
-        dataLoadingStatus = false;
-      });
-      _goToMyLocation();
-      _listing = await dataHandler.retrieveFilteredListing(distance, category, _center);
+      mapHandler.goToMyLocation(_controller, _center);
+      _listing = await dataHandler.retrieveFilteredListing(_mapFilter.distance, _mapFilter.category, _center);
       _username = await dataHandler.getUsernameList(_listing);
       if(_listing.isNotEmpty) {
         _positions = mapHandler.getPositionFromListing(_listing);
-        //_markers = await mapHandler.generateMarkers(_positions);
         _markers = await generateMarkersFeature();
         setState(() {
           _markers = _markers;
         });
       }
-      else
-        print('listing is empty!');
+
     }
   }
+
 
 
   @override
@@ -191,7 +187,7 @@ class _NearbyState extends State<Nearby> {
     //mapHandler.createMarker(context, customIcon1);
     return Scaffold(
         backgroundColor: offWhite,
-        body: dataLoadingStatus == false ? Stack(
+        body: dataLoadingStatus == false ?Stack(
             children: <Widget>[
               GoogleMap(
                 onMapCreated: (GoogleMapController controller) async {
@@ -214,16 +210,21 @@ class _NearbyState extends State<Nearby> {
                       icon: Icon(Icons.filter_alt),
                       iconSize: 30,
                       //TODO: filter button pressed
-                      onPressed: (){
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => NearbyFilter())
-                        );
+                      onPressed: () async {
+                        _mapFilter = await Navigator.push(context, MaterialPageRoute(builder: (context) => NearbyFilter()));
+                        if(_mapFilter != null){
+                          setState(() {
+                            _filterMode = true;
+                            _runSystem();
+                            print(_filterMode);
+                          });
+                        }
                       },
                     ),
                   ),
                 ],
               ),
+              _cardVisibility == true?
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -240,9 +241,12 @@ class _NearbyState extends State<Nearby> {
                                 padding: const EdgeInsets.all(15.0),
                                 child: AspectRatio(
                                   aspectRatio: 1/1,
-                                  child: Image.asset(
-                                    'assets/coffee.jpg',
-                                    fit: BoxFit.fill,
+                                  child:  Image.network(
+                                    imageUrl,
+                                    fit:BoxFit.fitWidth,
+                                    alignment: Alignment.center,
+                                    height:150,
+                                    width: MediaQuery.of(context).size.width,
                                   ),
                                 ),
                               ),
@@ -313,7 +317,7 @@ class _NearbyState extends State<Nearby> {
                     ),
                   ),
                 ],
-              ),
+              ):Column(),
             ]
         ):Center(child: CircularProgressIndicator())
     );

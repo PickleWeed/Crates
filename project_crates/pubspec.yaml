@@ -24,6 +24,8 @@ dependencies:
   flutter:
     sdk: flutter
   google_maps_flutter:
+  google_maps_webservice:
+  flutter_google_places:
   firebase_auth: ^0.14.0+5
   google_sign_in: ^4.4.4
   firebase_database:

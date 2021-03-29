@@ -82,7 +82,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             crossAxisCount: 2 ,
                             scrollDirection: Axis.vertical,
                             children: List.generate(userListings.length,(index){
-                              return CustomListingCard(title: userListings[index].listingTitle, owner: userDetails.username, listingImg: userListings[index].listingImage, ownerImg:userDetails.imagePath);
+                              return CustomListingCard(title: userListings[index].listingTitle, owner: userDetails.username,
+                                  listingImg: userListings[index].listingImage,
+                                  ownerImg:userDetails.imagePath);
                             }),
                           ),
                         ),
