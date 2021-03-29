@@ -17,7 +17,7 @@ class ListingData{
       await _databaseRef.child("Listing").once().then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> map = snapshot.value;
         map.forEach((key, value) {
-          if (value['isRequest'] == false && value['isComplete'] == false &&
+          if (value['isComplete'] == false &&
               (category == value['category'] || noCategory)) {
             //url = getImg("normalListings", snapshot.key).toString();
             Listing normalListing = new Listing(listingID: snapshot.key,
@@ -40,5 +40,15 @@ class ListingData{
       print(e);
     }
     return userNormalListing;
+  }
+
+  Future<List<String>> getUsernameList(List<Listing> list) async{
+    List<String> usernameList = new List<String>();
+    list.forEach((element) {
+      _databaseRef.child("users").child(element.userID).once().then((DataSnapshot snapshot) {
+        usernameList.add(snapshot.value['username']);
+      });
+    });
+    return usernameList;
   }
 }

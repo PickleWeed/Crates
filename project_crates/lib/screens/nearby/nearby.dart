@@ -62,25 +62,12 @@ class _NearbyState extends State<Nearby> {
   static final CameraPosition _kLake = CameraPosition(
       target: _center,
       zoom : 15);
-  static final GoogleMap _map = GoogleMap(
-    myLocationEnabled: true,
-    myLocationButtonEnabled: true,
-  );
 
-  Future<void> _updateMap() async {
-    final GoogleMapController controller = await _controller.future;
-  }
 
   Future<void> _goToMyLocation() async {
     final GoogleMapController controller = await _controller.future;
     print('my location: $_center');
     controller.moveCamera(CameraUpdate.newCameraPosition(_kLake));
-  }
-  Future<void> _updateMarkers() async {
-      setState(() {
-        // ignore: unnecessary_statements
-        _markers;
-      });
   }
 
    Future<void> _checkLocationPermission() async {
@@ -165,7 +152,9 @@ class _NearbyState extends State<Nearby> {
       _markers = await mapHandler.generateMarkers(_positions);
       _username = await dataHandler.getUsernameList(_listing);
       print(_username);
-      _updateMarkers();
+      setState(() {
+        _markers = _markers;
+      });
     }
     else if (_permission == LocationPermission.always && _serviceEnabled == true) {
       print('go to my location');
@@ -175,9 +164,11 @@ class _NearbyState extends State<Nearby> {
       _username = await dataHandler.getUsernameList(_listing);
       if(_listing.isNotEmpty) {
         _positions = mapHandler.getPositionFromListing(_listing);
-        _markers = await mapHandler.generateMarkers(_positions);
+        //_markers = await mapHandler.generateMarkers(_positions);
         _markers = await generateMarkersFeature();
-        _updateMarkers();
+        setState(() {
+          _markers = _markers;
+        });
       }
       else
         print('listing is empty!');
