@@ -1,14 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="ec7e339c-60cf-41cf-8ffd-9c12b3f9e7d7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/project_crates/lib/screens/nearby/nearby.dart" beforeDir="false" afterPath="$PROJECT_DIR$/project_crates/lib/screens/nearby/nearby.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_crates/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/project_crates/pubspec.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_crates/lib/backend/home_presenter.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/CZ3003_Crates.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CZ3003_Crates.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_crates/lib/screens/common/user_main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/project_crates/lib/screens/common/user_main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_crates/lib/screens/home/home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/project_crates/lib/screens/home/home.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_crates/lib/screens/home/homePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/project_crates/lib/screens/home/category_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_crates/lib/screens/home/listingsData.dart" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -39,6 +71,18 @@
       <updated>1616249775466</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="2334" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1616250051091">

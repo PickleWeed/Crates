@@ -1,40 +1,67 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/user.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
+import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/backend/home_presenter.dart';
+import 'package:flutter_application_1/backend/profile_presenter.dart';
 
-class Home extends StatefulWidget {
-  //Signed Out
-  //Home({this.onSignedOut});
-  //final VoidCallback onSignedOut;
+class CategoryPage extends StatefulWidget {
+
+  CategoryPage (this.categoryName);
+  final String categoryName;
 
   @override
-  _HomeState createState() => _HomeState();
+  _CategoryPageState createState() =>  _CategoryPageState();
 }
 
-class _HomeState extends State<Home> {
+class _CategoryPageState extends State<CategoryPage> {
 
-  //Sign Out: onPressed: _signOut
-/*  void _signOut() async {
-    try {
-      await signOut();
-      widget.onSignedOut();
-    }catch(e){
-      print(e);
+  String category;
+  User userDetail;
+  List<Listing> listings;
+  List<User> userDetailList = [];
+  bool dataLoadingStatus = false;
+
+
+  @override
+  void initState() {
+    loadData();
+    super.initState();
+  }
+
+  loadData() async{
+    setState(() {
+      dataLoadingStatus = true;
+      category = widget.categoryName;
+    });
+    listings = await ListingData().getListings(category);
+    for (int i=0; i< listings.length;i++) {
+      userDetail = await ProfilePresenter().retrieveUserProfile(listings[i].userID);
+      userDetailList.add(userDetail);
     }
-  }*/
+    setState(() {
+      listings = listings;
+      userDetailList = userDetailList;
+      dataLoadingStatus = false;
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: offWhite,
-        body: ListView(
+        body: dataLoadingStatus == false ?
+        ListView(
             children: <Widget>[
               topCard(),
               SizedBox(height: 50),
               Padding(
                 padding: EdgeInsets.fromLTRB(25,0,0,10),
-                child: Text('Categories',
+                child: Text(category,
                     style: TextStyle(
                       color: Colors.grey[800],
                       fontWeight: FontWeight.bold,
@@ -42,21 +69,11 @@ class _HomeState extends State<Home> {
                     )
                 ),
               ),
-              CategoryList(),
               SizedBox(height:15),
-              Padding(
-                padding: EdgeInsets.fromLTRB(25,0,0,10),
-                child: Text('Nearby',
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    )
-                ),
-              ),
-              NearbyList(),
+              CategoryList(userDetailList, listings),
               SizedBox(height:30),
-            ]));
+            ]):Center(child: CircularProgressIndicator())
+    );
   }
 }
 
@@ -141,154 +158,30 @@ Widget topCard(){
 
 }
 
-Widget CategoryList(){
-  return SizedBox(
-      height:140,
-      child: ListView(
-        // This next line does the trick.
-        scrollDirection: Axis.horizontal,
-        children: <Widget>[
-          Container(
-              height:140.0,
-              width: 140.0,
-              child: Card(
-                  color: Colors.grey[350],
-                  margin: EdgeInsets.all(5),
-                  child:Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
-                          child: Text('All',
-                              style: TextStyle(
-                                color: Colors.grey[800],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              )
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
-                          child: Image(
-                              image: AssetImage('assets/icons/groceries.png')
-                          ),
-                        )
-                      ]
-                  )
-              )
-          ),
-          Container(
-              height:140.0,
-              width: 140.0,
-              child: Card(
-                  color: Colors.grey[350],
-                  margin: EdgeInsets.all(5),
-                  child:Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
-                          child: Text('Vegetables',
-                              style: TextStyle(
-                                color: Colors.grey[800],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              )
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
-                          child: Image(
-                              image: AssetImage('assets/icons/broccoli.png')
-                          ),
-                        )
-                      ]
-                  )
-              )
-          ),
-          Container(
-              height:140.0,
-              width: 140.0,
-              child: Card(
-                  color: Colors.grey[350],
-                  margin: EdgeInsets.all(5),
-                  child:Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
-                          child: Text('Canned Foods',
-                              style: TextStyle(
-                                color: Colors.grey[800],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              )
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
-                          child: Image(
-                              image: AssetImage('assets/icons/cream.png')
-                          ),
-                        )
-                      ]
-                  )
-              )
-          ),
-          Container(
-              height:140.0,
-              width: 140.0,
-              child: Card(
-                  color: Colors.grey[350],
-                  margin: EdgeInsets.all(5),
-                  child:Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
-                          child: Text('Canned Foods',
-                              style: TextStyle(
-                                color: Colors.grey[800],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              )
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
-                          child: Image(
-                              image: AssetImage('assets/icons/cream.png')
-                          ),
-                        )
-                      ]
-                  )
-              )
-          ),
-        ],
-      )
-  );
-}
+Widget CategoryList(List<User> userDetailList, List<Listing> listings) {
 
-Widget NearbyList(){
-  // TODO: this is hardcoded data, to remove
-  List<ListingCard> listing_list = [
-    ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
-    ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
-    ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
-    ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
-    ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png')];
+  List<CustomListingCard> listing_list = [];
 
+  //TODO: If no listings, show no listing text
+  if(listings.isEmpty){
+    print('empty');
+  }
+
+  for(int i=0; i< listings.length;i++){
+    listing_list.add(CustomListingCard(title: listings[i].listingTitle, owner: userDetailList[i].username, listingImg: listings[i].listingImage, ownerImg: userDetailList[i].imagePath));
+  }
+
+  //TODO: Merge with view a listing page
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: GridView.count(
-      shrinkWrap : true,
-      physics: NeverScrollableScrollPhysics(),
-      crossAxisCount: 2 ,
-      scrollDirection: Axis.vertical,
-      // TODO for backend person: modify here to return CustomListingCard() instead!
-      children: List.generate(listing_list.length,(index){
-        return listing_list[index];
-      }),
+        shrinkWrap : true,
+        physics: NeverScrollableScrollPhysics(),
+        crossAxisCount: 2 ,
+        scrollDirection: Axis.vertical,
+        children: List.generate(listing_list.length,(index){
+          return listing_list[index];
+        })
     ),
   );
 }

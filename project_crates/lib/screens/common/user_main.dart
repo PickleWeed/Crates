@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/home/home.dart';
-import 'package:flutter_application_1/screens/home/homePage.dart';
 import 'package:flutter_application_1/screens/listing/Newlisting_page.dart';
 import 'package:flutter_application_1/screens/nearby/nearby.dart';
 import 'package:flutter_application_1/screens/profile/profile.dart';
@@ -16,7 +15,7 @@ class UserMain extends StatefulWidget{
 class _UserMainState extends State<UserMain>{
   int _currentIndex = 0;
   final List<Widget> _children =[
-    HomePage(),
+    Home(),
     Nearby(),
     Newlisting_page(),
     Container(),
