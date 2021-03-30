@@ -4,6 +4,7 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/common/widgets.dart';
 
 
 import '../common/NavigationBar.dart';
@@ -233,7 +234,8 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+        body: SingleChildScrollView(
+      //body: Center(
         child: Column(
             children: <Widget>[
               SizedBox(height: 20),
@@ -298,7 +300,7 @@ class _BodyState extends State<Body> {
                   ]
               ),
               //SizedBox(height: 20),
-              NearbyList(context),
+              NearbyList(),
 
 
             ]
@@ -516,6 +518,7 @@ class _BodyState extends State<Body> {
   }
 
 }
+/*
 
 Widget NearbyList(context){
   return Container(
@@ -589,5 +592,28 @@ Widget ListingCard1(title, owner, listingImg, ownerImg, context){
           ),
         ),
       )
+  );
+}*/
+Widget NearbyList(){
+  // TODO: this is hardcoded data, to remove
+  List<ListingCard> listing_list = [
+    ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
+    ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
+    ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
+    ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
+    ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png')];
+
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: GridView.count(
+      shrinkWrap : true,
+      physics: NeverScrollableScrollPhysics(),
+      crossAxisCount: 2 ,
+      scrollDirection: Axis.vertical,
+      // TODO for backend person: modify here to return CustomListingCard() instead!
+      children: List.generate(listing_list.length,(index){
+        return listing_list[index];
+      }),
+    ),
   );
 }
