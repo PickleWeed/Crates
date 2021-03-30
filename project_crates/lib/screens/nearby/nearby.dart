@@ -18,11 +18,8 @@ class Nearby extends StatefulWidget {
 }
 
 class _NearbyState extends State<Nearby> {
-  //LocationData _locationData;
-  //final Completer _completer = new Completer();
-  Completer<GoogleMapController> _controller = new Completer();
+  final Completer<GoogleMapController> _controller = Completer();
 
-  Position _locationData;
   bool _serviceEnabled;
   LocationPermission _permission;
   bool _cardVisibility = false;
@@ -30,17 +27,16 @@ class _NearbyState extends State<Nearby> {
   bool dataLoadingStatus = false;
   MapFilter _mapFilter;
 
-  GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
-  MapHandler mapHandler = new MapHandler();
-  DataHandler dataHandler = new DataHandler();
+  MapHandler mapHandler = MapHandler();
+  DataHandler dataHandler = DataHandler();
 
 
   Set<Marker> _markers = {};
   List<Listing> _listing;
   List<String> _username;
   List<LatLng> _positions;
-  static LatLng _center;
+  LatLng _center;
 
   //initial preset values
   final double distance = 20;
@@ -69,7 +65,10 @@ class _NearbyState extends State<Nearby> {
         }
       }
       print('got permission');
-      _locationData = await Geolocator.getCurrentPosition();
+      _center = await mapHandler.getCurrentLocation();
+      setState(() {
+        _center = _center;
+      });
   }
 
 
@@ -93,7 +92,7 @@ class _NearbyState extends State<Nearby> {
           icon: BitmapDescriptor.fromBytes(markerIcon),
           onTap: () {
             markerDistance = dataHandler.haversine(_listing[i].latitude, _listing[i].longitude, _center.latitude, _center.longitude);
-            String convertedDateTime = "${_listing[i].postDateTime.day.toString().padLeft(2,'0')}-${_listing[i].postDateTime.month.toString().padLeft(2,'0')}-${_listing[i].postDateTime.year.toString()}";
+            var convertedDateTime = "${_listing[i].postDateTime.day.toString().padLeft(2,'0')}-${_listing[i].postDateTime.month.toString().padLeft(2,'0')}-${_listing[i].postDateTime.year.toString()}";
             setState(() {
               _cardVisibility = true;
               // ignore: unnecessary_statements
@@ -142,7 +141,7 @@ class _NearbyState extends State<Nearby> {
         setState(() {
           dataLoadingStatus = false;
         });
-        mapHandler.goToMyLocation(_controller, _center);
+        await mapHandler.goToMyLocation(_controller, _center);
         _listing = await dataHandler.retrieveFilteredListing(distance, category, _center);
         _username = await dataHandler.getUsernameList(_listing);
         if(_listing.isNotEmpty) {
@@ -165,7 +164,7 @@ class _NearbyState extends State<Nearby> {
       setState(() {
         dataLoadingStatus = false;
       });
-      mapHandler.goToMyLocation(_controller, _center);
+      await mapHandler.goToMyLocation(_controller, _center);
       _listing = await dataHandler.retrieveFilteredListing(_mapFilter.distance, _mapFilter.category, _center);
       _username = await dataHandler.getUsernameList(_listing);
       if(_listing.isNotEmpty) {
@@ -183,11 +182,9 @@ class _NearbyState extends State<Nearby> {
 
   @override
   Widget build(BuildContext context) {
-
-    //mapHandler.createMarker(context, customIcon1);
     return Scaffold(
         backgroundColor: offWhite,
-        body: dataLoadingStatus == false ?Stack(
+        body: dataLoadingStatus == false ? Stack(
             children: <Widget>[
               GoogleMap(
                 onMapCreated: (GoogleMapController controller) async {
