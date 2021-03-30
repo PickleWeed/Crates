@@ -81,9 +81,10 @@ class _NearbyState extends State<Nearby> {
   String imageUrl;
 
   Future<Set<Marker>> generateMarkersFeature() async {
-    List<Marker> markers = <Marker>[];
+    var markers = <Marker>[];
     print('generating markers');
-    final Uint8List markerIcon = await mapHandler.getBytesFromAsset('assets/location_icon.png', 100);
+    final markerIcon = await mapHandler.getBytesFromAsset('assets/location_icon.png', 100);
+    final locationIcon = await mapHandler.getBytesFromAsset('assets/location_icon1.png', 200);
     for (int i=0; i<_listing.length; i++) {
       print(user);
       final marker = Marker(
@@ -111,6 +112,16 @@ class _NearbyState extends State<Nearby> {
       );
       markers.add(marker);
     }
+    markers.add(
+        Marker(
+            markerId: MarkerId('location'),
+            position: _center,
+            icon: BitmapDescriptor.fromBytes(locationIcon),
+            infoWindow: InfoWindow(
+                title: 'Selected location'
+            )
+        )
+    );
     return markers.toSet();
   }
 
