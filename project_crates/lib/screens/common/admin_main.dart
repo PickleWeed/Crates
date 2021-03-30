@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
+import 'package:flutter_application_1/screens/moderator/completedReportListingPage.dart';
+import 'package:flutter_application_1/screens/moderator/reportListingPage.dart';
 
 class AdminMain extends StatefulWidget{
   static String tag = 'admin-page';
@@ -10,8 +12,9 @@ class AdminMain extends StatefulWidget{
 class _AdminMainState extends State<AdminMain>{
   int _currentIndex = 0;
   final List<Widget> _children =[
-    Container(), //put report page widget
-    Container(), //put listing page widget
+    ReportListingPage(),
+    CompletedReportListingPage(),//put report page widget
+    //Put 3 or 4 diff widgets
   ];
   @override
   Widget build(BuildContext context){
@@ -29,12 +32,12 @@ class _AdminMainState extends State<AdminMain>{
           onTap: onTab,
           items:<BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              title: Text('All Listings'),
-              icon: Icon(Icons.home),
+              title: Text('Reported Listings'),
+              icon: Icon(Icons.folder),
             ),
             BottomNavigationBarItem(
-              title: Text('Reports'),
-              icon: Icon(Icons.folder),
+              title: Text('Completed Listings Report'),
+              icon: Icon(Icons.note),
             ),
           ]
 

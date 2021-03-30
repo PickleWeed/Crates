@@ -1,143 +1,56 @@
 import 'package:firebase_database/firebase_database.dart';
-import '../models/ReportChat.dart';
-import '../models/ReportChatAction.dart';
 import '../models/ReportListing.dart';
 import '../models/ReportListingAction.dart';
 import '../models/Notification.dart';
+import '../models/Listing.dart';
 
-class DatabaseService{
+class ModeratorPresentor{
 
-  final String reportChatID;
+
   final String reportListingID;
-  final String reportChatActionID;
   final String reportListingActionID;
   final String moderatorID;
 
-  DatabaseService({
-    this.reportChatID, this.reportListingID, this.reportChatActionID, this.reportListingActionID, this.moderatorID
+  ModeratorPresentor({
+   this.reportListingID, this.reportListingActionID, this.moderatorID
   });
 
   final _databaseRef = FirebaseDatabase.instance.reference();
-
-  //
-  // ReportChat
-  //
-
-  //Get list
-  List<ReportChat> readReportChatList(){
-    List<ReportChat> reportChatList = new List<ReportChat>();
-    _databaseRef.child('ReportChat').once().then((DataSnapshot snapshot) {
-      Map<dynamic, dynamic> map = snapshot.value;
-      map.forEach((key, value) {
-        ReportChat reportChat = new ReportChat(reportID: key, chatID: value['chatID'],
-        reportTitle: value['reportTitle'], reportOffense: value['reportOffense'],
-        reportDescription: value['reportDescription'], complete: value['complete'],
-            reportDate: DateTime.parse(value['reportDate']), userID: value['userID']);
-        reportChatList.add(reportChat);
-      });
-    });
-
-    return reportChatList;
-  }
-
-  //Get one instance
-  Future<ReportChat> readReportChat(String reportID) async{
-    DataSnapshot snapshot = await _databaseRef.child('ReportChat').child(reportID).once();
-    ReportChat reportChat = new ReportChat(reportID: reportID, chatID: snapshot.value['chatID'],
-        reportTitle: snapshot.value['reportTitle'], reportOffense: snapshot.value['reportOffense'],
-        reportDescription: snapshot.value['reportDescription'], complete: snapshot.value['complete'],
-        reportDate: DateTime.parse(snapshot.value['reportDate']), userID: snapshot.value['userID']);
-    return reportChat;
-  }
-
-  //Search list
-
-
-  //Add
-  Future addReportChatData(ReportChat data) async{
-    _databaseRef.child("ReportChat").push().set({
-      "chatID": data.chatID,
-      "reportTitle": data.reportTitle,
-      "reportDescription": data.reportDescription,
-      "reportOffense": data.reportOffense,
-      "complete": "False",
-      "reportDate": data.reportDate.toString(),
-      "userID": data.userID
-    });
-  }
-
-  //Update
-  Future updateReportChatData(String reportID) async{
-    _databaseRef.child("ReportChat").child(reportID).update({
-      "complete": 'True'
-    });
-  }
-
-  //
-  // ReportChatAction
-  //
-
-  //Get list
-  List<ReportChatAction> readReportChatActionList(){
-    List<ReportChatAction> reportChatActionList = new List<ReportChatAction>();
-    _databaseRef.child('ReportChatAction').once().then((DataSnapshot snapshot) {
-      Map<dynamic, dynamic> map = snapshot.value;
-      map.forEach((key, value) {
-        ReportChatAction reportChatAction = new ReportChatAction(reportID: key, actionsTaken: value['actionsTaken'],
-            actionReason: value['actionReason'], updateToReporter: value['updateToReporter'],
-            moderatorID: value['moderatorID'], actionDate: DateTime.parse(value['actionDate']));
-        reportChatActionList.add(reportChatAction);
-      });
-    });
-    return reportChatActionList;
-  }
-
-  //Get one instance
-  Future<ReportChatAction> readReportChatAction(String reportID) async{
-    DataSnapshot snapshot = await _databaseRef.child('ReportChatAction').child(reportID).once();
-    ReportChatAction reportChatAction = new ReportChatAction(reportID: reportID, actionsTaken: snapshot.value['actionsTaken'],
-        actionReason: snapshot.value['actionReason'], updateToReporter: snapshot.value['updateToReporter'],
-        moderatorID: snapshot.value['moderatorID'], actionDate: DateTime.parse(snapshot.value['actionDate']));
-
-    return reportChatAction;
-  }
-
-  //Add
-  Future addReportChatActionData(ReportChatAction data) async{
-    _databaseRef.child("ReportChatAction").child(data.reportID).set({
-      "actionsTaken": data.actionsTaken,
-      "actionReason": data.actionReason,
-      "updateToReporter": data.updateToReporter,
-      "moderatorID": data.moderatorID,
-      "actionDate": data.actionDate.toString()
-    });
-
-    ReportChat rc = await readReportChat(data.reportID);
-
-    String notiText = data.updateToReporter + "\n Actions Taken: " + "\n";
-    for(var i = 0; i < data.actionsTaken.length; i++){
-      notiText += data.actionsTaken[i] + "\n";
-    }
-
-    Notification noti = new Notification(notificationText: notiText, isMatch: "ChatReport", reportID: data.reportID,userID: rc.userID);
-    addNotification(noti);
-  }
 
   //
   // ReportListing
   //
 
   //Get list
-  List<ReportListing> readReportListingList(){
+  Future<List<ReportListing>> readReportListingList() async{
     List<ReportListing> reportListingList = new List<ReportListing>();
-    _databaseRef.child('ReportListing').once().then((DataSnapshot snapshot) {
+    await _databaseRef.child('ReportListing').once().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> map = snapshot.value;
       map.forEach((key, value) {
         ReportListing reportListing = new ReportListing(reportID: key, listingID: value['listingID'],
             reportTitle: value['reportTitle'], reportOffense: value['reportOffense'],
             reportDescription: value['reportDescription'], complete: value['complete'],
             reportDate: DateTime.parse(value['reportDate']), userID: value['userID']);
-        reportListingList.add(reportListing);
+        if(reportListing.complete == "False"){
+          reportListingList.add(reportListing);
+        }
+      });
+    });
+    return reportListingList;
+  }
+
+  Future<List<ReportListing>> readReportListingListCompleted() async{
+    List<ReportListing> reportListingList = new List<ReportListing>();
+    await _databaseRef.child('ReportListing').once().then((DataSnapshot snapshot) {
+      Map<dynamic, dynamic> map = snapshot.value;
+      map.forEach((key, value) {
+        ReportListing reportListing = new ReportListing(reportID: key, listingID: value['listingID'],
+            reportTitle: value['reportTitle'], reportOffense: value['reportOffense'],
+            reportDescription: value['reportDescription'], complete: value['complete'],
+            reportDate: DateTime.parse(value['reportDate']), userID: value['userID']);
+        if(reportListing.complete == "True"){
+          reportListingList.add(reportListing);
+        }
       });
     });
     return reportListingList;
@@ -156,7 +69,7 @@ class DatabaseService{
 
   //Add
   Future addReportListingData(ReportListing data) async{
-    _databaseRef.child("ReportListing").push().set({
+    await _databaseRef.child("ReportListing").push().set({
       "listingID": data.listingID,
       "reportTitle": data.reportTitle,
       "reportDescription": data.reportDescription,
@@ -169,7 +82,7 @@ class DatabaseService{
 
   //Update
   Future updateReportListingData(String reportID) async{
-    _databaseRef.child("ReportListing").child(reportID).update({
+    await _databaseRef.child("ReportListing").child(reportID).update({
       "complete": "True"
     });
   }
@@ -179,13 +92,13 @@ class DatabaseService{
   //
 
   //Get list
-  List<ReportListingAction> readReportListingActionList(){
+  Future<List<ReportListingAction>> readReportListingActionList() async{
     List<ReportListingAction> reportListingActionList = new List<ReportListingAction>();
-    _databaseRef.child('ReportListingAction').once().then((DataSnapshot snapshot) {
+    await _databaseRef.child('ReportListingAction').once().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> map = snapshot.value;
       map.forEach((key, value) {
         ReportListingAction reportListingAction = new ReportListingAction(reportID: key, actionsTaken: value['actionsTaken'],
-            actionReason: value['actionReason'], updateToReporter: value['updateToReporter'],
+            updateToReporter: value['updateToReporter'], updateToOffender: value['updateToOffender'],
             moderatorID: value['moderatorID'], actionDate: DateTime.parse(value['actionDate']));
         reportListingActionList.add(reportListingAction);
       });
@@ -196,32 +109,80 @@ class DatabaseService{
   //Get one instance
   Future<ReportListingAction> readReportListingAction(String reportID) async{
     DataSnapshot snapshot = await _databaseRef.child('ReportListingAction').child(reportID).once();
-    ReportListingAction reportListingAction = new ReportListingAction(reportID: reportID, actionsTaken: snapshot.value['actionsTaken'],
-        actionReason: snapshot.value['actionReason'], updateToReporter: snapshot.value['updateToReporter'],
-        moderatorID: snapshot.value['moderatorID'], actionDate: DateTime.parse(snapshot.value['actionDate']));
+    ReportListingAction reportListingAction = new ReportListingAction(reportID: reportID,
+        actionsTaken: snapshot.value['actionsTaken'].cast<String>(),
+        updateToReporter: snapshot.value['updateToReporter'], updateToOffender: snapshot.value['updateToOffender'],
+        moderatorID: snapshot.value['moderatorID'],
+        actionDate: DateTime.parse(snapshot.value['actionDate']));
 
     return reportListingAction;
   }
 
   //Add
   Future addReportListingActionData(ReportListingAction data) async{
-    _databaseRef.child("ReportListingAction").child(data.reportID).set({
+    String updateToO = "";
+    String updateToR = "";
+
+    if(data.updateToOffender == ""){
+      updateToO = "You were reported for inappropriate listing.";
+    }
+    else{
+      updateToO = data.updateToOffender;
+    }
+
+    if(data.updateToReporter == ""){
+      updateToR = "Actions against the offender has been taken.";
+    }
+    else{
+      updateToR = data.updateToReporter;
+    }
+
+    await _databaseRef.child("ReportListingAction").child(data.reportID).set({
       "actionsTaken": data.actionsTaken,
-      "actionReason": data.actionReason,
-      "updateToReporter": data.updateToReporter,
+      "updateToReporter": updateToR,
+      "updateToOffender": updateToO,
       "moderatorID": data.moderatorID,
       "actionDate": data.actionDate.toString()
     });
 
+    //Get ReportListing
     ReportListing rl = await readReportListing(data.reportID);
 
-    String notiText = data.updateToReporter + "\n Actions Taken: " + "\n";
-    for(var i = 0; i < data.actionsTaken.length; i++){
-      notiText += data.actionsTaken[i] + "\n";
+    //Get Listing
+    Listing l = await readListing(rl.listingID);
+
+    String action = "0";
+
+    //Notification
+    String notiText = data.updateToReporter + "\n" + "Actions Taken: " + "\n";
+
+    if(data.actionsTaken.length > 0){
+      for(var i = 0; i < data.actionsTaken.length; i++){
+        notiText += data.actionsTaken[i] + "\n";
+      }
+
+      if(data.actionsTaken[0] == "temporary"){
+        action = "1";
+      }
+      else if(data.actionsTaken[0] == "permanent"){
+        action = "2";
+      }
+    }
+    else{
+      notiText += "None";
     }
 
     Notification noti = new Notification(notificationText: notiText, isMatch: "ListingReport", reportID: data.reportID,userID: rl.userID);
     addNotification(noti);
+
+    if(data.actionsTaken.length > 1){
+      //Delete listing
+      deleteListing(l);
+    }
+
+    //Update user
+    updateUser(l.userID, action);
+
   }
 
   //
@@ -229,12 +190,73 @@ class DatabaseService{
   //
 
   Future addNotification(Notification data) async{
-    _databaseRef.child("Notification").push().set({
+    await _databaseRef.child("Notification").push().set({
       "notificationText": data.notificationText,
       "isMatch": data.isMatch,
       "listingID": data.listingID ?? "",
       "reportID": data.reportID ?? "",
       "userID": data.userID
+    });
+  }
+
+  //
+  //Listing
+  //
+
+  //Get listing
+  Future<Listing> readListing(String listingID) async{
+    DataSnapshot snapshot = await _databaseRef.child('Listing').child(listingID).once();
+    if(snapshot == null){
+      Listing listing = new Listing(listingID: listingID, listingTitle: snapshot.value['listingTitle'], listingImage: snapshot.value['listingImage'],
+          userID: snapshot.value['userID']);
+
+      return listing;
+    }
+    else{
+      DataSnapshot snapshotDeleted = await _databaseRef.child('ListingDeleted').child(listingID).once();
+      Listing listing = new Listing(listingID: listingID, listingTitle: snapshotDeleted.value['listingTitle'], listingImage: snapshotDeleted.value['listingImage'],
+          userID: snapshotDeleted.value['userID']);
+
+      return listing;
+    }
+
+  }
+
+  //Delete listing
+  Future deleteListing(Listing listing) async{
+    await _databaseRef.child("ListingDeleted").child(listing.listingID).set({
+      "category": listing.category,
+      "description": listing.description,
+      "isComplete": listing.isComplete,
+      "isRequest": listing.isRequest,
+      "latitude": listing.latitude,
+      "listingImage": listing.listingImage,
+      "listingTitle": listing.listingTitle,
+      "longitude" : listing.longitude,
+      "postDateTime": listing.postDateTime.toString(),
+      "userID" : listing.userID
+    });
+
+    await _databaseRef.child("Listing").child(listing.listingID).remove();
+  }
+
+  //
+  // User
+  //
+
+  //Get username of user
+  Future<String> readUsername(String userID) async{
+    DataSnapshot snapshotName = await _databaseRef.child('users').child(userID).once();
+    String name = snapshotName.value['username'];
+    return name;
+  }
+
+
+  //Update user account for ban
+  Future updateUser(String userID, String action) async{
+    await _databaseRef.child("users").child(userID).update({
+      "isBanned": action,
+      "bannedFrom": DateTime.now().toString()
     });
   }
 
