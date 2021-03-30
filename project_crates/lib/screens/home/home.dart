@@ -352,6 +352,39 @@ Widget CategoryList(context){
                       )
                   )
               )),
+              Container(
+                  height:140.0,
+                  width: 140.0,
+                  child:GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Dairy Product')));
+                    },
+                    child: Card(
+                        color: Colors.grey[350],
+                        margin: EdgeInsets.all(5),
+                        child:Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                        Padding(
+                        padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                        child: Text('Dairy Products',
+                        style: TextStyle(
+                          color: Colors.grey[800],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        )
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                    child: Image(
+                      //TODO: Change icon
+                        image: AssetImage('assets/icons/cream.png')
+                    ),
+                  )
+                  ]
+              ))
+          )),
         ],
       )
   );
