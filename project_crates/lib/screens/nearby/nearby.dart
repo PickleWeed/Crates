@@ -122,8 +122,8 @@ class _NearbyState extends State<Nearby> {
       _markers = {};
       _cardVisibility = false;
     });
+    await _checkLocationPermission(); //get GPS permission
     if(_filterMode == false){
-      await _checkLocationPermission(); //get GPS permission
       if (_permission == LocationPermission.denied || !_serviceEnabled) {
         _listing = await dataHandler.retrieveAllListing();
         _positions = mapHandler.getPositionFromListing(_listing);
