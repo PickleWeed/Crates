@@ -149,6 +149,7 @@ class _NearbyState extends State<Nearby> {
           _markers = await generateMarkersFeature();
           setState(() {
             _markers = _markers;
+
           });
         } else
           print('listing is empty!');
