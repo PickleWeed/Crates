@@ -1,5 +1,7 @@
 //import packages, modules, tools
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/listing/Editinglist_page.dart';
+import 'package:flutter_application_1/screens/searchresult/Selectedlisting_page.dart';
 import 'screens/wrapper.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
@@ -19,7 +21,39 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber,
         platform: TargetPlatform.android,
       ),
-      home: Wrapper(),
+      home: MyHome(), //TODO change back to Wrapper()
     );
   }
 }
+
+//TODO remove, for testing purposes
+class MyHome extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+        child: Text('test'),
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Selectedlisting_page(
+                    listingID: '-MX0Aha7l9tGdzi9gktJ',
+                  ))); //listingID goes here
+        });
+  }
+}
+
+// class MyHome extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return TextButton(
+//         child: Text('test'),
+//         onPressed: () {
+//           Navigator.push(
+//               context,
+//               MaterialPageRoute(
+//                   builder: (context) => Editinglist_page(),
+//                   settings: RouteSettings(arguments: {
+//                     'listingID': '-MX0Aha7l9tGdzi9gktJ'
+//                   }))); //listingID goes here
+//         });
+//   }
+// }
