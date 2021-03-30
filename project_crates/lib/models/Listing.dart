@@ -11,6 +11,8 @@ class Listing {
   final bool isRequest;
   final File listingImage;
   final String description;
+  final bool isComplete;
+
   Listing(
       {this.listingID,
       this.userID,
@@ -21,5 +23,6 @@ class Listing {
       this.postDateTime,
       this.isRequest,
       this.listingImage,
-      this.description});
+      this.description,
+      this.isComplete});
 }

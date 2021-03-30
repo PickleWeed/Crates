@@ -25,6 +25,7 @@ class DatabaseAccess {
       "listingImage": imageString,
       "postDateTime": DateTime.now().toIso8601String(),
       "userID": newListing.userID,
+      "isComplete": false,
     });
     print('Created postKey: $postKey');
     return postKey;
