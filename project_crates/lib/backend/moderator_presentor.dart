@@ -206,20 +206,17 @@ class ModeratorPresentor{
   //Get listing
   Future<Listing> readListing(String listingID) async{
     DataSnapshot snapshot = await _databaseRef.child('Listing').child(listingID).once();
-    if(snapshot == null){
+    if(snapshot.value != null){
       Listing listing = new Listing(listingID: listingID, listingTitle: snapshot.value['listingTitle'], listingImage: snapshot.value['listingImage'],
           userID: snapshot.value['userID']);
-
       return listing;
     }
     else{
       DataSnapshot snapshotDeleted = await _databaseRef.child('ListingDeleted').child(listingID).once();
       Listing listing = new Listing(listingID: listingID, listingTitle: snapshotDeleted.value['listingTitle'], listingImage: snapshotDeleted.value['listingImage'],
           userID: snapshotDeleted.value['userID']);
-
       return listing;
     }
-
   }
 
   //Delete listing
