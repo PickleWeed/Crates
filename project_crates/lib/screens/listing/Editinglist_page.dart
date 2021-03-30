@@ -9,9 +9,13 @@ import '../home/home.dart';
 
 class Editinglist_page extends StatelessWidget {
   String _search;
+  String listingID;
+  Map arguments = {};
 
   @override
   Widget build(BuildContext context) {
+    arguments = ModalRoute.of(context).settings.arguments;
+    listingID = arguments["listingID"];
     return Scaffold(
         appBar: AppBar(
             centerTitle: true,
@@ -34,27 +38,44 @@ class Editinglist_page extends StatelessWidget {
                                 fontWeight: FontWeight.bold)),
                       ]))
                 ])),
-        body: Body());
+        body: Body(
+          listingID: listingID,
+        ));
     // body: Body());
   }
 }
 
 class Body extends StatefulWidget {
+  final String listingID;
+
+  Body({
+    @required this.listingID,
+  });
+
   @override
   _BodyState createState() => _BodyState();
 }
+
+//TODO previous page to pass in listing id, example given below
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Widget build(BuildContext context) {
+//     return TextButton(
+//         child: Text('test'),
+//         onPressed: () {
+//           Navigator.push(
+//               context,
+//               MaterialPageRoute(
+//                   builder: (context) => Editinglist_page(),
+//                   settings: RouteSettings(
+//                       arguments: {'listingID': '-MX0Aha7l9tGdzi9gktJ'})));  //listingID goes here
+//         });
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class _BodyState extends State<Body> {
   @override
   initState() {
     super.initState();
-
-    // passedData = ModalRoute.of(context)
-    //     .settings
-    //     .arguments; //TODO previous page to pass in the selectedListing listingID
-
-    //TODO change hardcode after previous page pass in listingID
-    dao.getListing('-MWmtJHYl4N3FbYTdl3G').then((selectedListing) {
+    dao.getListing(widget.listingID).then((selectedListing) {
       setState(() {
         listing = selectedListing;
         listingTitleController.text = listing.listingTitle;
@@ -70,7 +91,7 @@ class _BodyState extends State<Body> {
 
   //String isSelected;
   List<bool> isselected = [true, false];
-  List listItem = ['Vegetable', 'Canned food', 'Dairy product'];
+  List listItem = ['Vegetables', 'Canned Food', 'Dairy Product'];
   String valueChoose;
   File image;
   String uid;
@@ -302,7 +323,7 @@ class _BodyState extends State<Body> {
                 description: descriptionController.text,
               );
               //TODO change hardcode after selectedListing passed in from previous page
-              dao.updateListing('-MWmtJHYl4N3FbYTdl3G', updatedListing);
+              dao.updateListing(widget.listingID, updatedListing);
 
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => Home()));

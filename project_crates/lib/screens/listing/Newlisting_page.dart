@@ -61,9 +61,9 @@ class _BodyState extends State<Body> {
   String userid;
   List<bool> isselected = [true, false];
   List listItem = [
-    'Vegetable',
-    'Canned food',
-    'Dairy product',
+    'Vegetables',
+    'Canned Food',
+    'Dairy Product',
   ];
   String valueChoose;
   File image;
