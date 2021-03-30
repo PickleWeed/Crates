@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/authenticate/root.dart';
 
 
-
 void main() {
   runApp(MyApp());
 } //entry point
-
 
 //StatelessWidget: does not have state. does not change with interaction with the program
 class MyApp extends StatelessWidget {
