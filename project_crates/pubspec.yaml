@@ -28,7 +28,6 @@ dependencies:
   flutter_google_places:
   firebase_auth: ^0.14.0+5
   google_sign_in: ^4.4.4
-  firebase_core:
   firebase_database:
   firebase_storage:
   image_picker:
@@ -44,7 +43,6 @@ dependencies:
   fluttertoast: ^8.0.3
   tflite:
   meta:
-
 
 
 dev_dependencies:
