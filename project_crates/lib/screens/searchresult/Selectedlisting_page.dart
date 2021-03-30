@@ -1,217 +1,213 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/common/theme.dart';
+import 'package:flutter_application_1/screens/common/widgets.dart';
 import '../listing/Editinglist_page.dart';
 
+class Selectedlisting_page extends StatefulWidget {
+  @override
+  _Selectedlisting_pageState createState() => _Selectedlisting_pageState();
+}
 
-class Selectedlisting_page extends StatelessWidget {
+class _Selectedlisting_pageState extends State<Selectedlisting_page> {
 
-  String _search;
+  // TODO: This variable determines what buttons are built (true -> edit button, false-> report and chat buttons)
+  final bool currentuser = false; // this dictate if the user click on his own food or others (true->owner of food), (false->other people food)
+  String listingTitle = "Samyang Korean Noodles";
+  String listingImg = 'assets/coffee.jpg';
+  String username = "leejunwei";
+  String description = "This is my packet of coffee!";
+  String posted = "one week ago";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: new AppBar(
-            toolbarHeight: 50,
-            centerTitle: false,
-            automaticallyImplyLeading: false,
-            backgroundColor: Colors.transparent,
-            bottomOpacity: 0.0,
-            elevation: 0.0,
-            title: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                      alignment: Alignment.topLeft,
-                      child: Column(
+        backgroundColor: offWhite,
+        body: SingleChildScrollView(
+          child: Column(children: <Widget>[
+            listingDetailsTopCard(listingTitle, listingImg, currentuser),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(
+                children: [
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("posted $posted",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold)
+                        ),
+                        RichText(
+                          text: TextSpan(
+                              text: 'by ',
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.bold),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: username,
+                                  style: TextStyle(
+                                      color: Color(0xFFFFC857),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 19),
+                                )
+                              ]
+                          ),
+                        )
 
-                          children: <Widget>[
-                            Text(
-                                'Food',
-                                style: TextStyle(color: Colors.grey,fontSize: 30,fontWeight: FontWeight.bold)
-                            ),
-                          ]
-                      )
+                      ]
                   )
 
-                ]
-            ),
-
-        ),
-        backgroundColor: Color(0xFFFFC857),
-
-        body: Body(),
-
-
-    );
-    // body: Body());
-  }
-}
-
-class Body extends StatefulWidget {
-  @override
-  _BodyState createState() => _BodyState();
-}
-
-class _BodyState extends State<Body> {
-  final bool currentuser =true; // this dictate if the user click on his own food or others (true->owner of food), (false->other people food)
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body:SingleChildScrollView(child: Center(
-         child: Column(
-          children: <Widget>[
-            Container(
-              color: Color(0xFFFFC857),
-              height: 230,
-              width: 450,
-              child:
-              Container(
-                padding:EdgeInsets.fromLTRB(100,10,100,30),
-                width: 100,
-                height: 230,
-                child:DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey[300],
-                    image: const DecorationImage(
-                      image: AssetImage('assets/coffee.jpg'),
-                      fit:  BoxFit.fill,
-                    ),
-                  ),
-                ),
-              ),
-           ),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.start, //change here don't //worked
-                crossAxisAlignment: CrossAxisAlignment.center,
-
-                children: <Widget>[
-                  Container(
-                    padding:EdgeInsets.fromLTRB(10,10,50,0),
-
-                    child:Text(
-                        'Posted 1 week ago ',
-                        style: TextStyle(color: Colors.grey,fontSize: 22,fontWeight: FontWeight.bold)
-                    ),
-
-                  ),
-
-            _Currentuserbutton(currentuser),
-              ]
-            ),
-            Container(
-              alignment: Alignment(-0.9,0.9),
-                child: RichText(
-                    text: TextSpan(
-                        text:'by, ',style: TextStyle(color: Colors.grey,fontSize: 20),
-                        children: <TextSpan>[
-                          TextSpan(text: 'name ', style: TextStyle(color: Color(0xFFFFC857),fontWeight: FontWeight.bold ,fontSize: 25),
-
-                          )
-                        ]
-                    )
-                )
-            ),
-            SizedBox(height: 20),
-            Container(
-              child:Text(
-                  'Description of the food ',
-                  style: TextStyle(color: Colors.grey,fontSize: 15,fontWeight: FontWeight.normal)
+                ],
               ),
             ),
-            SizedBox(height: 20),
-            Container(
-              alignment: Alignment(-0.9,0),
-              child:Text(
-                  'Location ',
-                  style: TextStyle(color: Colors.grey,fontSize: 22,fontWeight: FontWeight.bold)
+
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(
+                  children:[
+                    Text(description,
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal)),
+                  ]
               ),
             ),
-            SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 15, 20, 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [Text('Location ',
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold)),
+            ]
+            ),
+          ),
+
             Container(
               color: Colors.grey[300],
-                height: 150,
-                width: 350,
-                child:DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey[300],
+              height: 150,
+              width: 350,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[300],
+                ),
+              ),
+            )
+          ]),
+          //bottomNavigationBar: Navigationbar(0),
+        ));
+  }
+}
 
+
+Widget listingDetailsTopCard(title, listingImg, currentUser){
+  return Stack(
+      clipBehavior: Clip.none,
+      children: <Widget>[
+        Container(
+          width: double.infinity,
+          height: 300,
+          child: Card(
+              margin: EdgeInsets.zero,
+              color: primaryColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.zero,
+                    topRight: Radius.zero,
+                    bottomLeft: Radius.circular(15),
+                    bottomRight: Radius.circular(15),
+                  )
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(height:30),
+                  Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Text(
+                      title,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: offWhite,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                      ),
                     ),
                   ),
-            )
-
-
-
-      ]
-         )
+                  Expanded(
+                    child: Center(
+                      //TODO: Edit this line to use NetworkImage (for backend ppl)
+                      child: Image.asset(listingImg,
+                        fit:BoxFit.fitHeight,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height:30),
+                ],
+              )
+          ),
         ),
-        //bottomNavigationBar: Navigationbar(0),
-    )
+        //TODO: Set the functions when the buttons are clicked (for backend ppl)
+        reportButton(currentUser, (){}),
+        chatEditButtons(currentUser, (){}, (){})
+      ]
+  );
+}
+
+// return a report button only if this is true
+Widget reportButton(currentuser, btnPressed){
+  print(currentuser);
+  if (currentuser == false){
+    return Positioned(
+      right: 110,
+      left: 200,
+      bottom:-20,
+      child: Container(
+          height: 40,
+          child: CustomCurvedButton(
+            btnText: 'Report',
+            btnPressed: btnPressed,
+          )
+      ),
     );
   }
 
-
-
-
-
-
-
-  _Currentuserbutton(bool currentuser)
-  {
-    if(currentuser==true){
-      return Container(
-        padding:EdgeInsets.fromLTRB(20, 0, 20, 20),
-        alignment: Alignment(0.7,0),
-        child:
-        MaterialButton(
-          elevation: 1,
-          minWidth:100, // width of the button
-          height: 50,
-          onPressed: () async {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Editinglist_page()));
-          }
-          ,color: Colors.grey[300],
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-
-
-          child: Text('Edit',
-              style: TextStyle(color: Colors.grey[600], fontSize: 20)),
-        ),
-
-      );
-
-
-    }
-    else if(currentuser==false){
-      return Container(
-        padding:EdgeInsets.fromLTRB(20, 0, 20, 20),
-        alignment: Alignment(0.7,0),
-        child:
-        MaterialButton(
-          elevation: 1,
-          minWidth:100, // width of the button
-          height: 50,
-          onPressed: () async {
-            // go to chat page
-          }
-          ,color: Colors.grey[300],
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-
-
-          child: Text('chat',
-              style: TextStyle(color: Colors.grey[600], fontSize: 20)),
-        ),
-
-      );
-
-
-    }
-
-
-  }
-
-
-
-
+  return Row();
 }
-
+Widget chatEditButtons(bool currentuser, EditBtnPressed, ChatBtnPressed){
+  if (currentuser == true){
+    return Positioned(
+      right: 20,
+      left: 290,
+      bottom:-20,
+      child: Container(
+          height: 40,
+          child: CustomCurvedButton(
+            btnText: 'Edit',
+            btnPressed: EditBtnPressed,
+          )
+      ),
+    );
+  }else{
+    return Positioned(
+      right: 20,
+      left: 290,
+      bottom:-20,
+      child: Container(
+          height: 40,
+          child: CustomCurvedButton(
+            btnText: 'Chat',
+            btnPressed: ChatBtnPressed,
+          )
+      ),
+    );
+  }
+}
