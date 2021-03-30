@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/user.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/common/widgets.dart';
 
 class EditProfile extends StatefulWidget  {
+  final User userModel;
+  EditProfile({Key key, @required this.userModel}):super(key:key);
   @override
   _EditProfileState createState() => _EditProfileState();
 }
 
 class _EditProfileState extends State<EditProfile> {
+  var usernameController;
+
 
   @override
   void initState() {
+    usernameController = TextEditingController(text: widget.userModel.username);
     // TODO: implement initState
     super.initState();
   }
@@ -57,9 +63,11 @@ class _EditProfileState extends State<EditProfile> {
                         Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: InkWell(
-                            onTap: (){print("Change Photo tapped");},
+                            onTap: (){
+                              print("Change Photo tapped");
+                              },
                             child: CircleAvatar(
-                              backgroundImage: AssetImage('assets/icons/default.png'),
+                              backgroundImage: NetworkImage(widget.userModel.imagePath),
                               radius: 80,
                             ),
                           ),
@@ -103,6 +111,7 @@ class _EditProfileState extends State<EditProfile> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(20, 0 ,20 ,0),
                         child: TextField(
+                            controller: usernameController,
                             decoration: InputDecoration(
                                 focusedBorder :OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white, width: 1.0),
@@ -121,7 +130,11 @@ class _EditProfileState extends State<EditProfile> {
                     SizedBox(width:20),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(80,20, 80, 10),
-                      child: CustomCurvedButton(btnText: 'Save Changes', btnPressed: (){}),
+                      child: CustomCurvedButton(
+                          btnText: 'Save Changes',
+                          btnPressed: (){
+
+                          }),
                     ),
                   ],
                 ),
