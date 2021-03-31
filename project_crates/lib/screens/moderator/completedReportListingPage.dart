@@ -8,13 +8,17 @@ import 'package:flutter_application_1/screens/moderator/oneReportListingComplete
 
 class CompletedReportListingPage extends StatefulWidget {
   @override
-  _CompletedReportListingPageState createState() => _CompletedReportListingPageState();
+  _CompletedReportListingPageState createState() =>
+      _CompletedReportListingPageState();
 }
 
-class _CompletedReportListingPageState extends State<CompletedReportListingPage> {
+class _CompletedReportListingPageState
+    extends State<CompletedReportListingPage> {
   bool dataLoading = false;
   List<ReportListing> reportListings;
   ModeratorPresentor _moderatorPresentor = new ModeratorPresentor();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchName = "";
 
   @override
   void initState() {
@@ -28,7 +32,8 @@ class _CompletedReportListingPageState extends State<CompletedReportListingPage>
       dataLoading = true;
     });
 
-    reportListings = await _moderatorPresentor.readReportListingListCompleted();
+    reportListings =
+        await _moderatorPresentor.readReportListingListCompleted(_searchName);
 
     setState(() {
       reportListings = reportListings;
@@ -48,19 +53,69 @@ class _CompletedReportListingPageState extends State<CompletedReportListingPage>
               style: TextStyle(fontSize: 30, color: Colors.white)),
           shape: RoundedRectangleBorder(
               borderRadius:
-              BorderRadius.vertical(bottom: Radius.circular(40.0))),
+                  BorderRadius.vertical(bottom: Radius.circular(40.0))),
         ),
         body: dataLoading == false
             ? Column(children: <Widget>[
-          reportHeader(context, reportListings),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: reportListings.length,
-            itemBuilder: (context, index) {
-              return reportCard(context, reportListings[index]);
-            },
-          ),
-        ])
+                Container(
+                    margin: EdgeInsets.fromLTRB(20, 3, 20, 3),
+                    decoration: BoxDecoration(
+                        border:
+                            Border(bottom: BorderSide(color: primaryColor))),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Icon(Icons.search),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextFormField(
+                              controller: _searchController,
+                              decoration: InputDecoration(
+                                  hintText: 'Search',
+                                  border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none),
+                              onEditingComplete: () {
+                                setState(() {
+                                  loadData();
+                                });
+                              },
+                              onChanged: (val) => setState(() {
+                                _searchName = val;
+                              }),
+                            ),
+                          ),
+                        ),
+                        Align(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                                padding: EdgeInsets.only(right: 10.0),
+                                child: TextButton.icon(
+                                  icon: Icon(Icons.sort),
+                                  label: Text('Sort'),
+                                  onPressed: () {
+                                    reportListings.sort((a, b) {
+                                      return a.reportTitle
+                                          .toString()
+                                          .toLowerCase()
+                                          .compareTo(b.reportTitle
+                                              .toString()
+                                              .toLowerCase());
+                                    });
+                                  },
+                                )))
+                      ],
+                    )),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: reportListings.length,
+                  itemBuilder: (context, index) {
+                    return reportCard(context, reportListings[index]);
+                  },
+                ),
+              ])
             : Center(child: CircularProgressIndicator()));
     // body: Body());
   }
@@ -75,7 +130,7 @@ Widget reportCard(BuildContext context, ReportListing report) {
             child: GestureDetector(
                 child: ListTile(
                   contentPadding:
-                  EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   title: Text(report.reportTitle),
                   subtitle: Text(report.reportDescription),
                   isThreeLine: false,
@@ -83,7 +138,8 @@ Widget reportCard(BuildContext context, ReportListing report) {
                 ),
                 onTap: () async {
                   // Load other listing details
-                  Listing listing = await ModeratorPresentor().readListing(report.listingID);
+                  Listing listing =
+                      await ModeratorPresentor().readListing(report.listingID);
 
                   // Call listing to display
                   Navigator.push(
@@ -94,43 +150,3 @@ Widget reportCard(BuildContext context, ReportListing report) {
                 }))),
   );
 }
-
-Widget reportHeader(BuildContext context, List<ReportListing> reportListings) {
-  return Container(
-      margin: EdgeInsets.fromLTRB(20, 3, 20, 3),
-      decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: primaryColor))),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Icon(Icons.search),
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton(
-                onPressed: () {
-                  showSearch(
-                      context: context, delegate: CustomSearchDelegate());
-                },
-                child: Text('Search'),
-              ), //change to search later
-            ),
-          ),
-          Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                  padding: EdgeInsets.only(right: 10.0),
-                  child: TextButton.icon(
-                    icon: Icon(Icons.sort),
-                    label: Text('Sort'),
-                    onPressed: () {
-                      reportListings.sort((a,b){
-                        return a.reportTitle.toString().toLowerCase().compareTo(b.reportTitle.toString().toLowerCase());
-                      });
-                    },
-                  )))
-        ],
-      ));
-}
-

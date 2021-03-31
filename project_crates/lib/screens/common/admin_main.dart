@@ -13,8 +13,8 @@ class _AdminMainState extends State<AdminMain>{
   int _currentIndex = 0;
   final List<Widget> _children =[
     ReportListingPage(),
-    CompletedReportListingPage(),//put report page widget
-    //Put 3 or 4 diff widgets
+    CompletedReportListingPage(),
+
   ];
   @override
   Widget build(BuildContext context){
@@ -39,6 +39,7 @@ class _AdminMainState extends State<AdminMain>{
               title: Text('Completed Listings Report'),
               icon: Icon(Icons.note),
             ),
+            
           ]
 
       ),
