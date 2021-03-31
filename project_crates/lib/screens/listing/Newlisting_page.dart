@@ -6,7 +6,6 @@ import 'package:flutter_application_1/services/databaseAccess.dart';
 import 'package:flutter_application_1/services/locationService.dart';
 import 'package:image_picker/image_picker.dart';
 import '../home/home.dart';
-import '../common/NavigationBar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Newlisting_page extends StatelessWidget {
@@ -294,7 +293,8 @@ class _BodyState extends State<Body> {
                   latitude: location[0],
                   category: valueChoose,
                   isRequest: isselected[1],
-                  listingImage: image,
+                  listingImage: image.path,
+                  //listingImage: image,
                   description: descriptionController.text,
                 );
 
@@ -315,7 +315,6 @@ class _BodyState extends State<Body> {
           //////////////////////////////////////////////////////////////////////////////////////
         ]),
       ),
-      bottomNavigationBar: NavigationBar(2),
     );
   }
 
