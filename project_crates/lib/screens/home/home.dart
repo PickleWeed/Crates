@@ -82,7 +82,7 @@ class _HomeState extends State<Home> {
               SizedBox(height:15),
               Padding(
                 padding: EdgeInsets.fromLTRB(25,0,0,10),
-                child: Text('Latest',
+                child: Text('Lastest',
                     style: TextStyle(
                       color: Colors.grey[800],
                       fontWeight: FontWeight.bold,
