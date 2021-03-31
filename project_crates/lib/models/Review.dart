@@ -1,10 +1,10 @@
 class Review {
+  final String reviewID;
   final String listingID;
   final String description;
-  final double rating;
-  final String reviewTitle;
   final String revieweeID;
   final String reviewerID;
-  Review({this.listingID,this.description,this.rating,this.reviewTitle,this.revieweeID,this.reviewerID});
+  final DateTime postedDateTime;
+  Review({this.reviewID,this.listingID,this.description,this.revieweeID,this.reviewerID, this.postedDateTime});
 
 }

@@ -4,16 +4,21 @@ import 'package:flutter_application_1/backend/auth.dart';
 import '../authenticate/register.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
-import '../home/home.dart';
 
 
 class SignIn extends StatefulWidget {
+  static String tag = 'signin-page';
+  SignIn({this.onSignedIn, this.isAdmin});
+  final VoidCallback onSignedIn;
+  final VoidCallback isAdmin;
+
   @override
   _SignInState createState() => _SignInState();
 }
 
 class _SignInState extends State<SignIn> {
 
+  final formKey = new GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -34,16 +39,41 @@ class _SignInState extends State<SignIn> {
     FirebaseUser user;
     signInWithEmailAndPassword(emailController.text, passwordController.text).then((user) =>
     {
-      //If successful login, navigate to home page
-      if (user != null){
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Home()))
+      //If successful login
+      if(user != null){
+        isAdminCheck(user.uid) .then((value) => {
+          if (value == false){
+            // Normal User
+            formKey.currentState.reset(),
+            displayToastMessage("Login Successful", context),
+            //Change AuthStatus
+            widget.onSignedIn()
+          } else {
+            // Admin
+            formKey.currentState.reset(),
+            displayToastMessage("Login Successful", context),
+            //Change AuthStatus & AdminStatus
+            widget.onSignedIn(),
+            widget.isAdmin()
+          }
+        })
       } else {
-        //TODO: Show appropriate error messages (eg wrong password) on front-end
+        // if login not successful
+        formKey.currentState.reset(),
+        displayToastMessage("Wrong Email/Password", context)
       }
     });
+  }
+
+  bool validate() {
+    final form = formKey.currentState;
+    bool value;
+    if(form.validate()){
+      value = true;
+    }else{
+      value = false;
+    }
+    return value;
   }
 
   @override
@@ -54,6 +84,7 @@ class _SignInState extends State<SignIn> {
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(horizontal: 40.0),
             child: Form(
+                key: formKey,
                 child: SingleChildScrollView(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -74,6 +105,7 @@ class _SignInState extends State<SignIn> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
+                            validator: (value)=> value.isEmpty ? "Email Required" : !value.contains("@") ? "Invalid Email" : null,
                             controller: emailController,
                             decoration: InputDecoration(
                                 filled: true,
@@ -82,6 +114,7 @@ class _SignInState extends State<SignIn> {
                         SizedBox(height: 5),
                         TextFormField(
                             obscureText: true,
+                            validator: (value)=> value.isEmpty ? "Password Required": null,
                             controller: passwordController,
                             decoration: InputDecoration(
                                 filled: true,
@@ -91,7 +124,11 @@ class _SignInState extends State<SignIn> {
                         CustomButton(
                             btnText: 'Log In',
                             btnPressed: (){
-                              loginUserClick();
+                              // Login Validation
+                              if(validate()) {
+                                // Sign in with email and password
+                                loginUserClick();
+                              }
                             }
                         ),
                         Padding(

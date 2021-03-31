@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/auth.dart';
-import '../common/NavigationBar.dart';
+import 'package:flutter_application_1/backend/profile_presenter.dart';
+import 'package:flutter_application_1/models/user.dart';
 import '../common/widgets.dart';
 import '../common/theme.dart';
+import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/backend/home_presenter.dart';
+import 'category_page.dart';
 
 class Home extends StatefulWidget {
   //Signed Out
@@ -16,6 +19,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
+  String category = '';
+  User userDetail;
+  List<Listing> listings;
+  List<User> userDetailList = [];
+  bool dataLoadingStatus = false;
+  List<Listing> reversedList;
+
   //Sign Out: onPressed: _signOut
 /*  void _signOut() async {
     try {
@@ -27,11 +37,34 @@ class _HomeState extends State<Home> {
   }*/
 
   @override
+  void initState() {
+    loadData();
+    super.initState();
+  }
+
+  loadData() async{
+    setState(() {
+      dataLoadingStatus = true;
+    });
+    listings = await ListingData().getListings(category);
+    reversedList = listings.reversed.toList();
+    for (int i=0;i<4;i++) {
+      userDetail = await ProfilePresenter().retrieveUserProfile(reversedList[i].userID);
+      userDetailList.add(userDetail);
+    }
+    setState(() {
+      listings = reversedList;
+      userDetailList = userDetailList;
+      dataLoadingStatus = false;
+    });
+
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: NavigationBar(0),
         backgroundColor: offWhite,
-        body: ListView(
+        body: dataLoadingStatus == false ?
+        ListView(
             children: <Widget>[
               topCard(),
               SizedBox(height: 50),
@@ -45,11 +78,11 @@ class _HomeState extends State<Home> {
                     )
                 ),
               ),
-              CategoryList(),
+              CategoryList(context),
               SizedBox(height:15),
               Padding(
                 padding: EdgeInsets.fromLTRB(25,0,0,10),
-                child: Text('Nearby',
+                child: Text('Lastest',
                     style: TextStyle(
                       color: Colors.grey[800],
                       fontWeight: FontWeight.bold,
@@ -57,9 +90,10 @@ class _HomeState extends State<Home> {
                     )
                 ),
               ),
-              NearbyList(),
+              LastestList(userDetailList, listings),
               SizedBox(height:30),
-            ]));
+            ]):Center(child: CircularProgressIndicator())
+    );
   }
 }
 
@@ -144,7 +178,7 @@ Widget topCard(){
 
 }
 
-Widget CategoryList(){
+Widget CategoryList(context){
   return SizedBox(
       height:140,
       child: ListView(
@@ -154,132 +188,217 @@ Widget CategoryList(){
           Container(
               height:140.0,
               width: 140.0,
-              child: Card(
-                  color: Colors.grey[350],
-                  margin: EdgeInsets.all(5),
-                  child:Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
-                          child: Text('All',
-                              style: TextStyle(
-                                color: Colors.grey[800],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              )
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
-                          child: Image(
-                              image: AssetImage('assets/icons/groceries.png')
-                          ),
-                        )
-                      ]
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('All Categories')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('All',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                  image: AssetImage('assets/icons/groceries.png')
+                              ),
+                            )
+                          ]
+                      )
                   )
-              )
-          ),
+              )),
           Container(
               height:140.0,
               width: 140.0,
-              child: Card(
-                  color: Colors.grey[350],
-                  margin: EdgeInsets.all(5),
-                  child:Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
-                          child: Text('Vegetables',
-                              style: TextStyle(
-                                color: Colors.grey[800],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              )
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
-                          child: Image(
-                              image: AssetImage('assets/icons/broccoli.png')
-                          ),
-                        )
-                      ]
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Vegetables')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('Vegetables',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                  image: AssetImage('assets/icons/broccoli.png')
+                              ),
+                            )
+                          ]
+                      )
                   )
-              )
-          ),
+              )),
           Container(
               height:140.0,
               width: 140.0,
-              child: Card(
-                  color: Colors.grey[350],
-                  margin: EdgeInsets.all(5),
-                  child:Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
-                          child: Text('Canned Foods',
-                              style: TextStyle(
-                                color: Colors.grey[800],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              )
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
-                          child: Image(
-                              image: AssetImage('assets/icons/cream.png')
-                          ),
-                        )
-                      ]
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Canned Food')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('Canned Food',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                  image: AssetImage('assets/icons/cream.png')
+                              ),
+                            )
+                          ]
+                      )
                   )
-              )
-          ),
+              )),
           Container(
               height:140.0,
               width: 140.0,
-              child: Card(
-                  color: Colors.grey[350],
-                  margin: EdgeInsets.all(5),
-                  child:Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
-                          child: Text('Canned Foods',
-                              style: TextStyle(
-                                color: Colors.grey[800],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              )
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
-                          child: Image(
-                              image: AssetImage('assets/icons/cream.png')
-                          ),
-                        )
-                      ]
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Snacks')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('Snacks',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                  image: AssetImage('assets/icons/snacks.png')
+                              ),
+                            )
+                          ]
+                      )
                   )
-              )
-          ),
+              )),
+          Container(
+              height:140.0,
+              width: 140.0,
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Beverages')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('Beverages',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                  image: AssetImage('assets/icons/can.png')
+                              ),
+                            )
+                          ]
+                      )
+                  )
+              )),
+          Container(
+              height:140.0,
+              width: 140.0,
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Dairy Product')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('Dairy Products',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                  image: AssetImage('assets/icons/food.png')
+                              ),
+                            )
+                          ]
+                      ))
+              )),
         ],
       )
   );
 }
 
-Widget NearbyList(){
-  // TODO: this is hardcoded data, to remove
-  List<ListingCard> listing_list = [
-    ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
-    ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
-    ListingCard(title: "Old Town White Coffee", owner: "leejunwei", listingImg: 'assets/coffee.jpg', ownerImg: 'assets/icons/default.png'),
-    ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png'),
-    ListingCard(title: "Korean Spicy Noodles Samyang", owner: "Eggxactly", listingImg: 'assets/noodles.jpg', ownerImg: 'assets/icons/default.png')];
+Widget LastestList(List<User> userDetailList,List<Listing> listings){
+
+  List<CustomListingCard> listing_list = [];
+
+  //TODO: If no listings, show no listing text
+  if(listings.isEmpty){
+    print('empty');
+  }
+  // Get First 4 Newest Listings only
+  for(int i=0;i<4;i++){
+    listing_list.add(CustomListingCard(title: listings[i].listingTitle, owner: userDetailList[i].username, listingImg: listings[i].listingImage, ownerImg: userDetailList[i].imagePath));
+  }
 
   return Padding(
     padding: const EdgeInsets.all(8.0),
@@ -288,10 +407,10 @@ Widget NearbyList(){
       physics: NeverScrollableScrollPhysics(),
       crossAxisCount: 2 ,
       scrollDirection: Axis.vertical,
-      // TODO for backend person: modify here to return CustomListingCard() instead!
       children: List.generate(listing_list.length,(index){
         return listing_list[index];
       }),
     ),
   );
 }
+

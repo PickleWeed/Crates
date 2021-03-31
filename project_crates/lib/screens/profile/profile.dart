@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/auth.dart';
 import 'package:flutter_application_1/backend/profile_presenter.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/models/Review.dart';
 import 'package:flutter_application_1/models/user.dart';
-import '../common/NavigationBar.dart';
+import 'package:flutter_application_1/screens/profile/editProfile.dart';
 import '../common/theme.dart';
 import '../common/widgets.dart';
 
@@ -19,6 +20,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   User userDetails;
   bool dataLoadingStatus = false;
   List<Listing> userListings;
+  List<Listing> userRequestListings;
   ProfilePresenter _profilePresenter = new ProfilePresenter();
 
 
@@ -35,12 +37,12 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     currentUserID = await currentUser();
     userDetails = await _profilePresenter.retrieveUserProfile(currentUserID);
     userListings = await _profilePresenter.retrieveUserListing(currentUserID);
-    print(userListings);
-    print(currentUserID);
+    userRequestListings = await _profilePresenter.retrieveUserRequestListing(currentUserID);
     setState(() {
       currentUserID = currentUserID;
       userDetails = userDetails;
       userListings = userListings;
+      userRequestListings = userRequestListings;
       dataLoadingStatus = false;
     });
 
@@ -49,26 +51,24 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: NavigationBar(2),
         backgroundColor: offWhite,
         body: dataLoadingStatus == false ?
         Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              topCard(userDetails.imagePath, userDetails.username, 86),
+              topCard(userDetails.imagePath, userDetails.username, context, userDetails),
               SizedBox(height: 50),
               TabBar(
                   tabs: [
-                    Tab(text: 'Listings'),
-                    Tab(text: 'Reviews'),
+                    Tab(text: 'Normal Listings'),
+                    Tab(text: 'Request Listings'),
                   ],
                 controller: _tabController,
                 ),
               Expanded(
                 child: TabBarView(
                   children: [
-
                     SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -78,24 +78,31 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             crossAxisCount: 2 ,
                             scrollDirection: Axis.vertical,
                             children: List.generate(userListings.length,(index){
-                              return CustomListingCard(title: userListings[index].listingTitle, owner: userDetails.username, listingImg: userListings[index].listingImage, ownerImg:userDetails.imagePath);
+                              return CustomListingCard(title: userListings[index].listingTitle, owner: userDetails.username,
+                                  listingImg: userListings[index].listingImage,
+                                  ownerImg:userDetails.imagePath);
                             }),
+                          ),
+                        ),
                     ),
-                  //TODO DYNAMIC LISTING
-                  //ListingProfileCard(userListings[index].listingTitle,userDetails.username, userListings[index].listingImage,userDetails.imagePath);
-                ),
+                    //TODO LOAD REQUEST Listing DYNAMICALLY
+                    SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GridView.count(
+                          shrinkWrap : true,
+                          physics: NeverScrollableScrollPhysics(),
+                          crossAxisCount: 2 ,
+                          scrollDirection: Axis.vertical,
+                          children: List.generate(userRequestListings.length,(index){
+                            return CustomListingCard(title: userRequestListings[index].listingTitle, owner: userDetails.username,
+                                listingImg: userRequestListings[index].listingImage,
+                                ownerImg:userDetails.imagePath);
+                          }),
+                        ),
+                      ),
                     ),
-                    ListView(
-                      padding:  EdgeInsets.all(8),
-                      children: <Widget>[
-                        reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
-                        reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
-                        reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
-                        reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
-                        reviewCard('freethings4u', 'assets/icons/default.png', 'very nice young man, thank you!', '5 days'),
-                        SizedBox(height:20),
-                      ],
-                    ),
+
                   ],
                   controller: _tabController,
                 ),
@@ -105,56 +112,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     );
   }
 }
-
-Widget reviewCard(reviewer, reviewerImg, review, time){
-  return Container(
-    height:100,
-    child: Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            CircleAvatar(
-            backgroundImage: AssetImage(reviewerImg),
-            radius: 30,
-            ),
-            SizedBox(width:15),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(reviewer,
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    )
-                ),
-                Text(review,
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                    )
-                ),
-                Text(time + " ago",
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                    )
-                ),
-              ],
-            )
-
-          ]
-        ),
-      )
-    )
-  );
-}
-
-Widget topCard(ownerImg, username, n_reviews){
+Widget topCard(ownerImg, username, context, user){
   return Stack(
       clipBehavior: Clip.none,
       children: <Widget>[
@@ -187,16 +145,6 @@ Widget topCard(ownerImg, username, n_reviews){
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left:145),
-                    child: Text(n_reviews.toString() + " reviews",
-                      style: TextStyle(
-                        color: offWhite,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
                 ],
               )
           ),
@@ -209,7 +157,9 @@ Widget topCard(ownerImg, username, n_reviews){
             height: 40,
             child: CustomCurvedButton(
               btnText: 'Edit',
-              btnPressed: (){},
+              btnPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> EditProfile(userModel: user)));
+              },
             )
           ),
         ),

@@ -1,12 +1,16 @@
+import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/Listing.dart';
-import '../common/NavigationBar.dart';
-import '../common/theme.dart';
-import 'dart:async';
+import 'package:flutter_application_1/models/MapFilter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'nearby_MapHandler.dart';
-import '../../backend/map_DataHandler.dart';
+import '../../backend/map_DatabaseHandler.dart';
+import 'nearbyFilter.dart';
+import 'package:geolocator/geolocator.dart';
+import '../common/theme.dart';
+
+
 
 class Nearby extends StatefulWidget {
   @override
@@ -14,162 +18,317 @@ class Nearby extends StatefulWidget {
 }
 
 class _NearbyState extends State<Nearby> {
+  final Completer<GoogleMapController> _controller = Completer();
 
-  MapHandler mapHandler = new MapHandler();
-  DataHandler dataHandler = new DataHandler();
-  Completer<GoogleMapController> _controller = Completer();
+  bool _serviceEnabled;
+  LocationPermission _permission;
+  bool _cardVisibility = false;
+  bool _filterMode = false;
+  bool dataLoadingStatus = false;
+  MapFilter _mapFilter;
 
+
+  MapHandler mapHandler = MapHandler();
+  DataHandler dataHandler = DataHandler();
+
+
+  Set<Marker> _markers = {};
+  List<Listing> _listing;
+  List<String> _username;
+  List<LatLng> _positions;
   LatLng _center;
-  BitmapDescriptor customIcon1;
-  Set<Marker> markers;
-  List<Listing> listing;
 
-  double _longitude, _latitude;
-  double distance;
+  //initial preset values
+  final double distance = 20;
+  final String category = '';
 
-  void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _runSystem();
+
   }
-  _NearbyState(){
-    mapHandler.getLatitudeDouble().then((value) => setState((){
-      _latitude = value;
-    }));
-    mapHandler.getLongitudeDouble().then((value) => setState((){
-      _longitude = value;
-    }));
-    mapHandler.getCurrentLocation().then((value) => setState(() {
-      _center = value;
-    }));
-    dataHandler.retrieveUserListing(_latitude, _longitude, distance).then((value) => setState(() {
-      listing = value;
-    }));
+   Future<void> _checkLocationPermission() async {
+      _serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if(!_serviceEnabled){
+        return Future.error('Location services are disabled.');
+      }
+      _permission = await Geolocator.checkPermission();
+      if(_permission == LocationPermission.denied) {
+        _permission = await Geolocator.requestPermission();
+        if(_permission == LocationPermission.deniedForever) {
+          print(_permission);
+          print(_serviceEnabled);
+          return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+        }
+      }
+      print('got permission');
+      _center = await mapHandler.getCurrentLocation();
+      setState(() {
+        _center = _center;
+      });
   }
+
+
+
+  String title ='';
+  String textDistance = '';
+  double markerDistance;
+  String date = '';
+  String user = '';
+  String imageUrl;
+
+  Future<Set<Marker>> generateMarkersFeature() async {
+    var markers = <Marker>[];
+    print('generating markers');
+    final markerIcon = await mapHandler.getBytesFromAsset('assets/location_icon.png', 100);
+    final locationIcon = await mapHandler.getBytesFromAsset('assets/location_icon1.png', 200);
+    for (int i=0; i<_listing.length; i++) {
+      print(user);
+      final marker = Marker(
+          markerId: MarkerId(LatLng(_listing[i].latitude, _listing[i].longitude).toString()),
+          position: LatLng(_listing[i].latitude, _listing[i].longitude),
+          icon: BitmapDescriptor.fromBytes(markerIcon),
+          onTap: () {
+            markerDistance = dataHandler.haversine(_listing[i].latitude, _listing[i].longitude, _center.latitude, _center.longitude);
+            var convertedDateTime = "${_listing[i].postDateTime.day.toString().padLeft(2,'0')}-${_listing[i].postDateTime.month.toString().padLeft(2,'0')}-${_listing[i].postDateTime.year.toString()}";
+            setState(() {
+              _cardVisibility = true;
+              // ignore: unnecessary_statements
+              user = _username[i];
+              date = convertedDateTime;
+              title = _listing[i].listingTitle;
+              imageUrl = _listing[i].listingImage;
+              if(markerDistance >= 1) {
+                textDistance = markerDistance.toStringAsFixed(2)+'km';
+              }
+              else {
+                textDistance = (markerDistance*100).toInt().toString()+'m';
+              }
+            });
+          }
+      );
+      markers.add(marker);
+    }
+    markers.add(
+        Marker(
+            markerId: MarkerId('location'),
+            position: _center,
+            icon: BitmapDescriptor.fromBytes(locationIcon),
+            infoWindow: InfoWindow(
+                title: 'Selected location'
+            )
+        )
+    );
+    return markers.toSet();
+  }
+
+
+
+  void _runSystem()  async{
+    setState(() {
+       dataLoadingStatus = true;
+      _markers = {};
+      _cardVisibility = false;
+    });
+    await _checkLocationPermission(); //get GPS permission
+    if(_filterMode == false){
+      if (_permission == LocationPermission.denied || !_serviceEnabled) {
+        _listing = await dataHandler.retrieveAllListing();
+        _positions = mapHandler.getPositionFromListing(_listing);
+        _markers = await mapHandler.generateMarkers(_positions);
+        _username = await dataHandler.getUsernameList(_listing);
+        print(_username);
+        setState(() {
+          _markers = _markers;
+          dataLoadingStatus = false;
+        });
+      }
+      else if (_permission == LocationPermission.always && _serviceEnabled == true) {
+        print('go to my location');
+        _center = await mapHandler.getCurrentLocation();
+        setState(() {
+          dataLoadingStatus = false;
+        });
+        await mapHandler.goToMyLocation(_controller, _center);
+        _listing = await dataHandler.retrieveFilteredListing(distance, category, _center);
+        _username = await dataHandler.getUsernameList(_listing);
+        if(_listing.isNotEmpty) {
+          _positions = mapHandler.getPositionFromListing(_listing);
+          _markers = await generateMarkersFeature();
+          setState(() {
+            _markers = _markers;
+
+          });
+        } else
+          print('listing is empty!');
+      }
+    }else if(_filterMode == true){
+      if(_mapFilter.center == null){
+        _center = await mapHandler.getCurrentLocation();
+      }else{
+        setState(() {
+          _center = _mapFilter.center;
+        });
+      }
+      setState(() {
+        dataLoadingStatus = false;
+      });
+      await mapHandler.goToMyLocation(_controller, _center);
+      _listing = await dataHandler.retrieveFilteredListing(_mapFilter.distance, _mapFilter.category, _center);
+      _username = await dataHandler.getUsernameList(_listing);
+      if(_listing.isNotEmpty) {
+        _positions = mapHandler.getPositionFromListing(_listing);
+        _markers = await generateMarkersFeature();
+        setState(() {
+          _markers = _markers;
+        });
+      }
+
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    mapHandler.createMarker(context, customIcon1);
-    //print(dataHandler.haversine( 1.4267489378462697, 103.72670044012453, 1.4336990577109694, 103.70837558813479));
     return Scaffold(
-      bottomNavigationBar: NavigationBar(2),
-      backgroundColor: offWhite,
-      body: Stack(
-        children: <Widget>[
-          GoogleMap(
-            onMapCreated: _onMapCreated,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: true,
-            initialCameraPosition: CameraPosition(
-              target: _center,
-              zoom: 15.0,
-            ),
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 40,20,0),
-                child: IconButton(
-                  icon: Icon(Icons.filter_alt),
-                  iconSize: 30,
-                  //TODO: filter button pressed
-                  onPressed: (){},
+        backgroundColor: offWhite,
+        body: dataLoadingStatus == false ? Stack(
+            children: <Widget>[
+              GoogleMap(
+                onMapCreated: (GoogleMapController controller) async {
+                  _controller.complete(controller);
+                },
+                myLocationEnabled: _serviceEnabled,
+                myLocationButtonEnabled: _serviceEnabled,
+                initialCameraPosition: CameraPosition(
+                target: _center , //initial default camera position
+                zoom: 13.0,
                 ),
+                markers: _markers,
               ),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                height:160.0,
-                width: double.infinity,
-                margin: EdgeInsets.fromLTRB(20, 0, 20, 40),
-                child: Card(
-                  clipBehavior: Clip.none,
-                  color: Colors.white,
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: AspectRatio(
-                          aspectRatio: 1/1,
-                          child: Image.asset(
-                            'assets/coffee.jpg',
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 15, 15, 15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text("Old Town White Coffee",
-                                style: TextStyle(
-                                  color: Colors.grey[800],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                )
-                            ),
-                            SizedBox(height:10),
-                            Row(
-                              children: [
-                                Icon(Icons.directions),
-                                SizedBox(width:5),
-                                Text("200m away",
-                                    style: TextStyle(
-                                      color: Colors.grey[800],
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                    )
-                                ),
-                              ],
-                            ),
-                            SizedBox(height:5),
-                            Row(
-                              children: [
-                                Icon(Icons.date_range),
-                                SizedBox(width:5),
-                                Text("12/02/2021",
-                                    style: TextStyle(
-                                      color: Colors.grey[800],
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                    )
-                                ),
-                              ],
-                            ),
-                            SizedBox(height:5),
-                            Row(
-                              children: [
-                                Icon(Icons.person),
-                                SizedBox(width:5),
-                                Text("HoneyBee",
-                                    style: TextStyle(
-                                      color: Colors.grey[800],
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                    )
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left:80),
-                                  child: Icon(Icons.keyboard_arrow_right),
-                                ),
-                              ],
-                            ),
-                          ]
-                        ),
-                      )
-                    ]
-                  )
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 40,20,0),
+                    child: IconButton(
+                      icon: Icon(Icons.filter_alt),
+                      iconSize: 30,
+                      //TODO: filter button pressed
+                      onPressed: () async {
+                        _mapFilter = await Navigator.push(context, MaterialPageRoute(builder: (context) => NearbyFilter()));
+                        if(_mapFilter != null){
+                          setState(() {
+                            _filterMode = true;
+                            _runSystem();
+                            print(_filterMode);
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ]
-      )
-
+              _cardVisibility == true?
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    height:160.0,
+                    width: double.infinity,
+                    margin: EdgeInsets.fromLTRB(20, 0, 20, 40),
+                    child: Card(
+                        clipBehavior: Clip.none,
+                        color: Colors.white,
+                        child: Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: AspectRatio(
+                                  aspectRatio: 1/1,
+                                  child:  Image.network(
+                                    imageUrl,
+                                    fit:BoxFit.fitWidth,
+                                    alignment: Alignment.center,
+                                    height:150,
+                                    width: MediaQuery.of(context).size.width,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 15, 15, 15),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(title,
+                                          style: TextStyle(
+                                            color: Colors.grey[800],
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          )
+                                      ),
+                                      SizedBox(height:10),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.directions),
+                                          SizedBox(width:5),
+                                          Text(textDistance,
+                                              style: TextStyle(
+                                                color: Colors.grey[800],
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13,
+                                              )
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height:5),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.date_range),
+                                          SizedBox(width:5),
+                                          Text(date,
+                                              style: TextStyle(
+                                                color: Colors.grey[800],
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13,
+                                              )
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height:5),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.person),
+                                          SizedBox(width:5),
+                                          Text(user,
+                                              style: TextStyle(
+                                                color: Colors.grey[800],
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13,
+                                              )
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left:80),
+                                            child: Icon(Icons.keyboard_arrow_right),
+                                          ),
+                                        ],
+                                      ),
+                                    ]
+                                ),
+                              )
+                            ]
+                        )
+                    ),
+                  ),
+                ],
+              ):Column(),
+            ]
+        ):Center(child: CircularProgressIndicator())
     );
   }
 }
