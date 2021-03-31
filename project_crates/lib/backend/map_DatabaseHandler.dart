@@ -4,6 +4,7 @@ import 'package:vector_math/vector_math.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../models/Listing.dart';
+import 'auth.dart';
 
 class DataHandler {
   static final DataHandler _dataHandler = DataHandler._internal();
@@ -18,6 +19,7 @@ class DataHandler {
   final _storageRef = FirebaseStorage.instance.ref();
   //insert current location as argument
   Future<List<Listing>> retrieveFilteredListing(double distance, String category, LatLng center) async {
+    final user = await currentUser();
     List<Listing> userNormalListing = new List<Listing>();
     try {
       if(category == "All" || category ==''){
@@ -30,7 +32,7 @@ class DataHandler {
                 center.latitude, center.longitude, value['latitude'],
                 value['longitude']);
             print('calculated: $calculatedDistance');
-            if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance) {
+            if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance && value['userID'] != user) {
               //url = getImg("normalListings", snapshot.key).toString();
               Listing normalListing = new Listing(listingID: snapshot.key,
                   userID : value['userID'],
@@ -59,7 +61,7 @@ class DataHandler {
                 value['longitude']);
             print('calculated: $calculatedDistance');
             if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance &&
-                (category == value['category'])) {
+                (category == value['category']) && value['userID'] != user) {
               //url = getImg("normalListings", snapshot.key).toString();
               Listing normalListing = new Listing(listingID: snapshot.key,
                   userID : value['userID'],
@@ -86,14 +88,15 @@ class DataHandler {
   }
   //TODO for testing, almost never use
   Future<List<Listing>> retrieveAllListing() async {
-    print('retrieveAllListing!');
+    //print('retrieveAllListing!');
+    final user = await currentUser();
     List<Listing> userNormalListing = new List<Listing>();
     String url = "";
     try {
       await _databaseRef.child("Listing").once().then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> map = snapshot.value;
         map.forEach((key, value) {
-          if (value['isRequest'] == false && value['isComplete'] == false) {
+          if (value['isRequest'] == false && value['isComplete'] == false && value['userID'] != user) {
             Listing normalListing = new Listing(listingID: snapshot.key,
                 listingTitle: value['listingTitle'],
                 category: value['category'],
