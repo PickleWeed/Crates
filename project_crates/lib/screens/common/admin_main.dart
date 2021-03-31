@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/moderator/completedReportListingPage.dart';
+import 'package:flutter_application_1/screens/moderator/logout.dart';
 import 'package:flutter_application_1/screens/moderator/reportListingPage.dart';
 
 class AdminMain extends StatefulWidget{
@@ -14,7 +15,7 @@ class _AdminMainState extends State<AdminMain>{
   final List<Widget> _children =[
     ReportListingPage(),
     CompletedReportListingPage(),
-
+    LogoutAdmin(),
   ];
   @override
   Widget build(BuildContext context){
@@ -39,7 +40,10 @@ class _AdminMainState extends State<AdminMain>{
               title: Text('Completed Listings Report'),
               icon: Icon(Icons.note),
             ),
-            
+            BottomNavigationBarItem(
+                title: Text('Logout'),
+                icon: Icon(Icons.logout)
+            ),
           ]
 
       ),
