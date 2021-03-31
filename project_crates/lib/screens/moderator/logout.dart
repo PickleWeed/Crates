@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/backend/auth.dart';
+
 
 class LogoutAdmin extends StatefulWidget {
   @override
   _LogoutAdminState createState() => _LogoutAdminState();
 }
 
-//
-// List of reports
-//
 
 class _LogoutAdminState extends State<LogoutAdmin> {
   bool dataLoading = false;
 
+
+  void _signOut() async {
+    try {
+      await signOut(context);
+    }catch(e){
+      print(e);
+    }
+  }
 
   @override
   void initState() {
@@ -20,12 +27,13 @@ class _LogoutAdminState extends State<LogoutAdmin> {
   }
 
   loadData() async {
+
     setState(() {
       // Data is still loading
       dataLoading = true;
     });
 
-
+    _signOut();
 
     setState(() {
       // Data is done loading
@@ -36,9 +44,7 @@ class _LogoutAdminState extends State<LogoutAdmin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: dataLoading == false
-            ? Container(): Center(child: CircularProgressIndicator()));
-    // body: Body());
-  }
+      // body: Body());
+    );}
 }
 

@@ -57,6 +57,18 @@ class _CategoryPageState extends State<CategoryPage> {
         body: dataLoadingStatus == false ?
         ListView(
             children: <Widget>[
+              Container(
+                color: primaryColor,
+                alignment: Alignment(-1, -1),
+                child: TextButton.icon(
+                    icon: Icon(Icons.keyboard_backspace),
+                    label: Text('Back', style: TextStyle(
+                      color: offWhite,
+                    )),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+              ),
               topCard(),
               SizedBox(height: 50),
               Padding(
