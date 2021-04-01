@@ -4,6 +4,7 @@ import 'package:flutter_application_1/backend/databaseAccess.dart';
 import 'package:flutter_application_1/backend/locationService.dart';
 import 'package:flutter_application_1/backend/storageAccess.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/screens/common/user_main.dart';
 import 'package:image_picker/image_picker.dart';
 import '../home/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -306,8 +307,7 @@ class _BodyState extends State<Body> {
 
                 await dao.addListing(newListing);
                 //execute upadate
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => Home()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => UserMain()));
               },
               color: Color(0xFFFFC857),
               shape: RoundedRectangleBorder(
