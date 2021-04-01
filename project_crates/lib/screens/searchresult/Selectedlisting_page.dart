@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/profile_presenter.dart';
@@ -7,7 +8,7 @@ import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/user.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/common/widgets.dart';
-import 'package:flutter_application_1/services/databaseAccess.dart';
+import 'package:flutter_application_1/backend/databaseAccess.dart';
 import '../listing/Editinglist_page.dart';
 
 class Selectedlisting_page extends StatefulWidget {
@@ -18,6 +19,19 @@ class Selectedlisting_page extends StatefulWidget {
   @override
   _Selectedlisting_pageState createState() => _Selectedlisting_pageState();
 }
+
+//TODO previous page to pass in listing ID, example given below
+//////////////////////////////////////////////////////////////////
+// return TextButton(
+//   child: Text('test'),
+//   onPressed: () {
+//     Navigator.of(context).push(MaterialPageRoute(
+//         builder: (context) => Selectedlisting_page(
+//               listingID: '-MX7zj0KP3sQgEkJ2J38', //listingID goes here
+//             )));
+//   },
+// );
+/////////////////////////////////////////////////////////////////
 
 class _Selectedlisting_pageState extends State<Selectedlisting_page> {
   @override
@@ -42,24 +56,25 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
   // TODO: This variable determines what buttons are built (true -> edit button, false-> report and chat buttons)
   bool currentuser;
   String listingTitle;
-  File listingImg;
+  String listingImg;
   String username;
   String description;
   String posted;
 
-  DatabaseAccess dao = new DatabaseAccess();
-  ProfilePresenter profilePresenter = new ProfilePresenter();
+  DatabaseAccess dao = DatabaseAccess();
+  ProfilePresenter profilePresenter = ProfilePresenter();
 
   @override
   Widget build(BuildContext context) {
-    if (listingTitle == null)
+    if (listingTitle == null) //check if data has loaded
       return CircularProgressIndicator(); //TODO make this look better
     else
       return Scaffold(
           backgroundColor: offWhite,
           body: SingleChildScrollView(
             child: Column(children: <Widget>[
-              listingDetailsTopCard(listingTitle, listingImg, currentuser),
+              listingDetailsTopCard(
+                  listingTitle, listingImg, currentuser, widget.listingID),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Row(
@@ -143,7 +158,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
   }
 }
 
-Widget listingDetailsTopCard(title, listingImg, currentUser) {
+Widget listingDetailsTopCard(title, listingImg, currentUser, listingID) {
   return Stack(clipBehavior: Clip.none, children: <Widget>[
     Container(
       width: double.infinity,
@@ -176,8 +191,7 @@ Widget listingDetailsTopCard(title, listingImg, currentUser) {
               ),
               Expanded(
                 child: Center(
-                  //TODO: Edit this line to use NetworkImage (for backend ppl)
-                  child: Image.file(
+                  child: Image.network(
                     listingImg,
                     fit: BoxFit.fitHeight,
                   ),
@@ -188,13 +202,23 @@ Widget listingDetailsTopCard(title, listingImg, currentUser) {
           )),
     ),
     //TODO: Set the functions when the buttons are clicked (for backend ppl)
-    reportButton(currentUser, () {}),
-    chatEditButtons(currentUser, () {}, () {})
+    reportCompleteButtons(currentUser, () {}, () {
+      FirebaseDatabase.instance
+          .reference()
+          .child('Listing')
+          .child(listingID)
+          .child('isComplete')
+          .set(true);
+      print(
+          'Listing completed'); //TODO show completion message to user and remove complete button
+    }),
+    chatEditButtons(currentUser, () {}, () {}),
   ]);
 }
 
 // return a report button only if this is true
-Widget reportButton(currentuser, btnPressed) {
+Widget reportCompleteButtons(
+    currentuser, ReportBtnPressed, CompleteBtnPressed) {
   print(currentuser);
   if (currentuser == false) {
     return Positioned(
@@ -205,7 +229,19 @@ Widget reportButton(currentuser, btnPressed) {
           height: 40,
           child: CustomCurvedButton(
             btnText: 'Report',
-            btnPressed: btnPressed,
+            btnPressed: ReportBtnPressed,
+          )),
+    );
+  } else {
+    return Positioned(
+      right: 110,
+      left: 200,
+      bottom: -20,
+      child: Container(
+          height: 40,
+          child: CustomCurvedButton(
+            btnText: 'Complete',
+            btnPressed: CompleteBtnPressed,
           )),
     );
   }

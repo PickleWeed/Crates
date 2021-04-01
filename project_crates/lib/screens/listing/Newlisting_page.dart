@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/backend/databaseAccess.dart';
+import 'package:flutter_application_1/backend/locationService.dart';
+import 'package:flutter_application_1/backend/storageAccess.dart';
 import 'package:flutter_application_1/models/Listing.dart';
-import 'package:flutter_application_1/services/databaseAccess.dart';
-import 'package:flutter_application_1/services/locationService.dart';
 import 'package:image_picker/image_picker.dart';
 import '../home/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -69,9 +69,10 @@ class _BodyState extends State<Body> {
 
   final listingTitleController = TextEditingController();
   final descriptionController = TextEditingController();
-  final imagePicker = ImagePicker();
-  LocationService loc = new LocationService();
-  DatabaseAccess dao = new DatabaseAccess();
+
+  LocationService loc = LocationService();
+  DatabaseAccess dao = DatabaseAccess();
+  StorageAccess storageAccess = StorageAccess();
 
   @override
   Widget build(BuildContext context) {
@@ -277,14 +278,19 @@ class _BodyState extends State<Body> {
               minWidth: 100, // width of the button
               height: 50,
               onPressed: () async {
-                if (listingTitleController.text == "") {
-                  print("no listing title inputted");
+                if (listingTitleController.text == '') {
+                  print('no listing title inputted');
                   return; //TODO frontend user warning for empty listingTitle/itemName
                 }
 
                 List location = await loc.getLatLong();
-                if (location == null)
-                  return; //TODO location and address optional?
+                if (location == null) {
+                  return;
+                } //TODO location and address optional?
+
+                String imageString = image != null
+                    ? await storageAccess.uploadFile(image)
+                    : null;
 
                 Listing newListing = Listing(
                   userID: userid,
@@ -293,12 +299,12 @@ class _BodyState extends State<Body> {
                   latitude: location[0],
                   category: valueChoose,
                   isRequest: isselected[1],
-                  listingImage: image.path,
+                  listingImage: imageString,
                   //listingImage: image,
                   description: descriptionController.text,
                 );
 
-                dao.addListing(newListing);
+                await dao.addListing(newListing);
                 //execute upadate
                 Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => Home()));
@@ -319,8 +325,7 @@ class _BodyState extends State<Body> {
   }
 
   Future chooseFile() async {
-    PickedFile pickedFile =
-        await imagePicker.getImage(source: ImageSource.gallery);
+    File pickedFile = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile == null) {
       print('No image selected.');
       return;

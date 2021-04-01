@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/backend/databaseAccess.dart';
+import 'package:flutter_application_1/backend/locationService.dart';
+import 'package:flutter_application_1/backend/storageAccess.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:image_picker/image_picker.dart';
 import '../home/home.dart';
@@ -55,17 +58,15 @@ class Body extends StatefulWidget {
 
 //TODO previous page to pass in listing id, example given below
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-// Widget build(BuildContext context) {
-//     return TextButton(
-//         child: Text('test'),
-//         onPressed: () {
-//           Navigator.push(
-//               context,
-//               MaterialPageRoute(
-//                   builder: (context) => Editinglist_page(),
-//                   settings: RouteSettings(
-//                       arguments: {'listingID': '-MX0Aha7l9tGdzi9gktJ'})));  //listingID goes here
-//         });
+// return TextButton(
+//     child: Text('test'),
+//     onPressed: () {
+//       Navigator.push(
+//           context,
+//           MaterialPageRoute(
+//               builder: (context) => Editinglist_page(),
+//               settings: RouteSettings(
+//                   arguments: {'listingID': '-MX0Aha7l9tGdzi9gktJ'})));  //listingID goes here
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class _BodyState extends State<Body> {
@@ -78,10 +79,15 @@ class _BodyState extends State<Body> {
         listingTitleController.text = listing.listingTitle;
         descriptionController.text = listing.description;
         valueChoose = listing.category;
-        image = listing.listingImage;
+        imageURL = listing.listingImage;
         isselected[1] = listing.isRequest;
         isselected[0] = !listing.isRequest;
         uid = listing.userID;
+        storageAccess.fileFromImageUrl(imageURL).then((file) {
+          setState(() {
+            image = file;
+          });
+        });
       });
     });
   }
@@ -91,13 +97,15 @@ class _BodyState extends State<Body> {
   List listItem = ['Vegetables', 'Canned Food', 'Dairy Product'];
   String valueChoose;
   File image;
+  String imageURL;
   String uid;
 
   final listingTitleController = TextEditingController();
   final descriptionController = TextEditingController();
-  final imagePicker = ImagePicker();
-  LocationService loc = new LocationService();
-  DatabaseAccess dao = new DatabaseAccess();
+
+  LocationService loc = LocationService();
+  DatabaseAccess dao = DatabaseAccess();
+  StorageAccess storageAccess = StorageAccess();
 
   Listing listing;
   Map passedData = {};
@@ -300,7 +308,7 @@ class _BodyState extends State<Body> {
             minWidth: 100, // width of the button
             height: 50,
             onPressed: () async {
-              if (listingTitleController.text == "") {
+              if (listingTitleController.text == '') {
                 print("no listing title inputted");
                 return; //TODO frontend user warning for empty listingTitle/itemName
               }
@@ -309,17 +317,26 @@ class _BodyState extends State<Body> {
               if (location == null)
                 return; //TODO location and address optional?
 
+              String imageString = image != null && imageURL == 'newimagechosen'
+                  ? await storageAccess.uploadFile(image)
+                  : imageURL;
+
+              if (imageURL == 'newimagechosen') {
+                storageAccess.deleteListingImage(listing.listingImage);
+              }
+
               Listing updatedListing = Listing(
-                userID: uid,
-                listingTitle: listingTitleController.text,
-                longitude: location[1],
-                latitude: location[0],
-                category: valueChoose,
-                isRequest: isselected[1],
-                listingImage: image,
-                description: descriptionController.text,
-              );
-              //TODO change hardcode after selectedListing passed in from previous page
+                  userID: uid,
+                  listingTitle: listingTitleController.text,
+                  longitude: location[1],
+                  latitude: location[0],
+                  category: valueChoose,
+                  isRequest: isselected[1],
+                  listingImage:
+                      imageString, //TODO pass in new image or old image
+                  description: descriptionController.text,
+                  isComplete: false);
+
               dao.updateListing(widget.listingID, updatedListing);
 
               Navigator.push(
@@ -340,14 +357,14 @@ class _BodyState extends State<Body> {
   }
 
   Future chooseFile() async {
-    PickedFile pickedFile =
-        await imagePicker.getImage(source: ImageSource.gallery);
+    File pickedFile = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile == null) {
       print('No image selected.');
       return;
     }
     setState(() {
       image = File(pickedFile.path);
+      imageURL = 'newimagechosen';
     });
   }
 }

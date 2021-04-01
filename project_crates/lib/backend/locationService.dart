@@ -1,7 +1,7 @@
 import 'package:location/location.dart';
 
 class LocationService {
-  final Location location = new Location();
+  final Location location = Location();
 
   //asks user for permission to access their location then returns latitude and longitude in that order in a List if permission granted, if permission not granted returns null
   Future<List<double>> getLatLong() async {
