@@ -9,6 +9,7 @@ import 'package:flutter_application_1/models/user.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/common/widgets.dart';
 import 'package:flutter_application_1/backend/databaseAccess.dart';
+import 'package:flutter_application_1/screens/listing/SendListingReport.dart';
 import '../listing/Editinglist_page.dart';
 
 class Selectedlisting_page extends StatefulWidget {
@@ -66,83 +67,83 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
 
   @override
   Widget build(BuildContext context) {
-    if (listingTitle == null) //check if data has loaded
-      return CircularProgressIndicator(); //TODO make this look better
-    else
-      return Scaffold(
-          backgroundColor: offWhite,
-          body: SingleChildScrollView(
-            child: Column(children: <Widget>[
-              listingDetailsTopCard(listingTitle, listingImg, currentuser,
-                  widget.listingID, context),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(
-                  children: [
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+    return Scaffold(
+        backgroundColor: offWhite,
+        body: listingTitle == null
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Column(children: <Widget>[
+                  listingDetailsTopCard(listingTitle, listingImg, currentuser,
+                      widget.listingID, context),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
+                      children: [
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("posted $posted",
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold)),
+                              RichText(
+                                text: TextSpan(
+                                    text: 'by ',
+                                    style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: username,
+                                        style: TextStyle(
+                                            color: Color(0xFFFFC857),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 19),
+                                      )
+                                    ]),
+                              )
+                            ])
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(children: [
+                      Text(description,
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal)),
+                    ]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20.0, 15, 20, 15),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text("posted $posted",
+                          Text('Location ',
                               style: TextStyle(
                                   color: Colors.grey,
-                                  fontSize: 17,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold)),
-                          RichText(
-                            text: TextSpan(
-                                text: 'by ',
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: username,
-                                    style: TextStyle(
-                                        color: Color(0xFFFFC857),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 19),
-                                  )
-                                ]),
-                          )
-                        ])
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(children: [
-                  Text(description,
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal)),
-                ]),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 15, 20, 15),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                  Text('Location ',
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold)),
-                ]),
-              ),
-              Container(
-                color: Colors.grey[300],
-                height: 150,
-                width: 350,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey[300],
+                        ]),
                   ),
-                ),
-              )
-            ]),
-            //bottomNavigationBar: Navigationbar(0),
-          ));
+                  Container(
+                    color: Colors.grey[300],
+                    height: 150,
+                    width: 350,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.grey[300],
+                      ),
+                    ),
+                  )
+                ]),
+                //bottomNavigationBar: Navigationbar(0),
+              ));
   }
 
   Future<String> getUID() async {
@@ -203,7 +204,7 @@ Widget listingDetailsTopCard(
           )),
     ),
     //TODO: Set the functions when the buttons are clicked (for backend ppl)
-    reportCompleteButtons(currentUser, () {}, () {
+    reportCompleteButtons(currentUser, context, listingID, () {}, () {
       FirebaseDatabase.instance
           .reference()
           .child('Listing')
@@ -226,20 +227,26 @@ Widget listingDetailsTopCard(
 
 // return a report button only if this is true
 Widget reportCompleteButtons(
-    currentuser, ReportBtnPressed, CompleteBtnPressed) {
+    currentuser, context, listingID, ReportBtnPressed, CompleteBtnPressed) {
   print(currentuser);
   if (currentuser == false) {
     return Positioned(
-      right: 110,
-      left: 200,
-      bottom: -20,
-      child: Container(
+        right: 110,
+        left: 200,
+        bottom: -20,
+        child: Container(
           height: 40,
           child: CustomCurvedButton(
             btnText: 'Report',
-            btnPressed: ReportBtnPressed,
-          )),
-    );
+            btnPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          SendListingReport(listingID: listingID)));
+            },
+          ),
+        ));
   } else {
     return Positioned(
       right: 110,

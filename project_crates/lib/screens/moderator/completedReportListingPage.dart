@@ -97,27 +97,26 @@ class _CompletedReportListingPageState
                                   label: Text('Sort'),
                                   onPressed: () {
                                     reportListings.sort((a, b) {
-                                      if(sort == false){
+                                      if (sort == false) {
                                         sort = true;
                                         return a.reportTitle
                                             .toString()
                                             .toLowerCase()
                                             .compareTo(b.reportTitle
-                                            .toString()
-                                            .toLowerCase());
-                                      }
-                                      else{
+                                                .toString()
+                                                .toLowerCase());
+                                      } else {
                                         sort = false;
                                         return b.reportTitle
                                             .toString()
                                             .toLowerCase()
                                             .compareTo(a.reportTitle
-                                            .toString()
-                                            .toLowerCase());
+                                                .toString()
+                                                .toLowerCase());
                                       }
                                     });
 
-                                    setState((){});
+                                    setState(() {});
                                   },
                                 )))
                       ],
