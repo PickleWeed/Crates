@@ -351,8 +351,8 @@ class _BodyState extends State<Body> {
                   Listing updatedListing = Listing(
                       userID: uid,
                       listingTitle: listingTitleController.text,
-                      longitude: _prediction!= null? _newLocation.longitude: 0,
-                      latitude: _prediction!= null? _newLocation.latitude: 0,
+                      longitude: _prediction!= null? _newLocation.longitude: listing.longitude,
+                      latitude: _prediction!= null? _newLocation.latitude: listing.latitude,
                       category: valueChoose,
                       isRequest: isselected[1],
                       listingImage:
