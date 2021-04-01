@@ -22,7 +22,7 @@ class ModeratorPresentor{
   //
 
   //Get list
-  Future<List<ReportListing>> readReportListingList() async{
+  Future<List<ReportListing>> readReportListingList(String name) async{
     List<ReportListing> reportListingList = new List<ReportListing>();
     await _databaseRef.child('ReportListing').once().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> map = snapshot.value;
@@ -31,15 +31,26 @@ class ModeratorPresentor{
             reportTitle: value['reportTitle'], reportOffense: value['reportOffense'],
             reportDescription: value['reportDescription'], complete: value['complete'],
             reportDate: DateTime.parse(value['reportDate']), userID: value['userID']);
-        if(reportListing.complete == "False"){
-          reportListingList.add(reportListing);
+        if(name != ""){
+          if(reportListing.complete == "False" && reportListing.reportTitle.toLowerCase().contains(name.toLowerCase())){
+            reportListingList.add(reportListing);
+            print("test");
+          }
+        }
+        else{
+          if(reportListing.complete == "False"){
+            reportListingList.add(reportListing);
+            print("test2");
+            print(name);
+          }
         }
       });
     });
+
     return reportListingList;
   }
 
-  Future<List<ReportListing>> readReportListingListCompleted() async{
+  Future<List<ReportListing>> readReportListingListCompleted(String name) async{
     List<ReportListing> reportListingList = new List<ReportListing>();
     await _databaseRef.child('ReportListing').once().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> map = snapshot.value;
@@ -48,8 +59,15 @@ class ModeratorPresentor{
             reportTitle: value['reportTitle'], reportOffense: value['reportOffense'],
             reportDescription: value['reportDescription'], complete: value['complete'],
             reportDate: DateTime.parse(value['reportDate']), userID: value['userID']);
-        if(reportListing.complete == "True"){
-          reportListingList.add(reportListing);
+        if(name != ""){
+          if(reportListing.complete == "True" && reportListing.reportTitle.toLowerCase().contains(name.toLowerCase())){
+            reportListingList.add(reportListing);
+          }
+        }
+        else{
+          if(reportListing.complete == "True"){
+            reportListingList.add(reportListing);
+          }
         }
       });
     });

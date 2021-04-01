@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/moderator/completedReportListingPage.dart';
+import 'package:flutter_application_1/screens/moderator/logout.dart';
 import 'package:flutter_application_1/screens/moderator/reportListingPage.dart';
 
 class AdminMain extends StatefulWidget{
@@ -13,8 +14,8 @@ class _AdminMainState extends State<AdminMain>{
   int _currentIndex = 0;
   final List<Widget> _children =[
     ReportListingPage(),
-    CompletedReportListingPage(),//put report page widget
-    //Put 3 or 4 diff widgets
+    CompletedReportListingPage(),
+    LogoutAdmin(),
   ];
   @override
   Widget build(BuildContext context){
@@ -38,6 +39,10 @@ class _AdminMainState extends State<AdminMain>{
             BottomNavigationBarItem(
               title: Text('Completed Listings Report'),
               icon: Icon(Icons.note),
+            ),
+            BottomNavigationBarItem(
+                title: Text('Logout'),
+                icon: Icon(Icons.logout)
             ),
           ]
 

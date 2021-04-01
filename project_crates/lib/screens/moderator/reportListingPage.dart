@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/moderator_presentor.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/ReportListing.dart';
-import 'package:flutter_application_1/screens/common/searchbar.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/moderator/oneReportListing.dart';
 
@@ -19,6 +20,9 @@ class _ReportListingPageState extends State<ReportListingPage> {
   bool dataLoading = false;
   List<ReportListing> reportListings;
   ModeratorPresentor _moderatorPresentor = new ModeratorPresentor();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchName = "";
+  bool sort = false;
 
   @override
   void initState() {
@@ -32,7 +36,7 @@ class _ReportListingPageState extends State<ReportListingPage> {
       dataLoading = true;
     });
 
-    reportListings = await _moderatorPresentor.readReportListingList();
+    reportListings = await _moderatorPresentor.readReportListingList(_searchName);
 
     setState(() {
       reportListings = reportListings;
@@ -56,7 +60,72 @@ class _ReportListingPageState extends State<ReportListingPage> {
         ),
         body: dataLoading == false
             ? Column(children: <Widget>[
-                reportHeader(context, reportListings),
+                Container(
+                    margin: EdgeInsets.fromLTRB(20, 3, 20, 3),
+                    decoration: BoxDecoration(
+                        border:
+                            Border(bottom: BorderSide(color: primaryColor))),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Icon(Icons.search),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextFormField(
+                              controller: _searchController,
+                              decoration: InputDecoration(
+                                hintText: 'Search',
+                                  border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none),
+                              onEditingComplete: (){
+                                setState(() {
+                                  loadData();
+                                });
+                              },
+                              onChanged: (val) =>
+                                  setState(() {
+                                    _searchName = val;
+                                  }),
+                            ),
+                          ),
+                        ),
+                        Align(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                                padding: EdgeInsets.only(right: 10.0),
+                                child: TextButton.icon(
+                                  icon: Icon(Icons.sort),
+                                  label: Text('Sort'),
+                                  onPressed: () {
+                                    reportListings.sort((a, b) {
+                                      if(sort == false){
+                                        sort = true;
+                                        return a.reportTitle
+                                            .toString()
+                                            .toLowerCase()
+                                            .compareTo(b.reportTitle
+                                            .toString()
+                                            .toLowerCase());
+                                      }
+                                      else{
+                                        sort = false;
+                                        return b.reportTitle
+                                            .toString()
+                                            .toLowerCase()
+                                            .compareTo(a.reportTitle
+                                            .toString()
+                                            .toLowerCase());
+                                      }
+                                    });
+
+                                    setState((){});
+                                  },
+                                )))
+                      ],
+                    )),
                 ListView.builder(
                   shrinkWrap: true,
                   itemCount: reportListings.length,
@@ -87,7 +156,8 @@ Widget reportCard(BuildContext context, ReportListing report) {
                 ),
                 onTap: () async {
                   // Load other listing details
-                  Listing listing = await ModeratorPresentor().readListing(report.listingID);
+                  Listing listing =
+                      await ModeratorPresentor().readListing(report.listingID);
 
                   // Call listing to display
                   Navigator.push(
@@ -98,47 +168,3 @@ Widget reportCard(BuildContext context, ReportListing report) {
                 }))),
   );
 }
-
-Widget reportHeader(BuildContext context, List<ReportListing> reportListings) {
-  return Container(
-      margin: EdgeInsets.fromLTRB(20, 3, 20, 3),
-      decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: primaryColor))),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Icon(Icons.search),
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton(
-                onPressed: () {
-                  showSearch(
-                      context: context, delegate: CustomSearchDelegate());
-                },
-                child: Text('Search'),
-              ), //change to search later
-            ),
-          ),
-          Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                  padding: EdgeInsets.only(right: 10.0),
-                  child: TextButton.icon(
-                    icon: Icon(Icons.sort),
-                    label: Text('Sort'),
-                    onPressed: () {
-                      reportListings.sort(
-                          (a,b){
-                            return a.reportTitle.toString().toLowerCase().compareTo(b.reportTitle.toString().toLowerCase());
-                          }
-                      );
-                    },
-                  )))
-        ],
-      ));
-}
-
-
-

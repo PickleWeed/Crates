@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/authenticate/root.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../models/user.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 var _firebaseRef = FirebaseDatabase().reference().child('users');
@@ -64,7 +65,10 @@ Future<String> currentUser() async {
 }
 
 //For Sign Out Button
-//TODO: Merge with Sign Out Button.
-Future<void> signOut() async {
+Future<void> signOut(context) async {
   await _auth.signOut();
+  displayToastMessage('Logout Successful', context);
+  await Navigator.pushReplacement(
+      context, MaterialPageRoute(builder: (context) => RootPage())
+  );
 }

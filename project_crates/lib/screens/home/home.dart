@@ -90,7 +90,7 @@ class _HomeState extends State<Home> {
                     )
                 ),
               ),
-              LastestList(userDetailList, listings),
+              LatestList(userDetailList, listings),
               SizedBox(height:30),
             ]):Center(child: CircularProgressIndicator())
     );
@@ -382,12 +382,44 @@ Widget CategoryList(context){
                           ]
                       ))
               )),
+          Container(
+              height:140.0,
+              width: 140.0,
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Dry Food')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('Dry Food',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                  image: AssetImage('assets/icons/pistachio.png')
+                              ),
+                            )
+                          ]
+                      ))
+              )),
         ],
       )
   );
 }
 
-Widget LastestList(List<User> userDetailList,List<Listing> listings){
+Widget LatestList(List<User> userDetailList,List<Listing> listings){
 
   List<CustomListingCard> listing_list = [];
 
@@ -397,7 +429,9 @@ Widget LastestList(List<User> userDetailList,List<Listing> listings){
   }
   // Get First 4 Newest Listings only
   for(int i=0;i<4;i++){
-    listing_list.add(CustomListingCard(title: listings[i].listingTitle, owner: userDetailList[i].username, listingImg: listings[i].listingImage, ownerImg: userDetailList[i].imagePath));
+    print('listingID: ${listings[i].listingID}');
+    listing_list.add(
+        CustomListingCard(listingID: listings[i].listingID, title: listings[i].listingTitle, owner: userDetailList[i].username, listingImg: listings[i].listingImage, ownerImg: userDetailList[i].imagePath));
   }
 
   return Padding(

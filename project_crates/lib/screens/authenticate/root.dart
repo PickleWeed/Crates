@@ -67,13 +67,9 @@ class _RootPageState extends State<RootPage>{
       case AuthStatus.signedIn :
         switch(adminStatus) {
           case AdminStatus.notAdmin:
-            return new UserMain(
-              // onSignedOut: _signedOut,
-            );
+            return new UserMain();
           case AdminStatus.isAdmin:
-            return new AdminMain(
-              // onSignedOut: _signedOut,
-            );
+            return new AdminMain();
         }
     }
   }

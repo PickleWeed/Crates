@@ -4,6 +4,11 @@ import 'package:flutter_application_1/backend/databaseAccess.dart';
 import 'package:flutter_application_1/backend/locationService.dart';
 import 'package:flutter_application_1/backend/storageAccess.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/screens/common/user_main.dart';
+import 'package:flutter_application_1/screens/nearby/nearby_MapHandler.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
 import '../home/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,7 +24,7 @@ class Newlisting_page extends StatelessWidget {
             backgroundColor: Color(0xFFFFC857),
             shape: RoundedRectangleBorder(
                 borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(70.0))),
+                BorderRadius.vertical(bottom: Radius.circular(70.0))),
             title: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,6 +68,9 @@ class _BodyState extends State<Body> {
     'Vegetables',
     'Canned Food',
     'Dairy Product',
+    'Snacks',
+    'Beverages',
+    'Dry Food'
   ];
   String valueChoose;
   File image;
@@ -73,6 +81,11 @@ class _BodyState extends State<Body> {
   LocationService loc = LocationService();
   DatabaseAccess dao = DatabaseAccess();
   StorageAccess storageAccess = StorageAccess();
+
+  MapHandler _mapHandler = new MapHandler();
+  Prediction _prediction;
+  LatLng _currentLocation;
+  var addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -122,8 +135,8 @@ class _BodyState extends State<Body> {
                       onPressed: (int newIndex) {
                         setState(() {
                           for (int buttonIndex = 0;
-                              buttonIndex < isselected.length;
-                              buttonIndex++) {
+                          buttonIndex < isselected.length;
+                          buttonIndex++) {
                             if (buttonIndex == newIndex) {
                               isselected[buttonIndex] = true;
                             } else {
@@ -215,7 +228,7 @@ class _BodyState extends State<Body> {
                     controller: descriptionController,
                     decoration: InputDecoration(
                         contentPadding:
-                            const EdgeInsets.fromLTRB(10, 40, 10, 40),
+                        const EdgeInsets.fromLTRB(10, 40, 10, 40),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -237,10 +250,26 @@ class _BodyState extends State<Body> {
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: Container(
                 child: TextField(
+
                     style: TextStyle(fontSize: 10),
+                    controller: addressController,
+                    onTap: ()async{
+                      _prediction = await PlacesAutocomplete.show(
+                          context: context,
+                          apiKey: _mapHandler.LocationAPIkey,
+                          mode: Mode.overlay, // Mode.fullscreen
+                          language: "en");
+                      LatLng _selected = await _mapHandler.getLatLng(_prediction);
+
+                      setState(() {
+                        _currentLocation = _selected;
+                        addressController.text = _prediction.description;
+                      });
+
+                    },
                     decoration: InputDecoration(
                         contentPadding:
-                            const EdgeInsets.fromLTRB(10, 30, 10, 30),
+                        const EdgeInsets.fromLTRB(10, 30, 10, 30),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -251,22 +280,24 @@ class _BodyState extends State<Body> {
 
           SizedBox(height: 20),
           InkWell(
-            onTap: chooseFile,
+            onTap: () async{
+              _showPicker(context);
+            },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
               child: image != null
                   ? Image.file(
-                      image,
-                      height: 200,
-                      width: 200,
-                    )
+                image,
+                height: 200,
+                width: 200,
+              )
                   : Container(
-                      height: 200.0,
-                      width: 200.0,
-                      color: Colors.grey[300],
-                      child: Icon(Icons.photo_camera,
-                          color: Colors.white, size: 50.0),
-                    ),
+                height: 200.0,
+                width: 200.0,
+                color: Colors.grey[300],
+                child: Icon(Icons.photo_camera,
+                    color: Colors.white, size: 50.0),
+              ),
             ),
           ),
 
@@ -282,11 +313,7 @@ class _BodyState extends State<Body> {
                   print('no listing title inputted');
                   return; //TODO frontend user warning for empty listingTitle/itemName
                 }
-
-                List location = await loc.getLatLong();
-                if (location == null) {
-                  return;
-                } //TODO location and address optional?
+                //TODO location and address optional?
 
                 String imageString = image != null
                     ? await storageAccess.uploadFile(image)
@@ -295,19 +322,20 @@ class _BodyState extends State<Body> {
                 Listing newListing = Listing(
                   userID: userid,
                   listingTitle: listingTitleController.text,
-                  longitude: location[1],
-                  latitude: location[0],
+                  longitude: _currentLocation.longitude,
+                  latitude: _currentLocation.latitude,
                   category: valueChoose,
                   isRequest: isselected[1],
                   listingImage: imageString,
-                  //listingImage: image,
+                  isComplete: false,
                   description: descriptionController.text,
                 );
 
                 await dao.addListing(newListing);
                 //execute upadate
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => Home()));
+                // Navigator.of(context).pushReplacement(
+                //     MaterialPageRoute(builder: (context) => Home()));
+                await Navigator.push(context, MaterialPageRoute(builder: (context) => UserMain()));
               },
               color: Color(0xFFFFC857),
               shape: RoundedRectangleBorder(
@@ -324,19 +352,63 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Future chooseFile() async {
-    File pickedFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if (pickedFile == null) {
+  Future<String> getUID() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    return user.uid;
+  }
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: Wrap(
+                children: <Widget>[
+                  ListTile(
+                      leading: Icon(Icons.photo_library),
+                      title: Text('Photo Library'),
+                      onTap: () {
+                        _gallery();
+                        Navigator.of(context).pop();
+                      }),
+                  ListTile(
+                    leading: Icon(Icons.photo_camera),
+                    title: Text('Camera'),
+                    onTap: () {
+                      _camera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+    );
+  }
+  _camera() async {
+    var _image = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50
+    );
+    if (_image == null) {
+      print('No image taken.');
+      return;
+    }
+    setState(() {
+      image = _image;
+    });
+  }
+
+  _gallery() async {
+    var _image = await  ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50
+    );
+    if (_image == null) {
       print('No image selected.');
       return;
     }
     setState(() {
-      image = File(pickedFile.path);
+      image = _image;
     });
-  }
-
-  Future<String> getUID() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    return user.uid;
   }
 }
