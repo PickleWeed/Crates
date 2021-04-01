@@ -90,7 +90,7 @@ class _HomeState extends State<Home> {
                     )
                 ),
               ),
-              LastestList(userDetailList, listings),
+              LatestList(userDetailList, listings),
               SizedBox(height:30),
             ]):Center(child: CircularProgressIndicator())
     );
@@ -419,7 +419,7 @@ Widget CategoryList(context){
   );
 }
 
-Widget LastestList(List<User> userDetailList,List<Listing> listings){
+Widget LatestList(List<User> userDetailList,List<Listing> listings){
 
   List<CustomListingCard> listing_list = [];
 
@@ -429,7 +429,9 @@ Widget LastestList(List<User> userDetailList,List<Listing> listings){
   }
   // Get First 4 Newest Listings only
   for(int i=0;i<4;i++){
-    listing_list.add(CustomListingCard(title: listings[i].listingTitle, owner: userDetailList[i].username, listingImg: listings[i].listingImage, ownerImg: userDetailList[i].imagePath));
+    print('listingID: ${listings[i].listingID}');
+    listing_list.add(
+        CustomListingCard(listingID: listings[i].listingID, title: listings[i].listingTitle, owner: userDetailList[i].username, listingImg: listings[i].listingImage, ownerImg: userDetailList[i].imagePath));
   }
 
   return Padding(

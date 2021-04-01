@@ -180,10 +180,9 @@ Widget CategoryList(List<User> userDetailList, List<Listing> listings) {
   }
 
   for(int i=0; i< listings.length;i++){
-    listing_list.add(CustomListingCard(title: listings[i].listingTitle, owner: userDetailList[i].username, listingImg: listings[i].listingImage, ownerImg: userDetailList[i].imagePath));
+    listing_list.add(CustomListingCard(listingID: listings[i].listingID, title: listings[i].listingTitle, owner: userDetailList[i].username, listingImg: listings[i].listingImage, ownerImg: userDetailList[i].imagePath));
   }
 
-  //TODO: Merge with view a listing page
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: GridView.count(

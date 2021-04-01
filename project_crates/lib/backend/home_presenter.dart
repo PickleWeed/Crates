@@ -13,13 +13,14 @@ class ListingData{
     if(category == '' || category == 'All Categories')
       noCategory = true; //mean there are no category selected
     try {
-      await _databaseRef.child("Listing").orderByChild('postDateTime').once().then((DataSnapshot snapshot) {
+      await _databaseRef.child('Listing').orderByChild('postDateTime').once().then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> map = snapshot.value;
         map.forEach((key, value) {
           if (value['isComplete'] == false &&
               (category == value['category'] || noCategory)) {
             //url = getImg("normalListings", snapshot.key).toString();
-            Listing normalListing = new Listing(listingID: snapshot.key,
+            Listing normalListing = new Listing(
+                listingID: key,
                 userID : value['userID'],
                 listingTitle: value['listingTitle'],
                 category: value['category'],
