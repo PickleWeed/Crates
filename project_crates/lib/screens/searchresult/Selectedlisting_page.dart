@@ -73,8 +73,8 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
           backgroundColor: offWhite,
           body: SingleChildScrollView(
             child: Column(children: <Widget>[
-              listingDetailsTopCard(
-                  listingTitle, listingImg, currentuser, widget.listingID),
+              listingDetailsTopCard(listingTitle, listingImg, currentuser,
+                  widget.listingID, context),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Row(
@@ -158,7 +158,8 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
   }
 }
 
-Widget listingDetailsTopCard(title, listingImg, currentUser, listingID) {
+Widget listingDetailsTopCard(
+    title, listingImg, currentUser, listingID, context) {
   return Stack(clipBehavior: Clip.none, children: <Widget>[
     Container(
       width: double.infinity,
@@ -212,7 +213,14 @@ Widget listingDetailsTopCard(title, listingImg, currentUser, listingID) {
       print(
           'Listing completed'); //TODO show completion message to user and remove complete button
     }),
-    chatEditButtons(currentUser, () {}, () {}),
+    chatEditButtons(currentUser, () {
+      print('edit button pressed');
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Editinglist_page(),
+              settings: RouteSettings(arguments: {'listingID': listingID})));
+    }, () {}),
   ]);
 }
 

@@ -56,19 +56,6 @@ class Body extends StatefulWidget {
   _BodyState createState() => _BodyState();
 }
 
-//TODO previous page to pass in listing id, example given below
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// return TextButton(
-//     child: Text('test'),
-//     onPressed: () {
-//       Navigator.push(
-//           context,
-//           MaterialPageRoute(
-//               builder: (context) => Editinglist_page(),
-//               settings: RouteSettings(
-//                   arguments: {'listingID': '-MX0Aha7l9tGdzi9gktJ'})));  //listingID goes here
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
 class _BodyState extends State<Body> {
   @override
   initState() {

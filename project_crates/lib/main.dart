@@ -1,8 +1,6 @@
 //import packages, modules, tools
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/authenticate/root.dart';
-import 'package:flutter_application_1/screens/listing/Editinglist_page.dart';
-import 'package:flutter_application_1/screens/searchresult/Selectedlisting_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,22 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber,
         platform: TargetPlatform.android,
       ),
-      home: MyHome(),
-    );
-  }
-}
-
-class MyHome extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      child: Text('test'),
-      onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => Selectedlisting_page(
-                  listingID: '-MX0Aha7l9tGdzi9gktJ', //listingID goes here
-                )));
-      },
+      home: RootPage(),
     );
   }
 }
