@@ -382,6 +382,38 @@ Widget CategoryList(context){
                           ]
                       ))
               )),
+          Container(
+              height:140.0,
+              width: 140.0,
+              child:GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Dry Food')));
+                  },
+                  child: Card(
+                      color: Colors.grey[350],
+                      margin: EdgeInsets.all(5),
+                      child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              child: Text('Dry Food',
+                                  style: TextStyle(
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
+                              child: Image(
+                                  image: AssetImage('assets/icons/pistachio.png')
+                              ),
+                            )
+                          ]
+                      ))
+              )),
         ],
       )
   );

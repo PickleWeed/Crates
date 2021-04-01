@@ -19,7 +19,7 @@ class Newlisting_page extends StatelessWidget {
             backgroundColor: Color(0xFFFFC857),
             shape: RoundedRectangleBorder(
                 borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(70.0))),
+                BorderRadius.vertical(bottom: Radius.circular(70.0))),
             title: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,6 +63,9 @@ class _BodyState extends State<Body> {
     'Vegetables',
     'Canned Food',
     'Dairy Product',
+    'Snacks',
+    'Beverages',
+    'Dry Food'
   ];
   String valueChoose;
   File image;
@@ -122,8 +125,8 @@ class _BodyState extends State<Body> {
                       onPressed: (int newIndex) {
                         setState(() {
                           for (int buttonIndex = 0;
-                              buttonIndex < isselected.length;
-                              buttonIndex++) {
+                          buttonIndex < isselected.length;
+                          buttonIndex++) {
                             if (buttonIndex == newIndex) {
                               isselected[buttonIndex] = true;
                             } else {
@@ -215,7 +218,7 @@ class _BodyState extends State<Body> {
                     controller: descriptionController,
                     decoration: InputDecoration(
                         contentPadding:
-                            const EdgeInsets.fromLTRB(10, 40, 10, 40),
+                        const EdgeInsets.fromLTRB(10, 40, 10, 40),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -240,7 +243,7 @@ class _BodyState extends State<Body> {
                     style: TextStyle(fontSize: 10),
                     decoration: InputDecoration(
                         contentPadding:
-                            const EdgeInsets.fromLTRB(10, 30, 10, 30),
+                        const EdgeInsets.fromLTRB(10, 30, 10, 30),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -256,17 +259,17 @@ class _BodyState extends State<Body> {
               borderRadius: BorderRadius.circular(20.0),
               child: image != null
                   ? Image.file(
-                      image,
-                      height: 200,
-                      width: 200,
-                    )
+                image,
+                height: 200,
+                width: 200,
+              )
                   : Container(
-                      height: 200.0,
-                      width: 200.0,
-                      color: Colors.grey[300],
-                      child: Icon(Icons.photo_camera,
-                          color: Colors.white, size: 50.0),
-                    ),
+                height: 200.0,
+                width: 200.0,
+                color: Colors.grey[300],
+                child: Icon(Icons.photo_camera,
+                    color: Colors.white, size: 50.0),
+              ),
             ),
           ),
 
