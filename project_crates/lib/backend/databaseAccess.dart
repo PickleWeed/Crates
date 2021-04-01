@@ -109,4 +109,9 @@ class DatabaseAccess {
 
     databaseRef.child("Listing").child(existingListingID).set(map);
   }
+  void markListingAsComplete(String listingID) async{
+    await databaseRef.child("Listing").child(listingID).update({
+      "isComplete": true
+    });
+  }
 }

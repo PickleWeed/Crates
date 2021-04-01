@@ -4,6 +4,10 @@ import 'package:flutter_application_1/backend/databaseAccess.dart';
 import 'package:flutter_application_1/backend/locationService.dart';
 import 'package:flutter_application_1/backend/storageAccess.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/screens/nearby/nearby_MapHandler.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
 import '../home/home.dart';
 
@@ -21,9 +25,6 @@ class Editinglist_page extends StatelessWidget {
             centerTitle: true,
             automaticallyImplyLeading: false,
             backgroundColor: Color(0xFFFFC857),
-            shape: RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.vertical(bottom: Radius.circular(70.0))),
             title: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +38,9 @@ class Editinglist_page extends StatelessWidget {
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold)),
                       ]))
-                ])),
+                ]),
+          leading: IconButton(icon: Icon(Icons.arrow_back_ios_rounded), onPressed: () => Navigator.pop(context, false),),
+        ),
         body: Body(
           listingID: listingID,
         ));
@@ -67,6 +70,7 @@ class _BodyState extends State<Body> {
         descriptionController.text = listing.description;
         valueChoose = listing.category;
         imageURL = listing.listingImage;
+        listingVenue = LatLng(listing.latitude,listing.longitude);
         isselected[1] = listing.isRequest;
         isselected[0] = !listing.isRequest;
         uid = listing.userID;
@@ -76,6 +80,7 @@ class _BodyState extends State<Body> {
           });
         });
       });
+      loadVenueName();
     });
   }
 
@@ -84,8 +89,16 @@ class _BodyState extends State<Body> {
   List listItem = ['Vegetables', 'Canned Food', 'Dairy Product','Snacks', 'Beverages', 'Dry Food'];
   String valueChoose;
   File image;
+  LatLng listingVenue;
   String imageURL;
   String uid;
+  String venueName;
+  loadVenueName() async{
+   venueName = await _mapHandler.getAddressFromLatLng(listingVenue.latitude, listingVenue.longitude);
+   setState(() {
+     addressController.text = venueName;
+   });
+  }
 
   final listingTitleController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -93,6 +106,10 @@ class _BodyState extends State<Body> {
   LocationService loc = LocationService();
   DatabaseAccess dao = DatabaseAccess();
   StorageAccess storageAccess = StorageAccess();
+  MapHandler _mapHandler = new MapHandler();
+  Prediction _prediction;
+  LatLng _newLocation;
+  var addressController = TextEditingController();
 
   Listing listing;
   Map passedData = {};
@@ -260,6 +277,23 @@ class _BodyState extends State<Body> {
                 child: Container(
                   child: TextField(
                       style: TextStyle(fontSize: 10),
+                      onTap: ()async{
+                        _prediction = await PlacesAutocomplete.show(
+                            context: context,
+                            apiKey: _mapHandler.LocationAPIkey,
+                            mode: Mode.overlay, // Mode.fullscreen
+                            language: "en");
+                        if(_prediction != null){
+                          var _selected = await _mapHandler.getLatLng(_prediction);
+
+                          setState(() {
+                            _newLocation = _selected;
+                            addressController.text = _prediction.description;
+                          });
+                        }
+
+                      },
+                      controller: addressController,
                       decoration: InputDecoration(
                           contentPadding: const EdgeInsets.fromLTRB(10, 30, 10, 30),
                           border: OutlineInputBorder(
@@ -272,7 +306,9 @@ class _BodyState extends State<Body> {
 
             SizedBox(height: 20),
             InkWell(
-              onTap: chooseFile,
+              onTap: (){
+                _showPicker(context);
+              },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
                 child: image != null
@@ -302,7 +338,7 @@ class _BodyState extends State<Body> {
 
                   List location = await loc.getLatLong();
                   if (location == null)
-                    return; //TODO location and address optional?
+                    return; //TODO location and address optional? address is compulsory
 
                   String imageString = image != null && imageURL == 'newimagechosen'
                       ? await storageAccess.uploadFile(image)
@@ -315,8 +351,8 @@ class _BodyState extends State<Body> {
                   Listing updatedListing = Listing(
                       userID: uid,
                       listingTitle: listingTitleController.text,
-                      longitude: location[1],
-                      latitude: location[0],
+                      longitude: _prediction!= null? _newLocation.longitude: 0,
+                      latitude: _prediction!= null? _newLocation.latitude: 0,
                       category: valueChoose,
                       isRequest: isselected[1],
                       listingImage:
@@ -342,16 +378,59 @@ class _BodyState extends State<Body> {
           ]),
         ));
   }
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: Wrap(
+                children: <Widget>[
+                  ListTile(
+                      leading: Icon(Icons.photo_library),
+                      title: Text('Photo Library'),
+                      onTap: () {
+                        _gallery();
+                        Navigator.of(context).pop();
+                      }),
+                  ListTile(
+                    leading: Icon(Icons.photo_camera),
+                    title: Text('Camera'),
+                    onTap: () {
+                      _camera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+    );
+  }
+  _camera() async {
+    var _image = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50
+    );
+    if (_image == null) {
+      print('No image taken.');
+      return;
+    }
+    setState(() {
+      image = _image;
+    });
+  }
 
-  Future chooseFile() async {
-    File pickedFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if (pickedFile == null) {
+  _gallery() async {
+    var _image = await  ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50
+    );
+    if (_image == null) {
       print('No image selected.');
       return;
     }
     setState(() {
-      image = File(pickedFile.path);
-      imageURL = 'newimagechosen';
+      image = _image;
     });
   }
 }
