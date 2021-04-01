@@ -18,6 +18,7 @@ class _CompletedReportListingPageState
   ModeratorPresentor _moderatorPresentor = new ModeratorPresentor();
   final TextEditingController _searchController = TextEditingController();
   String _searchName = "";
+  bool sort = false;
 
   @override
   void initState() {
@@ -96,13 +97,27 @@ class _CompletedReportListingPageState
                                   label: Text('Sort'),
                                   onPressed: () {
                                     reportListings.sort((a, b) {
-                                      return a.reportTitle
-                                          .toString()
-                                          .toLowerCase()
-                                          .compareTo(b.reportTitle
-                                              .toString()
-                                              .toLowerCase());
+                                      if(sort == false){
+                                        sort = true;
+                                        return a.reportTitle
+                                            .toString()
+                                            .toLowerCase()
+                                            .compareTo(b.reportTitle
+                                            .toString()
+                                            .toLowerCase());
+                                      }
+                                      else{
+                                        sort = false;
+                                        return b.reportTitle
+                                            .toString()
+                                            .toLowerCase()
+                                            .compareTo(a.reportTitle
+                                            .toString()
+                                            .toLowerCase());
+                                      }
                                     });
+
+                                    setState((){});
                                   },
                                 )))
                       ],

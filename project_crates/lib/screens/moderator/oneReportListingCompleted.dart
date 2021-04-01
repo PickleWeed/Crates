@@ -153,7 +153,17 @@ class _oneReportCompletedState extends State<oneReportCompleted> {
                               text: usernameReport,
                               )
                         ]))),
-
+                Container(
+                    margin: const EdgeInsets.only(left: 23.0, top: 10.0),
+                    alignment: Alignment.centerLeft,
+                    child: Text.rich(
+                        TextSpan(text: 'Report Type: ',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: widget.reportListing.reportOffense,
+                                  style: TextStyle(fontWeight: FontWeight.bold))
+                            ]))),
                 Container(
                     margin: const EdgeInsets.only(left: 23.0, top: 10.0),
                     alignment: Alignment.centerLeft,

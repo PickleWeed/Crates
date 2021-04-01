@@ -46,12 +46,12 @@ class _ListingActionFormState extends State<ListingActionForm> {
           body: ListView(
             children: [Padding(
               padding: const EdgeInsets.only(
-                  left: 32.0, right: 32.0, top: 32.0),
+                  left: 25.0, right: 25.0, top: 32.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Actions: ',
-                      textAlign: TextAlign.left, style: TextStyle(fontSize: 24)),
+                  Text('Actions ',
+                      textAlign: TextAlign.left, style: TextStyle(fontSize: 20)),
                   CheckboxListTile(
                     contentPadding: EdgeInsets.only(left: 20.0),
                     title: const Text('Delete Listing'),
