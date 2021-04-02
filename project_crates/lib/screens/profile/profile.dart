@@ -57,7 +57,85 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              topCard(userDetails.imagePath, userDetails.username, context, userDetails),
+              Stack(
+                  clipBehavior: Clip.none,
+                  children: <Widget>[
+                    Container(
+                      width: double.infinity,
+                      height: 180,
+                      child: Card(
+                          margin: EdgeInsets.zero,
+                          color: primaryColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.zero,
+                                topRight: Radius.zero,
+                                bottomLeft: Radius.circular(15),
+                                bottomRight: Radius.circular(15),
+                              )
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(145, 110,0,0),
+                                child: Text(
+                                  userDetails.username,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: offWhite,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 35,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                      ),
+                    ),
+                    Positioned(
+                      right: 20,
+                      left: 250,
+                      bottom:-20,
+                      child: Container(
+                          height: 40,
+                          child: CustomCurvedButton(
+                            btnText: 'Log out',
+                            btnPressed: () async {
+                              signOut(context);
+                            },
+                          )
+                      ),
+                    ),
+                    Positioned(
+                      right: 120,
+                      left: 150,
+                      bottom:-20,
+                      child: Container(
+                          height: 40,
+                          child: CustomCurvedButton(
+                            btnText: 'Edit',
+                            btnPressed: () async {
+                              var newDetails = await Navigator.push(context, MaterialPageRoute(builder: (context)=> EditProfile(userModel: userDetails)));
+                              print(newDetails);
+                              if(newDetails != null){
+                                loadData();
+                              }
+                            },
+                          )
+                      ),
+                    ),
+                    Positioned(
+                      left: 20,
+                      bottom: -40,
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(userDetails.imagePath),
+                        radius: 60,
+                      ),
+                    ),
+                  ]
+              ),
+
               SizedBox(height: 50),
               TabBar(
                   tabs: [
@@ -78,9 +156,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             crossAxisCount: 2 ,
                             scrollDirection: Axis.vertical,
                             children: List.generate(userListings.length,(index){
-                              return CustomListingCard(title: userListings[index].listingTitle, owner: userDetails.username,
-                                  listingImg: userListings[index].listingImage,
-                                  ownerImg:userDetails.imagePath);
+
+                              return CustomListingCard(listingID:userListings[index].listingID, title: userListings[index].listingTitle, owner: userDetails.username,
+                                  listingImg: userListings[index].listingImage, ownerImg:userDetails.imagePath);
                             }),
                           ),
                         ),
@@ -95,7 +173,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           crossAxisCount: 2 ,
                           scrollDirection: Axis.vertical,
                           children: List.generate(userRequestListings.length,(index){
-                            return CustomListingCard(title: userRequestListings[index].listingTitle, owner: userDetails.username,
+                            return CustomListingCard(listingID:userRequestListings[index].listingID,
+                                title: userRequestListings[index].listingTitle,
+                                owner: userDetails.username,
                                 listingImg: userRequestListings[index].listingImage,
                                 ownerImg:userDetails.imagePath);
                           }),
@@ -112,66 +192,3 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     );
   }
 }
-Widget topCard(ownerImg, username, context, user){
-  return Stack(
-      clipBehavior: Clip.none,
-      children: <Widget>[
-        Container(
-          width: double.infinity,
-          height: 180,
-          child: Card(
-              margin: EdgeInsets.zero,
-              color: primaryColor,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.zero,
-                    topRight: Radius.zero,
-                    bottomLeft: Radius.circular(15),
-                    bottomRight: Radius.circular(15),
-                  )
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(145, 110,0,0),
-                    child: Text(
-                      username,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: offWhite,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 35,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-          ),
-        ),
-        Positioned(
-          right: 20,
-          left: 290,
-          bottom:-20,
-          child: Container(
-            height: 40,
-            child: CustomCurvedButton(
-              btnText: 'Edit',
-              btnPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> EditProfile(userModel: user)));
-              },
-            )
-          ),
-        ),
-        Positioned(
-          left: 20,
-          bottom: -40,
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(ownerImg),
-            radius: 60,
-          ),
-        ),
-      ]
-  );
-}
-

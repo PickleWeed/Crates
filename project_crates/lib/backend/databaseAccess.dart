@@ -6,23 +6,20 @@ import 'package:flutter_application_1/models/Listing.dart';
 
 class DatabaseAccess {
   final databaseRef = FirebaseDatabase.instance.reference();
-  StorageAccess storageAccess = new StorageAccess();
+  StorageAccess storageAccess = StorageAccess();
 
   //add a listing to firebase database, returns the unique key identifier of the created node as a String
   Future<String> addListing(Listing newListing) async {
-    DatabaseReference pushedPostRef = databaseRef.child("Listing").push();
+    DatabaseReference pushedPostRef = databaseRef.child('Listing').push();
     String postKey = pushedPostRef.key;
-    String imageString = newListing.listingImage == null
-        ? null
-        : await storageAccess.uploadFile(newListing.listingImage);
-    pushedPostRef.set({
+    await pushedPostRef.set({
       "isRequest": newListing.isRequest,
       "category": newListing.category,
       "listingTitle": newListing.listingTitle,
       "description": newListing.description,
       "latitude": newListing.latitude,
       "longitude": newListing.longitude,
-      "listingImage": imageString,
+      "listingImage": newListing.listingImage,
       "postDateTime": DateTime.now().toIso8601String(),
       "userID": newListing.userID,
       "isComplete": false,
@@ -41,18 +38,17 @@ class DatabaseAccess {
         .then((DataSnapshot snapshot) async {
       Map<dynamic, dynamic> data = snapshot.value;
       Map listingData = data[key];
-      File listingImageFile =
-          await storageAccess.fileFromImageUrl(listingData['listingImage']);
       listing = Listing(
         category: listingData['category'],
         isRequest: listingData['isRequest'],
-        listingImage: listingImageFile,
+        listingImage: listingData['listingImage'],
         latitude: listingData['latitude'],
         listingTitle: listingData['listingTitle'],
         description: listingData['description'],
         postDateTime: DateTime.parse(listingData['postDateTime']),
         userID: listingData['userID'],
         longitude: listingData['longitude'],
+        isComplete: listingData['isComplete'],
       );
     });
     return listing;
@@ -77,37 +73,6 @@ class DatabaseAccess {
     return stream;
   }
 
-  //find the unique key of a listing node using its field values
-  // Future<String> findKeyOfListing(Listing existingListing) async {
-  //   List list = [];
-  //   await databaseRef
-  //       .child("Listing")
-  //       .orderByChild("userID")
-  //       .equalTo(existingListing.userID)
-  //       .once()
-  //       .then((DataSnapshot snapshot) {
-  //     Map<dynamic, dynamic> data = snapshot.value;
-  //     data.forEach((key, values) {
-  //       if (values['postDateTime'] ==
-  //               existingListing.postDateTime.toIso8601String() &&
-  //           values['latitude'] == existingListing.latitude &&
-  //           values['longitude'] == existingListing.longitude &&
-  //           values['description'] == existingListing.description &&
-  //           values['listingTitle'] == existingListing.listingTitle &&
-  //           values['category'] == existingListing.category &&
-  //           values['isRequest'] == existingListing.isRequest) {
-  //         list.add(key);
-  //       }
-  //     });
-  //   });
-  //   try {
-  //     return list[0];
-  //   } catch (e) {
-  //     print("Error finding matching listings");
-  //     return null;
-  //   }
-  // }
-
   //delete listing node using its unique key
   void deleteListingOnKey(String key) async {
     DatabaseReference entryRef = databaseRef.child("Listing").child(key);
@@ -127,28 +92,26 @@ class DatabaseAccess {
     }
   }
 
-  // void deleteListingOnValue(Listing existingListing) async {
-  //   String postKey = await findKeyOfListing(existingListing);
-  //   deleteListingOnKey(postKey);
-  // }
-
   //update an entire listing node with a new listing, postDateTime updated to DateTime.now()
   void updateListing(String existingListingID, Listing updatedListing) async {
-    String imageString = updatedListing.listingImage == null
-        ? null
-        : await storageAccess.uploadFile(updatedListing.listingImage);
     Map<String, dynamic> map = {
-      "isRequest": updatedListing.isRequest,
-      "category": updatedListing.category,
-      "listingTitle": updatedListing.listingTitle,
-      "description": updatedListing.description,
-      "latitude": updatedListing.latitude,
-      "longitude": updatedListing.longitude,
-      "listingImage": imageString,
-      "postDateTime": DateTime.now().toIso8601String(),
-      "userID": updatedListing.userID,
+      'isRequest': updatedListing.isRequest,
+      'category': updatedListing.category,
+      'listingTitle': updatedListing.listingTitle,
+      'description': updatedListing.description,
+      'latitude': updatedListing.latitude,
+      'longitude': updatedListing.longitude,
+      'listingImage': updatedListing.listingImage,
+      'postDateTime': DateTime.now().toIso8601String(),
+      'userID': updatedListing.userID,
+      'isComplete': false,
     };
 
     databaseRef.child("Listing").child(existingListingID).set(map);
+  }
+  void markListingAsComplete(String listingID) async{
+    await databaseRef.child("Listing").child(listingID).update({
+      "isComplete": true
+    });
   }
 }

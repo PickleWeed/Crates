@@ -24,20 +24,22 @@ class MapHandler {
     return _center;
   }
 
-
-  void getAddressFromLatLng() async {
+  Future<String> getAddressFromLatLng(userLatitude, userLogitude) async {
+    var placename;
     try {
       final geoposition = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       List<Placemark> placemarks = await placemarkFromCoordinates(
-          geoposition.latitude,
-          geoposition.longitude
+          userLatitude,
+          userLogitude
       );
       Placemark place = placemarks[0];
-      print('${place.locality}, ${place.postalCode}, ${place.country}');
+      print('${place.street}, ${place.postalCode}, ${place.country}');
+      placename = '${place.street}, ${place.postalCode}, ${place.country}';
     } catch(e){
       print(e);
     }
+    return placename;
   }
 
   Future<Set<Marker>> generateMarkers(List<LatLng> positions) async {

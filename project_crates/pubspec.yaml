@@ -38,11 +38,12 @@ dependencies:
   cupertino_icons: ^1.0.0
   geolocator:
   geocoding: ^1.0.5
-  #location: ^3.0.0
+  location: ^3.0.0
   vector_math:
-  fluttertoast: ^8.0.3
+  fluttertoast: 
   tflite:
   meta:
+  uuid:
 
 
 dev_dependencies:
