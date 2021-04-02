@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/databaseAccess.dart';
-import 'package:flutter_application_1/backend/locationService.dart';
 import 'package:flutter_application_1/backend/storageAccess.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/screens/common/user_main.dart';
@@ -24,7 +23,7 @@ class Newlisting_page extends StatelessWidget {
             backgroundColor: Color(0xFFFFC857),
             shape: RoundedRectangleBorder(
                 borderRadius:
-                BorderRadius.vertical(bottom: Radius.circular(70.0))),
+                    BorderRadius.vertical(bottom: Radius.circular(70.0))),
             title: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,7 +77,6 @@ class _BodyState extends State<Body> {
   final listingTitleController = TextEditingController();
   final descriptionController = TextEditingController();
 
-  LocationService loc = LocationService();
   DatabaseAccess dao = DatabaseAccess();
   StorageAccess storageAccess = StorageAccess();
 
@@ -135,8 +133,8 @@ class _BodyState extends State<Body> {
                       onPressed: (int newIndex) {
                         setState(() {
                           for (int buttonIndex = 0;
-                          buttonIndex < isselected.length;
-                          buttonIndex++) {
+                              buttonIndex < isselected.length;
+                              buttonIndex++) {
                             if (buttonIndex == newIndex) {
                               isselected[buttonIndex] = true;
                             } else {
@@ -228,7 +226,7 @@ class _BodyState extends State<Body> {
                     controller: descriptionController,
                     decoration: InputDecoration(
                         contentPadding:
-                        const EdgeInsets.fromLTRB(10, 40, 10, 40),
+                            const EdgeInsets.fromLTRB(10, 40, 10, 40),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -250,26 +248,27 @@ class _BodyState extends State<Body> {
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: Container(
                 child: TextField(
-
                     style: TextStyle(fontSize: 10),
                     controller: addressController,
-                    onTap: ()async{
+                    onTap: () async {
                       _prediction = await PlacesAutocomplete.show(
                           context: context,
                           apiKey: _mapHandler.LocationAPIkey,
                           mode: Mode.overlay, // Mode.fullscreen
                           language: "en");
-                      LatLng _selected = await _mapHandler.getLatLng(_prediction);
+                      if (_prediction != null) {
+                        LatLng _selected =
+                            await _mapHandler.getLatLng(_prediction);
 
-                      setState(() {
-                        _currentLocation = _selected;
-                        addressController.text = _prediction.description;
-                      });
-
+                        setState(() {
+                          _currentLocation = _selected;
+                          addressController.text = _prediction.description;
+                        });
+                      }
                     },
                     decoration: InputDecoration(
                         contentPadding:
-                        const EdgeInsets.fromLTRB(10, 30, 10, 30),
+                            const EdgeInsets.fromLTRB(10, 30, 10, 30),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -280,24 +279,24 @@ class _BodyState extends State<Body> {
 
           SizedBox(height: 20),
           InkWell(
-            onTap: () async{
+            onTap: () async {
               _showPicker(context);
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
               child: image != null
                   ? Image.file(
-                image,
-                height: 200,
-                width: 200,
-              )
+                      image,
+                      height: 200,
+                      width: 200,
+                    )
                   : Container(
-                height: 200.0,
-                width: 200.0,
-                color: Colors.grey[300],
-                child: Icon(Icons.photo_camera,
-                    color: Colors.white, size: 50.0),
-              ),
+                      height: 200.0,
+                      width: 200.0,
+                      color: Colors.grey[300],
+                      child: Icon(Icons.photo_camera,
+                          color: Colors.white, size: 50.0),
+                    ),
             ),
           ),
 
@@ -310,14 +309,26 @@ class _BodyState extends State<Body> {
               height: 50,
               onPressed: () async {
                 if (listingTitleController.text == '') {
-                  print('no listing title inputted');
+                  print('No listing title inputted');
                   return; //TODO frontend user warning for empty listingTitle/itemName
                 }
-                //TODO location and address optional?
 
-                String imageString = image != null
-                    ? await storageAccess.uploadFile(image)
-                    : null;
+                if (valueChoose == null) {
+                  print('No category selected');
+                  return; //TODO frontend user warning for unselected category
+                }
+
+                if (image == null) {
+                  print('No image uploaded');
+                  return; //TODO frontend user warning for no uploaded image
+                }
+
+                if (_currentLocation == null) {
+                  print('No location selected');
+                  return; //TODO frontend user warning no unselected location
+                }
+
+                String imageString = await storageAccess.uploadFile(image);
 
                 Listing newListing = Listing(
                   userID: userid,
@@ -335,7 +346,8 @@ class _BodyState extends State<Body> {
                 //execute upadate
                 // Navigator.of(context).pushReplacement(
                 //     MaterialPageRoute(builder: (context) => Home()));
-                await Navigator.push(context, MaterialPageRoute(builder: (context) => UserMain()));
+                await Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => UserMain()));
               },
               color: Color(0xFFFFC857),
               shape: RoundedRectangleBorder(
@@ -356,6 +368,7 @@ class _BodyState extends State<Body> {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     return user.uid;
   }
+
   void _showPicker(context) {
     showModalBottomSheet(
         context: context,
@@ -383,13 +396,12 @@ class _BodyState extends State<Body> {
               ),
             ),
           );
-        }
-    );
+        });
   }
+
   _camera() async {
     var _image = await ImagePicker.pickImage(
-        source: ImageSource.camera, imageQuality: 50
-    );
+        source: ImageSource.camera, imageQuality: 50);
     if (_image == null) {
       print('No image taken.');
       return;
@@ -400,9 +412,8 @@ class _BodyState extends State<Body> {
   }
 
   _gallery() async {
-    var _image = await  ImagePicker.pickImage(
-        source: ImageSource.gallery, imageQuality: 50
-    );
+    var _image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50);
     if (_image == null) {
       print('No image selected.');
       return;
