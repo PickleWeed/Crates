@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/databaseAccess.dart';
+import 'package:flutter_application_1/backend/match_presenter.dart';
 import 'package:flutter_application_1/backend/storageAccess.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/models/ListingImageData.dart';
+import 'package:flutter_application_1/screens/common/error_popup_widgets.dart';
 import 'package:flutter_application_1/screens/common/user_main.dart';
 import 'package:flutter_application_1/screens/nearby/nearby_MapHandler.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -10,7 +13,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_application_1/screens/common/error_popup_widgets.dart';
 
 class Newlisting_page extends StatelessWidget {
   String _search;
@@ -24,7 +26,7 @@ class Newlisting_page extends StatelessWidget {
             backgroundColor: Color(0xFFFFC857),
             shape: RoundedRectangleBorder(
                 borderRadius:
-                BorderRadius.vertical(bottom: Radius.circular(70.0))),
+                    BorderRadius.vertical(bottom: Radius.circular(20.0))),
             title: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,8 +52,6 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  //String isSelected;
-
   @override
   initState() {
     super.initState();
@@ -91,9 +91,8 @@ class _BodyState extends State<Body> {
     return Scaffold(
       body: SingleChildScrollView(
         //body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+            Widget>[
           SizedBox(height: 20),
           InkWell(
             onTap: () async {
@@ -104,22 +103,22 @@ class _BodyState extends State<Body> {
                 borderRadius: BorderRadius.circular(20.0),
                 child: image != null
                     ? Image.file(
-                  image,
-                  height: 200,
-                  width: 200,
-                )
+                        image,
+                        height: 200,
+                        width: 200,
+                      )
                     : Container(
-                  height: 200.0,
-                  width: 200.0,
-                  color: Colors.grey[300],
-                  child: Icon(Icons.photo_camera,
-                      color: Colors.white, size: 50.0),
-                ),
+                        height: 200.0,
+                        width: 200.0,
+                        color: Colors.grey[300],
+                        child: Icon(Icons.photo_camera,
+                            color: Colors.white, size: 50.0),
+                      ),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal:20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Text('I am...',
                 // Text placement will change depend on the search result
                 textAlign: TextAlign.left,
@@ -137,13 +136,12 @@ class _BodyState extends State<Body> {
                   //color: Colors.grey,
 
                   child: Container(
-                    color: Colors.transparent,
+                    color: Colors.grey[300],
                     child: ToggleButtons(
                       borderRadius: BorderRadius.circular(10.0),
                       isSelected: isselected,
-                      color: Colors.grey,
+                      color: Colors.white,
                       selectedColor: Color(0xFFFFC857),
-                      borderColor: Colors.grey,
                       fillColor: Colors.grey,
                       renderBorder: true,
                       children: <Widget>[
@@ -161,8 +159,8 @@ class _BodyState extends State<Body> {
                       onPressed: (int newIndex) {
                         setState(() {
                           for (var buttonIndex = 0;
-                          buttonIndex < isselected.length;
-                          buttonIndex++) {
+                              buttonIndex < isselected.length;
+                              buttonIndex++) {
                             if (buttonIndex == newIndex) {
                               isselected[buttonIndex] = true;
                             } else {
@@ -177,140 +175,133 @@ class _BodyState extends State<Body> {
               ]),
           Align(
               alignment: Alignment(-0.8, 0),
-              child: Text(
-                  'a', // Text placement will change depend on the search result
+              child: Text('a',
+                  // Text placement will change depend on the search result
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       color: Colors.grey,
                       fontSize: 35,
                       fontWeight: FontWeight.bold))),
-
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: Container(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey)),
+                child: DropdownButton(
+                  hint: Text(
+                    'Option',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                  value: valueChoose,
+                  isExpanded: true,
+                  onChanged: (newValue) {
+                    setState(() {
+                      valueChoose = newValue;
+                    });
+                  },
+                  items: listItem.map((valueItem) {
+                    return DropdownMenuItem(
+                      value: valueItem,
+                      child: Text(valueItem),
+                    );
+                  }).toList(),
+                )),
+          ),
+          Align(
+              alignment: Alignment(-0.7, 0),
+              child: Text("it's called ...",
+                  // Text placement will change depend on the search result
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold))),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: Container(
+              child: TextField(
+                  style: TextStyle(fontSize: 10),
+                  controller: listingTitleController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey)),
-                  child: DropdownButton(
-                    hint: Text(
-                      'Option',
-                      style: TextStyle(color: Colors.grey, fontSize: 20),
                     ),
-                    value: valueChoose,
-                    isExpanded: true,
-                    onChanged: (newValue) {
-                      setState(() {
-                        valueChoose = newValue;
-                      });
-                    },
-                    items: listItem.map((valueItem) {
-                      return DropdownMenuItem(
-                        value: valueItem,
-                        child: Text(valueItem),
-                      );
-                    }).toList(),
+                    hintText: 'Name of the product',
                   )),
             ),
-            Align(
-                alignment: Alignment(-0.7, 0),
-                child: Text(
-                    "it's called ...", // Text placement will change depend on the search result
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold))),
-            Padding(
+          ),
+          Align(
+              alignment: Alignment(-0.5, 0),
+              child: Text('Additional details',
+                  // Text placement will change depend on the search result
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold))),
+          Container(
+            child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: Container(
                 child: TextField(
-                    style: TextStyle(fontSize: 20,color: Colors.grey),
-                    controller: listingTitleController,
+                    style: TextStyle(fontSize: 10),
+                    controller: descriptionController,
                     decoration: InputDecoration(
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(10, 40, 10, 40),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        hintText: 'Name of the product',hintStyle: TextStyle(color: Colors.grey)
-                    )),
+                        hintText: 'Description of the product')),
               ),
             ),
-            Align(
-                alignment: Alignment(-0.5, 0),
-                child: Text(
-                    "Additional details", // Text placement will change depend on the search result
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold))),
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                child: Container(
-                  child: TextField(
-                      style: TextStyle(fontSize: 15,color: Colors.grey),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      controller: descriptionController,
-                      decoration: InputDecoration(
-                          contentPadding:
-                          const EdgeInsets.fromLTRB(10, 10, 10, 60),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          hintText: 'Description of the product',hintStyle: TextStyle(color: Colors.grey))
-                  ),
-                ),
-              ),
-            ),
-            Align(
-                alignment: Alignment(-0.77, 0),
-                child: Text(
-                    "Address", // Text placement will change depend on the search result
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold))),
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                child: Container(
-                  child: TextField(
-                      style: TextStyle(fontSize: 15,color: Colors.grey),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      controller: addressController,
-                      onTap: () async {
-                        _prediction = await PlacesAutocomplete.show(
-                            context: context,
-                            apiKey: _mapHandler.LocationAPIkey,
-                            mode: Mode.overlay, // Mode.fullscreen
-                            language: "en");
-                        if (_prediction != null) {
-                          LatLng _selected =
-                          await _mapHandler.getLatLng(_prediction);
+          ),
+          Align(
+              alignment: Alignment(-0.8, 0),
+              child: Text('Address',
+                  // Text placement will change depend on the search result
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold))),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              child: Container(
+                child: TextField(
+                    style: TextStyle(fontSize: 10),
+                    controller: addressController,
+                    onTap: () async {
+                      _prediction = await PlacesAutocomplete.show(
+                          context: context,
+                          apiKey: _mapHandler.LocationAPIkey,
+                          mode: Mode.overlay, // Mode.fullscreen
+                          language: 'en');
+                      if (_prediction != null) {
+                        var _selected =
+                            await _mapHandler.getLatLng(_prediction);
 
-                          setState(() {
-                            _currentLocation = _selected;
-                            addressController.text = _prediction.description;
-                          });
-                        }
-                      },
-                      decoration: InputDecoration(
-                          contentPadding:
-                          const EdgeInsets.fromLTRB(10, 30, 10, 30),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),),
-                          hintText: 'Address',hintStyle: TextStyle(color: Colors.grey))
-                  ),
-                ),
+                        setState(() {
+                          _currentLocation = _selected;
+                          addressController.text = _prediction.description;
+                        });
+                      }
+                    },
+                    decoration: InputDecoration(
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(10, 30, 10, 30),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        hintText: 'Address')),
               ),
             ),
-
-            SizedBox(height: 20),
+          ),
+          SizedBox(height: 20),
           Container(
             padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
             //alignment: Alignment(0.7,0),
@@ -320,63 +311,117 @@ class _BodyState extends State<Body> {
               // width of the button
               height: 50,
               onPressed: () async {
-                if (listingTitleController.text == '') {
-                  
-                  await Dialogs.errorAbortDialog(context, 'Name of product is empty.\nPlease fill up the respective field.');
-                  print('No listing title inputted');
-                  return; //TODO frontend user warning for empty listingTitle/itemName
+                // validation
+                if (image == null) {
+                  await Dialogs.errorAbortDialog(
+                      context, 'Please select a photo!');
+                  print('No image uploaded');
+                  return;
                 }
 
                 if (valueChoose == null) {
-                  
-                  await Dialogs.errorAbortDialog(context, 'Please select a category.');
+                  final action = await Dialogs.errorAbortDialog(
+                      context, 'Please select a category!');
                   print('No category selected');
-                  return; //TODO frontend user warning for unselected category
+                  return;
                 }
 
-                if (image == null) {
-                  await Dialogs.errorAbortDialog(context, 'Please upload a photo.');
-                  print('No image uploaded');
-                  return; //TODO frontend user warning for no uploaded image
+                if (listingTitleController.text == '') {
+                  final action = await Dialogs.errorAbortDialog(
+                      context, 'Name of product cannot be empty!');
+                  print('No listing title inputted');
+                  return;
                 }
 
                 if (_currentLocation == null) {
-                  await Dialogs.errorAbortDialog(context, 'Address is empty.\nPlease fill up the respective field.');
+                  await Dialogs.errorAbortDialog(
+                      context, 'Address cannot be empty!\n');
                   print('No location selected');
-                  return; //TODO frontend user warning no unselected location
+                  return;
                 }
 
+                // upload image
                 var imageString = await storageAccess.uploadFile(image);
 
-                var newListing = Listing(
-                  userID: userid,
-                  listingTitle: listingTitleController.text,
-                  longitude: _currentLocation.longitude,
-                  latitude: _currentLocation.latitude,
-                  category: valueChoose,
-                  isRequest: isselected[1],
-                  listingImage: imageString,
-                  isComplete: false,
-                  description: descriptionController.text,
-                );
+                var mp = MatchPresenter();
+                var classifications = await mp.fetchCategories(imageString);
+                var matches;
 
-                await dao.addListing(newListing);
-                //execute update
-                // Navigator.of(context).pushReplacement(
-                //     MaterialPageRoute(builder: (context) => Home()));
-                await Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => UserMain()));
+                // if it is a request listing, then try to do matches
+                if (isselected[1]) {
+                  matches = await mp.getMatches(classifications);
+                }
+
+                // if there are matches, display dialog
+                if (isselected[1] && matches!= null) {
+                  print(matches.length);
+                  print('At least one found!');
+
+                  await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return matchesDialog(context, matches, () async {
+                          // user clicks on "Post Anyway"
+                          var listingID = await postListing(
+                            context,
+                            dao,
+                            userid,
+                            listingTitleController.text,
+                            _currentLocation.longitude,
+                            _currentLocation.latitude,
+                            valueChoose,
+                            isselected[1],
+                            imageString,
+                            descriptionController.text,
+                          );
+
+                          // close popup
+                          await Navigator.of(context).pop();
+
+                          // push replace home page
+                          await Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserMain()));
+                          return;
+                        });
+                      });
+                }else{
+                  // post listing
+                  await print('No matches, or not a Request listing!');
+                  var listingID = await postListing(
+                    context,
+                    dao,
+                    userid,
+                    listingTitleController.text,
+                    _currentLocation.longitude,
+                    _currentLocation.latitude,
+                    valueChoose,
+                    isselected[1],
+                    imageString,
+                    descriptionController.text,
+                  );
+
+                  // add image classification for this listing to db
+                  await print('we got thelisting!!!! $listingID');
+                  var temp = await ListingImageData(listingID: listingID, categories: classifications);
+                  await print('LID: ${temp.listingID}, ${temp.categories}');
+                  await mp.addListingImageData(temp);
+
+                  // push replace home page
+                  await Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => UserMain()));
+                }
+
               },
               color: Color(0xFFFFC857),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0)),
 
               child: Text('Post',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 20)),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 35)),
             ),
           ),
-
-          //////////////////////////////////////////////////////////////////////////////////////
         ]),
       ),
     );
@@ -444,7 +489,7 @@ class _BodyState extends State<Body> {
 
 // builds the pop dialog
 // TODO: need to pass in data of the matched listings
-Widget matchesDialog(context) {
+Widget matchesDialog(context, List<Listing> matches, postanyway) {
   return AlertDialog(
       title: Text('Hold on! We found some matches!'),
       content: Container(
@@ -452,19 +497,17 @@ Widget matchesDialog(context) {
         width: 300.0, // Change as per your requirement
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: 5,
+          itemCount: matches.length,
           itemBuilder: (BuildContext context, int index) {
-            return matchCard(
-                'Match!',
-                'This is a test description of the food!!',
-                'assets/noodles.jpg', () {
+            return matchCard(matches[index].listingTitle,
+                matches[index].description, matches[index].listingImage, () {
               print('tapped');
             });
           },
         ),
       ),
       actions: [
-        TextButton(child: Text('Post Anyway'), onPressed: () {}),
+        TextButton(child: Text('Post Anyway'), onPressed: postanyway),
         TextButton(
             child: Text('Cancel'),
             onPressed: () {
@@ -482,7 +525,7 @@ Widget matchCard(String title, String description, String listingImg, onTap) {
         child: ListTile(
           leading: CircleAvatar(
             radius: 30,
-            backgroundImage: AssetImage(
+            backgroundImage: NetworkImage(
                 listingImg), // no matter how big it is, it won't overflow
           ),
           contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
@@ -500,4 +543,24 @@ Widget matchCard(String title, String description, String listingImg, onTap) {
           trailing: Icon(Icons.keyboard_arrow_right),
         )),
   );
+}
+
+Future<String> postListing(context, dao, userid, title, loc_long, loc_lat, cat,
+    isselected, imageString, description) async {
+  // create listing
+  var newListing = await Listing(
+    userID: userid,
+    listingTitle: title,
+    longitude: loc_long,
+    latitude: loc_lat,
+    category: cat,
+    isRequest: isselected,
+    listingImage: imageString,
+    isComplete: false,
+    description: description,
+  );
+
+  var listingID = await dao.addListing(newListing);
+  return listingID;
+
 }
