@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/databaseAccess.dart';
 import 'package:flutter_application_1/backend/storageAccess.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/screens/common/error_popup_widgets.dart';
 import 'package:flutter_application_1/screens/common/user_main.dart';
 import 'package:flutter_application_1/screens/nearby/nearby_MapHandler.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -14,6 +15,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class Newlisting_page extends StatelessWidget {
   String _search;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,8 +95,30 @@ class _BodyState extends State<Body> {
         //body: Center(
         child: Column(children: <Widget>[
           SizedBox(height: 20),
+          InkWell(
+            onTap: () async {
+              _showPicker(context);
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: image != null
+                  ? Image.file(
+                image,
+                height: 200,
+                width: 200,
+              )
+                  : Container(
+                height: 200.0,
+                width: 200.0,
+                color: Colors.grey[300],
+                child: Icon(Icons.photo_camera,
+                    color: Colors.white, size: 50.0),
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
           Align(
-              alignment: Alignment(-0.7, 0),
+              alignment: Alignment(-0.8, 0),
               child: Text(
                   'I am...', // Text placement will change depend on the search result
                   textAlign: TextAlign.left,
@@ -110,12 +135,13 @@ class _BodyState extends State<Body> {
                   //color: Colors.grey,
 
                   child: Container(
-                    color: Colors.grey[300],
+                    color: Colors.transparent,
                     child: ToggleButtons(
                       borderRadius: BorderRadius.circular(10.0),
                       isSelected: isselected,
-                      color: Colors.white,
+                      color: Colors.grey,
                       selectedColor: Color(0xFFFFC857),
+                      borderColor: Colors.grey,
                       fillColor: Colors.grey,
                       renderBorder: true,
                       children: <Widget>[
@@ -148,7 +174,7 @@ class _BodyState extends State<Body> {
                 ),
               ]),
           Align(
-              alignment: Alignment(-0.8, 0),
+              alignment: Alignment(-0.85, 0),
               child: Text(
                   'a', // Text placement will change depend on the search result
                   textAlign: TextAlign.left,
@@ -162,13 +188,13 @@ class _BodyState extends State<Body> {
             child: Container(
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                 decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: Colors.transparent,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.grey)),
                 child: DropdownButton(
                   hint: Text(
                     'Option',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
+                    style: TextStyle(color: Colors.grey, fontSize: 20),
                   ),
                   value: valueChoose,
                   isExpanded: true,
@@ -198,13 +224,13 @@ class _BodyState extends State<Body> {
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Container(
               child: TextField(
-                  style: TextStyle(fontSize: 10),
+                style: TextStyle(fontSize: 20,color: Colors.grey),
                   controller: listingTitleController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    hintText: 'Name of the product',
+                      hintText: 'Name of the product',hintStyle: TextStyle(color: Colors.grey)
                   )),
             ),
           ),
@@ -222,20 +248,23 @@ class _BodyState extends State<Body> {
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: Container(
                 child: TextField(
-                    style: TextStyle(fontSize: 10),
+                    style: TextStyle(fontSize: 15,color: Colors.grey),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
                     controller: descriptionController,
                     decoration: InputDecoration(
                         contentPadding:
-                            const EdgeInsets.fromLTRB(10, 40, 10, 40),
+                            const EdgeInsets.fromLTRB(10, 10, 10, 60),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        hintText: 'Description of the product')),
+                        hintText: 'Description of the product',hintStyle: TextStyle(color: Colors.grey))
+                ),
               ),
             ),
           ),
           Align(
-              alignment: Alignment(-0.8, 0),
+              alignment: Alignment(-0.77, 0),
               child: Text(
                   "Address", // Text placement will change depend on the search result
                   textAlign: TextAlign.left,
@@ -248,7 +277,9 @@ class _BodyState extends State<Body> {
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: Container(
                 child: TextField(
-                    style: TextStyle(fontSize: 10),
+                    style: TextStyle(fontSize: 15,color: Colors.grey),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
                     controller: addressController,
                     onTap: () async {
                       _prediction = await PlacesAutocomplete.show(
@@ -270,35 +301,15 @@ class _BodyState extends State<Body> {
                         contentPadding:
                             const EdgeInsets.fromLTRB(10, 30, 10, 30),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        hintText: 'Address')),
+                          borderRadius: BorderRadius.circular(10),),
+                        hintText: 'Address',hintStyle: TextStyle(color: Colors.grey))
+                ),
               ),
             ),
           ),
 
           SizedBox(height: 20),
-          InkWell(
-            onTap: () async {
-              _showPicker(context);
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: image != null
-                  ? Image.file(
-                      image,
-                      height: 200,
-                      width: 200,
-                    )
-                  : Container(
-                      height: 200.0,
-                      width: 200.0,
-                      color: Colors.grey[300],
-                      child: Icon(Icons.photo_camera,
-                          color: Colors.white, size: 50.0),
-                    ),
-            ),
-          ),
+
 
           Container(
             padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -309,23 +320,29 @@ class _BodyState extends State<Body> {
               height: 50,
               onPressed: () async {
                 if (listingTitleController.text == '') {
+                  final action =
+                  await Dialogs.errorAbortDialog(context, 'Name of product is empty.\nPlease fill up the respective field.');
                   print('No listing title inputted');
-                  return; //TODO frontend user warning for empty listingTitle/itemName
+                  return;
                 }
 
                 if (valueChoose == null) {
+                  final action =
+                  await Dialogs.errorAbortDialog(context, 'Please select a category.');
                   print('No category selected');
-                  return; //TODO frontend user warning for unselected category
+                  return;
                 }
 
                 if (image == null) {
+                  await Dialogs.errorAbortDialog(context, 'Please upload a photo.');
                   print('No image uploaded');
-                  return; //TODO frontend user warning for no uploaded image
+                  return;
                 }
 
                 if (_currentLocation == null) {
+                  await Dialogs.errorAbortDialog(context, 'Address is empty.\nPlease fill up the respective field.');
                   print('No location selected');
-                  return; //TODO frontend user warning no unselected location
+                  return;
                 }
 
                 String imageString = await storageAccess.uploadFile(image);
@@ -354,7 +371,7 @@ class _BodyState extends State<Body> {
                   borderRadius: BorderRadius.circular(30.0)),
 
               child: Text('Post',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 35)),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 20)),
             ),
           ),
 
