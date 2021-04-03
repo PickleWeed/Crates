@@ -6,19 +6,19 @@ import 'package:http/http.dart' as http;
 
 class MatchPresenter {
   final _databaseRef = FirebaseDatabase.instance.reference();
-  String url = "api.foodai.org";
+  String url = 'api.foodai.org';
 
   Future<Map<String, double>> fetchCategories(String foodurl) async {
-    Map map = Map<String, double>();
+    Map map = <String, double>{};
     final response = await http.post(
       Uri.https('api.foodai.org', 'v1/classify'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        "image_url": foodurl,
-        "num_tag": '3',
-        "api_key": 'c8d4e2ec8f5190f923de53e5d47972a698ce7054',
+        'image_url': foodurl,
+        'num_tag': '3',
+        'api_key': 'c8d4e2ec8f5190f923de53e5d47972a698ce7054',
       }),
     );
 
@@ -28,7 +28,7 @@ class MatchPresenter {
       var categories = responseJson['food_results_by_category'];
       var length = responseJson['food_results_by_category'].length;
 
-      for (int i = 0; i < length; i++) {
+      for (var i = 0; i < length; i++) {
         var weight = double.parse(categories[i][1]);
         // don't store if the weight is not at least 0.7
         if (weight >= 0.7) {
@@ -39,13 +39,16 @@ class MatchPresenter {
     //If no response == 200, means no match
     else {}
 
+    if (map.isEmpty){
+      return null;
+    }
     return map;
   }
 
   Future addListingImageData(ListingImageData data) async {
-    await _databaseRef.child("ListingImageData").push().set({
-      "listingID": data.listingID,
-      "categories": data.categories,
+    await _databaseRef.child('ListingImageData').push().set({
+      'listingID': data.listingID,
+      'categories': data.categories,
     });
   }
 

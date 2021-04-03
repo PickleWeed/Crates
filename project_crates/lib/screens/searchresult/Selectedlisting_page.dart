@@ -99,7 +99,6 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Back'),
           automaticallyImplyLeading: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_rounded),

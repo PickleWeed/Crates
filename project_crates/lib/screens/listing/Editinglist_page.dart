@@ -377,7 +377,7 @@ class _BodyState extends State<Body> {
 
               // Navigator.push(
               //     context, MaterialPageRoute(builder: (context) => Home()));
-              await Navigator.push(
+              await Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (context) => UserMain()));
             },
             color: Color(0xFFFFC857),
