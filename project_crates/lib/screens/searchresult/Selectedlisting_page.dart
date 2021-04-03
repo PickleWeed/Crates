@@ -208,7 +208,8 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
                             ),
                           ],
                         )
-                      : Container()
+                      : Container(),
+                  SizedBox(height:20),
                 ]),
                 //bottomNavigationBar: Navigationbar(0),
               ));
@@ -260,35 +261,87 @@ Widget listingDetailsTopCard(
           )),
     ),
     //TODO: Set the functions when the buttons are clicked (for backend ppl)
-    reportCompleteButtons(currentUser, context, listingID, () {}, () {
+    ...ownerButtons(currentUser, context, listingID,
+    // CompleteBtnPressed
+    () {
       FirebaseDatabase.instance
           .reference()
           .child('Listing')
           .child(listingID)
           .child('isComplete')
           .set(true);
-      print(
-          'Listing completed'); //TODO show completion message to user and remove complete button
-    }),
-    chatEditButtons(currentUser, () {
-      print('edit button pressed');
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Editinglist_page(),
-              settings: RouteSettings(arguments: {'listingID': listingID})));
-    }, () {}),
+      //TODO show completion message to user and remove complete button
+      print('Listing completed');
+      },
+  // EditBtnPresed
+        (){
+        print('edit button pressed');
+        Navigator.push(
+        context,
+        MaterialPageRoute(
+        builder: (context) => Editinglist_page(),
+        settings: RouteSettings(arguments: {'listingID': listingID})));
+  },
+        (){}
+  ),
+
+    ...normalUserButtons(currentUser, context, listingID,
+        //chat btn pressed
+        (){print('Chat button pressed!');}
+    ),
+
   ]);
 }
 
+List<Widget> ownerButtons(currentuser, context, listingID, CompleteBtnPressed, EditBtnPressed, DeleteBtnPressed){
+  if (currentuser == true) {
+    return [
+      Positioned(
+        right: 190,
+        left: 100,
+        bottom: -20,
+        child: Container(
+            height: 40,
+            child: CustomCurvedButton(
+              btnText: 'Complete',
+              btnPressed: CompleteBtnPressed,
+            )),
+      ),
+      Positioned(
+      right: 110,
+      left: 210,
+      bottom: -20,
+      child: Container(
+      height: 40,
+      child: CustomCurvedButton(
+      btnText: 'Edit',
+      btnPressed: EditBtnPressed,
+      )),
+      ),
+      Positioned(
+        right: 10,
+        left: 290,
+        bottom: -20,
+        child: Container(
+            height: 40,
+            child: CustomCurvedButton(
+              btnText: 'Delete',
+              btnPressed: DeleteBtnPressed,
+            )),
+      ),
+  ];
+  }{
+    return <Widget>[];
+  }
+}
+
 // return a report button only if this is true
-Widget reportCompleteButtons(
-    currentuser, context, listingID, ReportBtnPressed, CompleteBtnPressed) {
-  print(currentuser);
+List<Widget> normalUserButtons(currentuser, context, listingID, chatBtnPressed) {
   if (currentuser == false) {
-    return Positioned(
-        right: 110,
-        left: 200,
+    return [
+      Positioned(
+        right: 15,
+        left: 290,
         bottom: -20,
         child: Container(
           height: 40,
@@ -302,48 +355,21 @@ Widget reportCompleteButtons(
                           SendListingReport(listingID: listingID)));
             },
           ),
-        ));
-  } else {
-    return Positioned(
-      right: 110,
-      left: 160,
-      bottom: -20,
-      child: Container(
-          height: 40,
-          child: CustomCurvedButton(
-            btnText: 'Complete',
-            btnPressed: CompleteBtnPressed,
-          )),
-    );
-  }
-
-  return Row();
-}
-
-Widget chatEditButtons(bool currentuser, EditBtnPressed, ChatBtnPressed) {
-  if (currentuser == true) {
-    return Positioned(
-      right: 20,
-      left: 290,
-      bottom: -20,
-      child: Container(
-          height: 40,
-          child: CustomCurvedButton(
-            btnText: 'Edit',
-            btnPressed: EditBtnPressed,
-          )),
-    );
-  } else {
-    return Positioned(
-      right: 20,
-      left: 290,
-      bottom: -20,
-      child: Container(
-          height: 40,
-          child: CustomCurvedButton(
-            btnText: 'Chat',
-            btnPressed: ChatBtnPressed,
-          )),
-    );
+        )),
+      Positioned(
+          right: 110,
+          left: 200,
+          bottom: -20,
+          child: Container(
+            height: 40,
+            child: CustomCurvedButton(
+              btnText: 'Chat',
+              btnPressed: chatBtnPressed,
+            ),
+          ))
+    ];
+  }else{
+    return <Widget>[];
   }
 }
+
