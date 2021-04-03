@@ -77,6 +77,7 @@ class _BodyState extends State<Body> {
         isselected[1] = listing.isRequest;
         isselected[0] = !listing.isRequest;
         uid = listing.userID;
+        imageCache.clear();
         storageAccess.fileFromImageUrl(imageURL).then((file) {
           setState(() {
             image = file;

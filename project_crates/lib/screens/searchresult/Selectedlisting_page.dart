@@ -197,8 +197,9 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
                               //padding: EdgeInsets.all(15),
                               child: CustomCurvedButton(
                                 btnText: 'Delete',
-                                btnPressed: () {
-                                  dao.deleteListingOnKey(widget.listingID);
+                                btnPressed: () async {
+                                  await dao
+                                      .deleteListingOnKey(widget.listingID);
 
                                   Navigator.push(
                                       context,
