@@ -179,37 +179,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
                       markers: _markers,
                     ),
                   ),
-                  currentuser == true
-                      ? Row(
-                          children: [
-                            Flexible(
-                              //padding: EdgeInsets.all(15),
-                              child: CustomCurvedButton(
-                                btnText: 'Mark as complete',
-                                btnPressed: () {
-                                  dao.markListingAsComplete(widget.listingID);
-                                },
-                              ),
-                            ),
-                            Flexible(
-                              //padding: EdgeInsets.all(15),
-                              child: CustomCurvedButton(
-                                btnText: 'Delete',
-                                btnPressed: () async {
-                                  await dao
-                                      .deleteListingOnKey(widget.listingID);
-
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Profile()));
-                                },
-                              ),
-                            ),
-                          ],
-                        )
-                      : Container(),
-                  SizedBox(height:20),
+                  SizedBox(height: 20),
                 ]),
                 //bottomNavigationBar: Navigationbar(0),
               ));
@@ -230,6 +200,8 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
 
 Widget listingDetailsTopCard(
     title, listingImg, currentUser, listingID, context) {
+  DatabaseAccess dao = DatabaseAccess();
+
   return Stack(clipBehavior: Clip.none, children: <Widget>[
     Container(
       width: double.infinity,
@@ -247,7 +219,6 @@ Widget listingDetailsTopCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-
               Expanded(
                 child: Center(
                   child: Image.network(
@@ -262,9 +233,9 @@ Widget listingDetailsTopCard(
     ),
     //TODO: Set the functions when the buttons are clicked (for backend ppl)
     ...ownerButtons(currentUser, context, listingID,
-    // CompleteBtnPressed
-    () {
-      FirebaseDatabase.instance
+        // CompleteBtnPressed
+        () async {
+      await FirebaseDatabase.instance
           .reference()
           .child('Listing')
           .child(listingID)
@@ -272,28 +243,39 @@ Widget listingDetailsTopCard(
           .set(true);
       //TODO show completion message to user and remove complete button
       print('Listing completed');
-      },
-  // EditBtnPresed
-        (){
-        print('edit button pressed');
-        Navigator.push(
-        context,
-        MaterialPageRoute(
-        builder: (context) => Editinglist_page(),
-        settings: RouteSettings(arguments: {'listingID': listingID})));
-  },
-        (){}
-  ),
+
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Profile()));
+    },
+        // EditBtnPressed
+        () {
+      print('edit button pressed');
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Editinglist_page(),
+              settings: RouteSettings(arguments: {'listingID': listingID})));
+    },
+        // DeleteBtnPressed
+        () async {
+      await dao.deleteListingOnKey(listingID);
+
+      print('Delete completed');
+
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Profile()));
+    }),
 
     ...normalUserButtons(currentUser, context, listingID,
         //chat btn pressed
-        (){print('Chat button pressed!');}
-    ),
-
+        () {
+      print('Chat button pressed!');
+    }),
   ]);
 }
 
-List<Widget> ownerButtons(currentuser, context, listingID, CompleteBtnPressed, EditBtnPressed, DeleteBtnPressed){
+List<Widget> ownerButtons(currentuser, context, listingID, CompleteBtnPressed,
+    EditBtnPressed, DeleteBtnPressed) {
   if (currentuser == true) {
     return [
       Positioned(
@@ -308,15 +290,15 @@ List<Widget> ownerButtons(currentuser, context, listingID, CompleteBtnPressed, E
             )),
       ),
       Positioned(
-      right: 110,
-      left: 210,
-      bottom: -20,
-      child: Container(
-      height: 40,
-      child: CustomCurvedButton(
-      btnText: 'Edit',
-      btnPressed: EditBtnPressed,
-      )),
+        right: 110,
+        left: 210,
+        bottom: -20,
+        child: Container(
+            height: 40,
+            child: CustomCurvedButton(
+              btnText: 'Edit',
+              btnPressed: EditBtnPressed,
+            )),
       ),
       Positioned(
         right: 10,
@@ -329,33 +311,35 @@ List<Widget> ownerButtons(currentuser, context, listingID, CompleteBtnPressed, E
               btnPressed: DeleteBtnPressed,
             )),
       ),
-  ];
-  }{
+    ];
+  }
+  {
     return <Widget>[];
   }
 }
 
 // return a report button only if this is true
-List<Widget> normalUserButtons(currentuser, context, listingID, chatBtnPressed) {
+List<Widget> normalUserButtons(
+    currentuser, context, listingID, chatBtnPressed) {
   if (currentuser == false) {
     return [
       Positioned(
-        right: 15,
-        left: 290,
-        bottom: -20,
-        child: Container(
-          height: 40,
-          child: CustomCurvedButton(
-            btnText: 'Report',
-            btnPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          SendListingReport(listingID: listingID)));
-            },
-          ),
-        )),
+          right: 15,
+          left: 290,
+          bottom: -20,
+          child: Container(
+            height: 40,
+            child: CustomCurvedButton(
+              btnText: 'Report',
+              btnPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SendListingReport(listingID: listingID)));
+              },
+            ),
+          )),
       Positioned(
           right: 110,
           left: 200,
@@ -368,8 +352,7 @@ List<Widget> normalUserButtons(currentuser, context, listingID, chatBtnPressed) 
             ),
           ))
     ];
-  }else{
+  } else {
     return <Widget>[];
   }
 }
-
