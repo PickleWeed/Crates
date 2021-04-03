@@ -100,10 +100,9 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_rounded),
-            onPressed: () => Navigator.pop(context, false),
-          ),
+          backgroundColor: primaryColor,
+          elevation: 0,
+          title: Text(listingTitle, style: TextStyle(color: Colors.white)),
         ),
         backgroundColor: offWhite,
         body: listingTitle == null
@@ -129,7 +128,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
                                     text: 'by ',
                                     style: TextStyle(
                                         color: Colors.grey,
-                                        fontSize: 19,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.bold),
                                     children: <TextSpan>[
                                       TextSpan(
@@ -247,19 +246,7 @@ Widget listingDetailsTopCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 30),
-              Padding(
-                padding: EdgeInsets.all(15),
-                child: Text(
-                  title,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: offWhite,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22,
-                  ),
-                ),
-              ),
+
               Expanded(
                 child: Center(
                   child: Image.network(
@@ -319,7 +306,7 @@ Widget reportCompleteButtons(
   } else {
     return Positioned(
       right: 110,
-      left: 200,
+      left: 160,
       bottom: -20,
       child: Container(
           height: 40,
