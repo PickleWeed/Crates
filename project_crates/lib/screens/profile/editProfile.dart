@@ -360,8 +360,39 @@ class _EditProfileState extends State<EditProfile> {
                                 _profilePresenter.changePassword(
                                     widget.userModel.email,
                                     newPasswordController.text);
+                                await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: Text("Password Changed Successfully"),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                            child: Text("Close"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                              Navigator.pop(context, null);
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    });
                                 print("password succesfully changed");
                               } else {
+                                await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: Text("Please enter correct old password."),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                            child: Text("Close"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    });
                                 print("wrong old password");
                               }
                             }
