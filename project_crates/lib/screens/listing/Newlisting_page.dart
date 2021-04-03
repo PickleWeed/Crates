@@ -10,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_1/screens/common/error_popup_widgets.dart';
 
 class Newlisting_page extends StatelessWidget {
   String _search;
@@ -136,12 +137,13 @@ class _BodyState extends State<Body> {
                   //color: Colors.grey,
 
                   child: Container(
-                    color: Colors.grey[300],
+                    color: Colors.transparent,
                     child: ToggleButtons(
                       borderRadius: BorderRadius.circular(10.0),
                       isSelected: isselected,
-                      color: Colors.white,
+                      color: Colors.grey,
                       selectedColor: Color(0xFFFFC857),
+                      borderColor: Colors.grey,
                       fillColor: Colors.grey,
                       renderBorder: true,
                       children: <Widget>[
@@ -183,127 +185,132 @@ class _BodyState extends State<Body> {
                       fontSize: 35,
                       fontWeight: FontWeight.bold))),
 
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey)),
-                child: DropdownButton(
-                  hint: Text(
-                    'Option',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                  value: valueChoose,
-                  isExpanded: true,
-                  onChanged: (newValue) {
-                    setState(() {
-                      valueChoose = newValue;
-                    });
-                  },
-                  items: listItem.map((valueItem) {
-                    return DropdownMenuItem(
-                      value: valueItem,
-                      child: Text(valueItem),
-                    );
-                  }).toList(),
-                )),
-          ),
-          Align(
-              alignment: Alignment(-0.7, 0),
-              child: Text("it's called ...",
-                  // Text placement will change depend on the search result
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold))),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: Container(
-              child: TextField(
-                  style: TextStyle(fontSize: 10),
-                  controller: listingTitleController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              child: Container(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  decoration: BoxDecoration(
+                      color: Colors.transparent,
                       borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey)),
+                  child: DropdownButton(
+                    hint: Text(
+                      'Option',
+                      style: TextStyle(color: Colors.grey, fontSize: 20),
                     ),
-                    hintText: 'Name of the product',
+                    value: valueChoose,
+                    isExpanded: true,
+                    onChanged: (newValue) {
+                      setState(() {
+                        valueChoose = newValue;
+                      });
+                    },
+                    items: listItem.map((valueItem) {
+                      return DropdownMenuItem(
+                        value: valueItem,
+                        child: Text(valueItem),
+                      );
+                    }).toList(),
                   )),
             ),
-          ),
-          Align(
-              alignment: Alignment(-0.5, 0),
-              child: Text('Additional details',
-                  // Text placement will change depend on the search result
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold))),
-          Container(
-            child: Padding(
+            Align(
+                alignment: Alignment(-0.7, 0),
+                child: Text(
+                    "it's called ...", // Text placement will change depend on the search result
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold))),
+            Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: Container(
                 child: TextField(
-                    style: TextStyle(fontSize: 10),
-                    controller: descriptionController,
+                    style: TextStyle(fontSize: 20,color: Colors.grey),
+                    controller: listingTitleController,
                     decoration: InputDecoration(
-                        contentPadding:
-                        const EdgeInsets.fromLTRB(10, 40, 10, 40),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        hintText: 'Description of the product')),
+                        hintText: 'Name of the product',hintStyle: TextStyle(color: Colors.grey)
+                    )),
               ),
             ),
-          ),
-          Align(
-              alignment: Alignment(-0.8, 0),
-              child: Text('Address',
-                  // Text placement will change depend on the search result
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold))),
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: Container(
-                child: TextField(
-                    style: TextStyle(fontSize: 10),
-                    controller: addressController,
-                    onTap: () async {
-                      _prediction = await PlacesAutocomplete.show(
-                          context: context,
-                          apiKey: _mapHandler.LocationAPIkey,
-                          mode: Mode.overlay, // Mode.fullscreen
-                          language: 'en');
-                      if (_prediction != null) {
-                        var _selected =
-                        await _mapHandler.getLatLng(_prediction);
-
-                        setState(() {
-                          _currentLocation = _selected;
-                          addressController.text = _prediction.description;
-                        });
-                      }
-                    },
-                    decoration: InputDecoration(
-                        contentPadding:
-                        const EdgeInsets.fromLTRB(10, 30, 10, 30),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        hintText: 'Address')),
+            Align(
+                alignment: Alignment(-0.5, 0),
+                child: Text(
+                    "Additional details", // Text placement will change depend on the search result
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold))),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: Container(
+                  child: TextField(
+                      style: TextStyle(fontSize: 15,color: Colors.grey),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      controller: descriptionController,
+                      decoration: InputDecoration(
+                          contentPadding:
+                          const EdgeInsets.fromLTRB(10, 10, 10, 60),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          hintText: 'Description of the product',hintStyle: TextStyle(color: Colors.grey))
+                  ),
+                ),
               ),
             ),
-          ),
+            Align(
+                alignment: Alignment(-0.77, 0),
+                child: Text(
+                    "Address", // Text placement will change depend on the search result
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold))),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: Container(
+                  child: TextField(
+                      style: TextStyle(fontSize: 15,color: Colors.grey),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      controller: addressController,
+                      onTap: () async {
+                        _prediction = await PlacesAutocomplete.show(
+                            context: context,
+                            apiKey: _mapHandler.LocationAPIkey,
+                            mode: Mode.overlay, // Mode.fullscreen
+                            language: "en");
+                        if (_prediction != null) {
+                          LatLng _selected =
+                          await _mapHandler.getLatLng(_prediction);
 
-          SizedBox(height: 20),
+                          setState(() {
+                            _currentLocation = _selected;
+                            addressController.text = _prediction.description;
+                          });
+                        }
+                      },
+                      decoration: InputDecoration(
+                          contentPadding:
+                          const EdgeInsets.fromLTRB(10, 30, 10, 30),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),),
+                          hintText: 'Address',hintStyle: TextStyle(color: Colors.grey))
+                  ),
+                ),
+              ),
+            ),
+
+            SizedBox(height: 20),
           Container(
             padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
             //alignment: Alignment(0.7,0),
@@ -314,21 +321,27 @@ class _BodyState extends State<Body> {
               height: 50,
               onPressed: () async {
                 if (listingTitleController.text == '') {
+                  
+                  await Dialogs.errorAbortDialog(context, 'Name of product is empty.\nPlease fill up the respective field.');
                   print('No listing title inputted');
                   return; //TODO frontend user warning for empty listingTitle/itemName
                 }
 
                 if (valueChoose == null) {
+                  
+                  await Dialogs.errorAbortDialog(context, 'Please select a category.');
                   print('No category selected');
                   return; //TODO frontend user warning for unselected category
                 }
 
                 if (image == null) {
+                  await Dialogs.errorAbortDialog(context, 'Please upload a photo.');
                   print('No image uploaded');
                   return; //TODO frontend user warning for no uploaded image
                 }
 
                 if (_currentLocation == null) {
+                  await Dialogs.errorAbortDialog(context, 'Address is empty.\nPlease fill up the respective field.');
                   print('No location selected');
                   return; //TODO frontend user warning no unselected location
                 }
@@ -359,7 +372,7 @@ class _BodyState extends State<Body> {
                   borderRadius: BorderRadius.circular(30.0)),
 
               child: Text('Post',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 35)),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 20)),
             ),
           ),
 
