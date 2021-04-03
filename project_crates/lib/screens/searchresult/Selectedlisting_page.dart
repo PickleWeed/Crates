@@ -12,6 +12,7 @@ import 'package:flutter_application_1/screens/common/widgets.dart';
 import 'package:flutter_application_1/backend/databaseAccess.dart';
 import 'package:flutter_application_1/screens/listing/SendListingReport.dart';
 import 'package:flutter_application_1/screens/nearby/nearby_MapHandler.dart';
+import 'package:flutter_application_1/screens/profile/profile.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../listing/Editinglist_page.dart';
 
@@ -48,7 +49,8 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
         listingImg = response['listing'].listingImage;
         username = response['poster'].username;
         currentuser = response['currentUID'] == response['listing'].userID;
-        center = LatLng(response['listing'].latitude, response['listing'].longitude);
+        center =
+            LatLng(response['listing'].latitude, response['listing'].longitude);
         posted = DateTime.now()
                 .difference(response['listing'].postDateTime)
                 .inDays
@@ -58,6 +60,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
       loadMarker(listingTitle);
     });
   }
+
   MapHandler mapHandler = MapHandler();
   GoogleMapController mapController;
   void _onMapCreated(GoogleMapController controller) {
@@ -65,18 +68,17 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
 
     print(center);
   }
-  loadMarker(String title) async{
-     markerIcon = await mapHandler.getBytesFromAsset('assets/location_icon.png', 50);
-     setState(() {
-       _markers.add(Marker(
-           markerId: MarkerId('location'),
-           position: center,
-           icon: BitmapDescriptor.fromBytes(markerIcon),
-           infoWindow: InfoWindow(
-               title: title
-           )
-       ));
-     });
+
+  loadMarker(String title) async {
+    markerIcon =
+        await mapHandler.getBytesFromAsset('assets/location_icon.png', 50);
+    setState(() {
+      _markers.add(Marker(
+          markerId: MarkerId('location'),
+          position: center,
+          icon: BitmapDescriptor.fromBytes(markerIcon),
+          infoWindow: InfoWindow(title: title)));
+    });
   }
 
   // TODO: This variable determines what buttons are built (true -> edit button, false-> report and chat buttons)
@@ -90,18 +92,19 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
   var markerIcon;
   Set<Marker> _markers = {};
 
-
   DatabaseAccess dao = DatabaseAccess();
   ProfilePresenter profilePresenter = ProfilePresenter();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar:AppBar(
+        appBar: AppBar(
           title: Text('Back'),
           automaticallyImplyLeading: true,
-          leading: IconButton(icon: Icon(Icons.arrow_back_ios_rounded),
-            onPressed: () => Navigator.pop(context, false),),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios_rounded),
+            onPressed: () => Navigator.pop(context, false),
+          ),
         ),
         backgroundColor: offWhite,
         body: listingTitle == null
@@ -178,28 +181,35 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
                       markers: _markers,
                     ),
                   ),
-                  currentuser == true? Row(
-                    children: [
-                      Flexible(
-                        //padding: EdgeInsets.all(15),
-                        child:CustomCurvedButton(
-                          btnText: 'Mark as complete',
-                          btnPressed: (){
-                            dao.markListingAsComplete(widget.listingID);
-                          },
-                        ) ,
-                      ),
-                      Flexible(
-                        //padding: EdgeInsets.all(15),
-                        child:CustomCurvedButton(
-                          btnText: 'Delete',
-                          btnPressed: (){
-                            dao.deleteListingOnKey(widget.listingID);
-                          },
-                        ) ,
-                      ),
-                    ],
-                  ):Container()
+                  currentuser == true
+                      ? Row(
+                          children: [
+                            Flexible(
+                              //padding: EdgeInsets.all(15),
+                              child: CustomCurvedButton(
+                                btnText: 'Mark as complete',
+                                btnPressed: () {
+                                  dao.markListingAsComplete(widget.listingID);
+                                },
+                              ),
+                            ),
+                            Flexible(
+                              //padding: EdgeInsets.all(15),
+                              child: CustomCurvedButton(
+                                btnText: 'Delete',
+                                btnPressed: () {
+                                  dao.deleteListingOnKey(widget.listingID);
+
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Profile()));
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container()
                 ]),
                 //bottomNavigationBar: Navigationbar(0),
               ));
@@ -281,8 +291,7 @@ Widget listingDetailsTopCard(
               builder: (context) => Editinglist_page(),
               settings: RouteSettings(arguments: {'listingID': listingID})));
     }, () {}),
-  ]
-  );
+  ]);
 }
 
 // return a report button only if this is true
@@ -351,4 +360,3 @@ Widget chatEditButtons(bool currentuser, EditBtnPressed, ChatBtnPressed) {
     );
   }
 }
-

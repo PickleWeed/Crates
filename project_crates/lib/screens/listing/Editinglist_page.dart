@@ -106,9 +106,10 @@ class _BodyState extends State<Body> {
   loadVenueName() async {
     venueName = await _mapHandler.getAddressFromLatLng(
         listingVenue.latitude, listingVenue.longitude);
-    setState(() {
-      addressController.text = venueName;
-    });
+    if (this.mounted)
+      setState(() {
+        addressController.text = venueName;
+      });
   }
 
   final listingTitleController = TextEditingController();
