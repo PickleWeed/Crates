@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/databaseAccess.dart';
 import 'package:flutter_application_1/backend/storageAccess.dart';
 import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/common/user_main.dart';
+import 'package:flutter_application_1/screens/common/widgets.dart';
 import 'package:flutter_application_1/screens/nearby/nearby_MapHandler.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -23,21 +25,17 @@ class Editinglist_page extends StatelessWidget {
     listingID = arguments["listingID"];
     return Scaffold(
         appBar: AppBar(
-          centerTitle: true,
           automaticallyImplyLeading: false,
-          backgroundColor: Color(0xFFFFC857),
+          backgroundColor: primaryColor,
           title: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
-                    alignment: Alignment(-0.7, 0),
                     child: Column(children: <Widget>[
                       Text('Edit Listing',
                           style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold)),
+                              color: Colors.white,)),
                     ]))
               ]),
           leading: IconButton(
@@ -92,12 +90,12 @@ class _BodyState extends State<Body> {
   //String isSelected;
   List<bool> isselected = [true, false];
   List listItem = [
-    'Vegetables',
+    'Beverages',
     'Canned Food',
     'Dairy Product',
+    'Dry Food',
     'Snacks',
-    'Beverages',
-    'Dry Food'
+    'Vegetables',
   ];
   String valueChoose;
   File image;
@@ -105,6 +103,7 @@ class _BodyState extends State<Body> {
   String imageURL;
   String uid;
   String venueName;
+
   loadVenueName() async {
     venueName = await _mapHandler.getAddressFromLatLng(
         listingVenue.latitude, listingVenue.longitude);
@@ -132,266 +131,291 @@ class _BodyState extends State<Body> {
     return Scaffold(
         body: SingleChildScrollView(
           //body: Center(
-          child: Column(children: <Widget>[
-            SizedBox(height: 20),
-            InkWell(
-              onTap: () {
-                _showPicker(context);
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.0),
-                child: image != null
-                    ? Image.file(image, height: 200.0, width: 200.0)
-                    : Container(
-                  height: 200.0,
-                  width: 200.0,
-                  color: Colors.grey[300],
-                  child: Icon(Icons.photo_camera,
-                      color: Colors.white, size: 50.0),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Align(
-                alignment: Alignment(-0.8, 0),
-                child: Text(
-                    'I am...', // Text placement will change depend on the search result
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold))),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-
-
-                    child: Container(
-                      color: Colors.transparent,
-                      child: ToggleButtons(
-                        borderRadius: BorderRadius.circular(10.0),
-                        isSelected: isselected,
-                        color: Colors.grey,
-                        selectedColor: Color(0xFFFFC857),
-                        fillColor: Colors.grey,
-                        renderBorder: true,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child:
-                            Text('Giving away', style: TextStyle(fontSize: 20)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text('Requesting for ',
-                                style: TextStyle(fontSize: 20)),
-                          ),
-                        ],
-                        onPressed: (int newIndex) {
-                          setState(() {
-                            for (int buttonIndex = 0;
-                            buttonIndex < isselected.length;
-                            buttonIndex++) {
-                              if (buttonIndex == newIndex) {
-                                isselected[buttonIndex] = true;
-                              } else {
-                                isselected[buttonIndex] = false;
-                              }
-                            }
-                          });
-                        },
-                      ),
+          child: Container(
+            color: offWhite,
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+                Widget>[
+              SizedBox(height: 20),
+              InkWell(
+                onTap: () {
+                  _showPicker(context);
+                },
+                child: Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: image != null
+                        ? Image.file(image, height: 200.0, width: 200.0)
+                        : Container(
+                      height: 200.0,
+                      width: 200.0,
+                      color: Colors.grey[300],
+                      child: Icon(Icons.photo_camera,
+                          color: Colors.white, size: 50.0),
                     ),
                   ),
-                ]),
-            Align(
-                alignment: Alignment(-0.85, 0),
-                child: Text(
-                    'a', // Text placement will change depend on the search result
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: Text('I am ...',
+                    // Text placement will change depend on the search result
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold))),
-
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey)),
-                  child: DropdownButton(
-                    hint: Text('Option', style: TextStyle(color: Colors.grey,fontSize: 20),),
-                    value: valueChoose,
-                    isExpanded: true,
-                    onChanged: (newValue) {
+                        color: Colors.grey[700],
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold)),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+                child: Container(
+                  height: 40,
+                  child: ToggleButtons(
+                    borderRadius: BorderRadius.circular(8.0),
+                    isSelected: isselected,
+                    color: Colors.grey[500],
+                    selectedColor: primaryColor,
+                    fillColor: Colors.grey[800],
+                    renderBorder: true,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text('Giving away', style: TextStyle(fontSize: 17)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child:
+                        Text('Requesting for ', style: TextStyle(fontSize: 17)),
+                      ),
+                    ],
+                    onPressed: (int newIndex) {
                       setState(() {
-                        valueChoose = newValue;
+                        for (var buttonIndex = 0;
+                        buttonIndex < isselected.length;
+                        buttonIndex++) {
+                          if (buttonIndex == newIndex) {
+                            isselected[buttonIndex] = true;
+                          } else {
+                            isselected[buttonIndex] = false;
+                          }
+                        }
                       });
                     },
-                    items: listItem.map((valueItem) {
-                      return DropdownMenuItem(
-                        value: valueItem,
-                        child: Text(valueItem),
-                      );
-                    }).toList(),
-                  )),
-            ),
-            Align(
-                alignment: Alignment(-0.7, 0),
-                child: Text(
-                    "it's called ...", // Text placement will change depend on the search result
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: Text('a ...',
+                    // Text placement will change depend on the search result
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold))),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: Container(
-                child: TextField(
-                    controller: listingTitleController,
-                    style:  TextStyle(fontSize: 20,color: Colors.grey),
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.grey[700],
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold)),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(25, 0, 10, 0),
+                  height: 50,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    color: Colors.white,
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      focusColor: Colors.red,
+                      value: valueChoose,
+                      icon: const Icon(Icons.keyboard_arrow_down),
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(
+                        color: Colors.grey[800],
+                        fontSize: 16,
                       ),
-                      hintText: 'Name of the product',hintStyle: TextStyle(color: Colors.grey),
-                    )),
-              ),
-            ),
-            Align(
-                alignment: Alignment(-0.5, 0),
-                child: Text(
-                    "Additional details", // Text placement will change depend on the search result
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold))),
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                child: Container(
-                  child: TextField(
-                      controller: descriptionController,
-                      style: TextStyle(fontSize: 15,color: Colors.grey),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.fromLTRB(10,10,10,60),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          hintText: 'Description of the product',hintStyle: TextStyle(color: Colors.grey))),
-                ),
-              ),
-            ),
-            Align(
-                alignment: Alignment(-0.77, 0),
-                child: Text(
-                    "Address", // Text placement will change depend on the search result
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold))),
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                child: Container(
-                  child: TextField(
-                      style: TextStyle(fontSize: 15,color: Colors.grey),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      onTap: () async {
-                        var prediction = await PlacesAutocomplete.show(
-                            context: context,
-                            apiKey: _mapHandler.LocationAPIkey,
-                            mode: Mode.overlay, // Mode.fullscreen
-                            language: "en");
-                        if (prediction != null) {
-                          var _selected = await _mapHandler.getLatLng(prediction);
-                          setState(() {
-                            _newLocation = _selected;
-                            addressController.text = prediction.description;
-                            _prediction = prediction;
-                          });
-                        }
+                      onChanged: (newValue) {
+                        setState(() {
+                          valueChoose = newValue;
+                        });
                       },
-                      controller: addressController,
-                      decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.fromLTRB(10, 30, 10, 30),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          hintText: 'Address',hintStyle: TextStyle(color: Colors.grey))),
+                      items: listItem.map((valueItem) {
+                        return DropdownMenuItem<String>(
+                          value: valueItem,
+                          child: Text(valueItem),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+                child: Text("it's called ...",
+                    // Text placement will change depend on the search result
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold)),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: Container(
+                  height: 50,
+                  child: TextField(
+                      style: TextStyle(fontSize: 16),
+                      controller: listingTitleController,
+                      decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white, width: 1.0),
+                            borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white, width: 1.0),
+                            borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'name of the item')),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+                child: Text('description ...',
+                    // Text placement will change depend on the search result
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold)),
+              ),
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child: Container(
+                    child: TextField(
+                        minLines: 4,
+                        //Normal textInputField will be displayed
+                        maxLines: 4,
+                        style: TextStyle(fontSize: 16),
+                        controller: descriptionController,
+                        decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Colors.white, width: 1.0),
+                              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Colors.white, width: 1.0),
+                              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintText: 'description of the item')),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+                child: Text('location',
+                    // Text placement will change depend on the search result
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold)),
+              ),
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child: Container(
+                    child: TextField(
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        onTap: () async {
+                          var prediction = await PlacesAutocomplete.show(
+                              context: context,
+                              apiKey: _mapHandler.LocationAPIkey,
+                              mode: Mode.overlay, // Mode.fullscreen
+                              language: "en");
+                          if (prediction != null) {
+                            var _selected = await _mapHandler.getLatLng(prediction);
+                            setState(() {
+                              _newLocation = _selected;
+                              addressController.text = prediction.description;
+                              _prediction = prediction;
+                            });
+                          }
+                        },
+                        controller: addressController,
+                        decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Colors.white, width: 1.0),
+                              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Colors.white, width: 1.0),
+                              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintText: 'pick a location')),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+            Container(
+                padding: EdgeInsets.fromLTRB(100, 5, 100, 20),
+                child: CustomCurvedButton(btnText: 'Save Changes', btnPressed: () async {
+                  if (listingTitleController.text == '') {
+                    await Dialogs.errorAbortDialog(context,
+                        'Name of product is empty.\nPlease fill up the respective field.');
+                    print("No listing title inputted");
+                    return; //TODO frontend user warning for empty listingTitle/itemName
+                  }
+
+                  var imageString =
+                  image != null && imageURL == 'newimagechosen'
+                      ? await storageAccess.uploadFile(image)
+                      : imageURL;
+
+                  if (imageURL == 'newimagechosen') {
+                    await storageAccess.deleteListingImage(listing.listingImage);
+                  }
+
+                  var updatedListing = Listing(
+                      userID: uid,
+                      listingTitle: listingTitleController.text,
+                      longitude: _prediction != null
+                          ? _newLocation.longitude
+                          : listing.longitude,
+                      latitude: _prediction != null
+                          ? _newLocation.latitude
+                          : listing.latitude,
+                      category: valueChoose,
+                      isRequest: isselected[1],
+                      listingImage: imageString,
+                      description: descriptionController.text,
+                      isComplete: false);
+
+                  dao.updateListing(widget.listingID, updatedListing);
+
+                  // Navigator.push(
+                  //     context, MaterialPageRoute(builder: (context) => Home()));
+                  await Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => UserMain()));
+                }),
             ),
 
-            SizedBox(height: 20),
-        Container(
-          padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-          //alignment: Alignment(0.7,0),
-          child: MaterialButton(
-            elevation: 1,
-            minWidth: 100, // width of the button
-            height: 50,
-            onPressed: () async {
-              if (listingTitleController.text == '') {
-                await Dialogs.errorAbortDialog(context, 'Name of product is empty.\nPlease fill up the respective field.');
-                print("No listing title inputted");
-                return; //TODO frontend user warning for empty listingTitle/itemName
-              }
-
-              String imageString = image != null && imageURL == 'newimagechosen'
-                  ? await storageAccess.uploadFile(image)
-                  : imageURL;
-
-              if (imageURL == 'newimagechosen') {
-                storageAccess.deleteListingImage(listing.listingImage);
-              }
-
-              Listing updatedListing = Listing(
-                  userID: uid,
-                  listingTitle: listingTitleController.text,
-                  longitude: _prediction != null
-                      ? _newLocation.longitude
-                      : listing.longitude,
-                  latitude: _prediction != null
-                      ? _newLocation.latitude
-                      : listing.latitude,
-                  category: valueChoose,
-                  isRequest: isselected[1],
-                  listingImage: imageString,
-                  description: descriptionController.text,
-                  isComplete: false);
-
-              dao.updateListing(widget.listingID, updatedListing);
-
-              // Navigator.push(
-              //     context, MaterialPageRoute(builder: (context) => Home()));
-              await Navigator.pushReplacement(
-                  context, MaterialPageRoute(builder: (context) => UserMain()));
-            },
-            color: Color(0xFFFFC857),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0)),
-
-            child: Text('Update',
-                style: TextStyle(color: Colors.grey[600], fontSize: 35)),
+            ]),
           ),
-        ),
-
-        //////////////////////////////////////////////////////////////////////////////////////
-      ]),
-    ));
+        ));
   }
 
   void _showPicker(context) {
@@ -424,7 +448,7 @@ class _BodyState extends State<Body> {
         });
   }
 
-  _camera() async {
+  void _camera() async {
     var _image = await ImagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50);
     if (_image == null) {
@@ -437,7 +461,7 @@ class _BodyState extends State<Body> {
     });
   }
 
-  _gallery() async {
+  void _gallery() async {
     var _image = await ImagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 50);
     if (_image == null) {
