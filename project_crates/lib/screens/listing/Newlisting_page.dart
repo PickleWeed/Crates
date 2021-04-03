@@ -9,11 +9,11 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
-import '../home/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Newlisting_page extends StatelessWidget {
   String _search;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +23,7 @@ class Newlisting_page extends StatelessWidget {
             backgroundColor: Color(0xFFFFC857),
             shape: RoundedRectangleBorder(
                 borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(70.0))),
+                BorderRadius.vertical(bottom: Radius.circular(70.0))),
             title: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +80,7 @@ class _BodyState extends State<Body> {
   DatabaseAccess dao = DatabaseAccess();
   StorageAccess storageAccess = StorageAccess();
 
-  MapHandler _mapHandler = new MapHandler();
+  MapHandler _mapHandler = MapHandler();
   Prediction _prediction;
   LatLng _currentLocation;
   var addressController = TextEditingController();
@@ -90,17 +90,43 @@ class _BodyState extends State<Body> {
     return Scaffold(
       body: SingleChildScrollView(
         //body: Center(
-        child: Column(children: <Widget>[
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
           SizedBox(height: 20),
-          Align(
-              alignment: Alignment(-0.7, 0),
-              child: Text(
-                  'I am...', // Text placement will change depend on the search result
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold))),
+          InkWell(
+            onTap: () async {
+              _showPicker(context);
+            },
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: image != null
+                    ? Image.file(
+                  image,
+                  height: 200,
+                  width: 200,
+                )
+                    : Container(
+                  height: 200.0,
+                  width: 200.0,
+                  color: Colors.grey[300],
+                  child: Icon(Icons.photo_camera,
+                      color: Colors.white, size: 50.0),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal:20.0),
+            child: Text('I am...',
+                // Text placement will change depend on the search result
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold)),
+          ),
           Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -132,9 +158,9 @@ class _BodyState extends State<Body> {
                       ],
                       onPressed: (int newIndex) {
                         setState(() {
-                          for (int buttonIndex = 0;
-                              buttonIndex < isselected.length;
-                              buttonIndex++) {
+                          for (var buttonIndex = 0;
+                          buttonIndex < isselected.length;
+                          buttonIndex++) {
                             if (buttonIndex == newIndex) {
                               isselected[buttonIndex] = true;
                             } else {
@@ -187,8 +213,8 @@ class _BodyState extends State<Body> {
           ),
           Align(
               alignment: Alignment(-0.7, 0),
-              child: Text(
-                  "it's called ...", // Text placement will change depend on the search result
+              child: Text("it's called ...",
+                  // Text placement will change depend on the search result
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       color: Colors.grey,
@@ -210,8 +236,8 @@ class _BodyState extends State<Body> {
           ),
           Align(
               alignment: Alignment(-0.5, 0),
-              child: Text(
-                  "Additional details", // Text placement will change depend on the search result
+              child: Text('Additional details',
+                  // Text placement will change depend on the search result
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       color: Colors.grey,
@@ -226,7 +252,7 @@ class _BodyState extends State<Body> {
                     controller: descriptionController,
                     decoration: InputDecoration(
                         contentPadding:
-                            const EdgeInsets.fromLTRB(10, 40, 10, 40),
+                        const EdgeInsets.fromLTRB(10, 40, 10, 40),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -236,8 +262,8 @@ class _BodyState extends State<Body> {
           ),
           Align(
               alignment: Alignment(-0.8, 0),
-              child: Text(
-                  "Address", // Text placement will change depend on the search result
+              child: Text('Address',
+                  // Text placement will change depend on the search result
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       color: Colors.grey,
@@ -255,10 +281,10 @@ class _BodyState extends State<Body> {
                           context: context,
                           apiKey: _mapHandler.LocationAPIkey,
                           mode: Mode.overlay, // Mode.fullscreen
-                          language: "en");
+                          language: 'en');
                       if (_prediction != null) {
-                        LatLng _selected =
-                            await _mapHandler.getLatLng(_prediction);
+                        var _selected =
+                        await _mapHandler.getLatLng(_prediction);
 
                         setState(() {
                           _currentLocation = _selected;
@@ -268,7 +294,7 @@ class _BodyState extends State<Body> {
                     },
                     decoration: InputDecoration(
                         contentPadding:
-                            const EdgeInsets.fromLTRB(10, 30, 10, 30),
+                        const EdgeInsets.fromLTRB(10, 30, 10, 30),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -278,34 +304,13 @@ class _BodyState extends State<Body> {
           ),
 
           SizedBox(height: 20),
-          InkWell(
-            onTap: () async {
-              _showPicker(context);
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: image != null
-                  ? Image.file(
-                      image,
-                      height: 200,
-                      width: 200,
-                    )
-                  : Container(
-                      height: 200.0,
-                      width: 200.0,
-                      color: Colors.grey[300],
-                      child: Icon(Icons.photo_camera,
-                          color: Colors.white, size: 50.0),
-                    ),
-            ),
-          ),
-
           Container(
             padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
             //alignment: Alignment(0.7,0),
             child: MaterialButton(
               elevation: 1,
-              minWidth: 100, // width of the button
+              minWidth: 100,
+              // width of the button
               height: 50,
               onPressed: () async {
                 if (listingTitleController.text == '') {
@@ -328,9 +333,9 @@ class _BodyState extends State<Body> {
                   return; //TODO frontend user warning no unselected location
                 }
 
-                String imageString = await storageAccess.uploadFile(image);
+                var imageString = await storageAccess.uploadFile(image);
 
-                Listing newListing = Listing(
+                var newListing = Listing(
                   userID: userid,
                   listingTitle: listingTitleController.text,
                   longitude: _currentLocation.longitude,
@@ -343,7 +348,7 @@ class _BodyState extends State<Body> {
                 );
 
                 await dao.addListing(newListing);
-                //execute upadate
+                //execute update
                 // Navigator.of(context).pushReplacement(
                 //     MaterialPageRoute(builder: (context) => Home()));
                 await Navigator.push(context,
@@ -365,7 +370,7 @@ class _BodyState extends State<Body> {
   }
 
   Future<String> getUID() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    var user = await FirebaseAuth.instance.currentUser();
     return user.uid;
   }
 
@@ -399,7 +404,7 @@ class _BodyState extends State<Body> {
         });
   }
 
-  _camera() async {
+  void _camera() async {
     var _image = await ImagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50);
     if (_image == null) {
@@ -411,7 +416,7 @@ class _BodyState extends State<Body> {
     });
   }
 
-  _gallery() async {
+  void _gallery() async {
     var _image = await ImagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 50);
     if (_image == null) {
@@ -422,4 +427,64 @@ class _BodyState extends State<Body> {
       image = _image;
     });
   }
+}
+
+// builds the pop dialog
+// TODO: need to pass in data of the matched listings
+Widget matchesDialog(context) {
+  return AlertDialog(
+      title: Text('Hold on! We found some matches!'),
+      content: Container(
+        height: 300.0, // Change as per your requirement
+        width: 300.0, // Change as per your requirement
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: 5,
+          itemBuilder: (BuildContext context, int index) {
+            return matchCard(
+                'Match!',
+                'This is a test description of the food!!',
+                'assets/noodles.jpg', () {
+              print('tapped');
+            });
+          },
+        ),
+      ),
+      actions: [
+        TextButton(child: Text('Post Anyway'), onPressed: () {}),
+        TextButton(
+            child: Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            }),
+      ]);
+}
+
+// builds each matched row
+Widget matchCard(String title, String description, String listingImg, onTap) {
+  return InkWell(
+    onTap: onTap,
+    child: Card(
+        margin: EdgeInsets.fromLTRB(5, 2, 2, 5),
+        child: ListTile(
+          leading: CircleAvatar(
+            radius: 30,
+            backgroundImage: AssetImage(
+                listingImg), // no matter how big it is, it won't overflow
+          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          title: Text(
+            title,
+            overflow: TextOverflow.fade,
+            maxLines: 1,
+          ),
+          subtitle: Text(
+            description,
+            overflow: TextOverflow.fade,
+            maxLines: 2,
+          ),
+          isThreeLine: false,
+          trailing: Icon(Icons.keyboard_arrow_right),
+        )),
+  );
 }
