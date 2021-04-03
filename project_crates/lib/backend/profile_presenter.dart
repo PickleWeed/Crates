@@ -99,11 +99,29 @@ class ProfilePresenter{
   Future<bool> getCurrentPassword(String emailAddr, String oldPassword) async{
     bool correctPass = false;
     var credential = EmailAuthProvider.getCredential(email: emailAddr, password: oldPassword);
-    if(credential != null){
-      correctPass = true;
+    print(credential);
+    try {
+      await FirebaseAuth.instance.signInWithCredential(credential).then((value) {
+        print("success");
+        print(value);
+        correctPass = true;
+        return correctPass;
+      }).catchError((error){
+        print("wrong  user" + error.toString());
+        correctPass = false;
+        return correctPass;
+        //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+      });
+
+      return correctPass;
     }
-    print(correctPass);
-    return correctPass;
+    catch(e){
+      print('Error: $e');
+      return null;
+    }
+    // if(credential != null){
+    //   correctPass = true;
+    // }
   }
 
 
