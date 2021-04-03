@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/databaseAccess.dart';
 import 'package:flutter_application_1/backend/storageAccess.dart';
 import 'package:flutter_application_1/models/Listing.dart';
-import 'package:flutter_application_1/screens/common/error_popup_widgets.dart';
 import 'package:flutter_application_1/screens/common/user_main.dart';
 import 'package:flutter_application_1/screens/nearby/nearby_MapHandler.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -132,26 +131,8 @@ class _BodyState extends State<Body> {
       //body: Center(
       child: Column(children: <Widget>[
         SizedBox(height: 20),
-        InkWell(
-          onTap: () {
-            _showPicker(context);
-          },
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
-            child: image != null
-                ? Image.file(image, height: 200.0, width: 200.0)
-                : Container(
-              height: 200.0,
-              width: 200.0,
-              color: Colors.grey[300],
-              child: Icon(Icons.photo_camera,
-                  color: Colors.white, size: 50.0),
-            ),
-          ),
-        ),
-        SizedBox(height: 20),
         Align(
-            alignment: Alignment(-0.8, 0),
+            alignment: Alignment(-0.7, 0),
             child: Text(
                 'I am...', // Text placement will change depend on the search result
                 textAlign: TextAlign.left,
@@ -165,14 +146,14 @@ class _BodyState extends State<Body> {
             children: [
               Container(
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-
+                //color: Colors.grey,
 
                 child: Container(
-                  color: Colors.transparent,
+                  color: Colors.grey[300],
                   child: ToggleButtons(
                     borderRadius: BorderRadius.circular(10.0),
                     isSelected: isselected,
-                    color: Colors.grey,
+                    color: Colors.white,
                     selectedColor: Color(0xFFFFC857),
                     fillColor: Colors.grey,
                     renderBorder: true,
@@ -206,7 +187,7 @@ class _BodyState extends State<Body> {
               ),
             ]),
         Align(
-            alignment: Alignment(-0.85, 0),
+            alignment: Alignment(-0.8, 0),
             child: Text(
                 'a', // Text placement will change depend on the search result
                 textAlign: TextAlign.left,
@@ -220,11 +201,14 @@ class _BodyState extends State<Body> {
           child: Container(
               padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
               decoration: BoxDecoration(
-                  color: Colors.transparent,
+                  color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.grey)),
               child: DropdownButton(
-                hint: Text('Option', style: TextStyle(color: Colors.grey,fontSize: 20),),
+                hint: Text(
+                  'Option',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
                 value: valueChoose,
                 isExpanded: true,
                 onChanged: (newValue) {
@@ -254,12 +238,12 @@ class _BodyState extends State<Body> {
           child: Container(
             child: TextField(
                 controller: listingTitleController,
-                style:  TextStyle(fontSize: 20,color: Colors.grey),
+                style: TextStyle(fontSize: 10),
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  hintText: 'Name of the product',hintStyle: TextStyle(color: Colors.grey),
+                  hintText: 'Name of the product',
                 )),
           ),
         ),
@@ -278,20 +262,18 @@ class _BodyState extends State<Body> {
             child: Container(
               child: TextField(
                   controller: descriptionController,
-                  style: TextStyle(fontSize: 15,color: Colors.grey),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
+                  style: TextStyle(fontSize: 10),
                   decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(10,10,10,60),
+                      contentPadding: const EdgeInsets.fromLTRB(10, 40, 10, 40),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      hintText: 'Description of the product',hintStyle: TextStyle(color: Colors.grey))),
+                      hintText: 'Description of the product')),
             ),
           ),
         ),
         Align(
-            alignment: Alignment(-0.77, 0),
+            alignment: Alignment(-0.8, 0),
             child: Text(
                 "Address", // Text placement will change depend on the search result
                 textAlign: TextAlign.left,
@@ -304,9 +286,7 @@ class _BodyState extends State<Body> {
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Container(
               child: TextField(
-                  style: TextStyle(fontSize: 15,color: Colors.grey),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
+                  style: TextStyle(fontSize: 10),
                   onTap: () async {
                     var prediction = await PlacesAutocomplete.show(
                         context: context,
@@ -328,13 +308,29 @@ class _BodyState extends State<Body> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      hintText: 'Address',hintStyle: TextStyle(color: Colors.grey))),
+                      hintText: 'Address')),
             ),
           ),
         ),
 
         SizedBox(height: 20),
-
+        InkWell(
+          onTap: () {
+            _showPicker(context);
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20.0),
+            child: image != null
+                ? Image.file(image, height: 200.0, width: 200.0)
+                : Container(
+                    height: 200.0,
+                    width: 200.0,
+                    color: Colors.grey[300],
+                    child: Icon(Icons.photo_camera,
+                        color: Colors.white, size: 50.0),
+                  ),
+          ),
+        ),
 
         Container(
           padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -345,10 +341,8 @@ class _BodyState extends State<Body> {
             height: 50,
             onPressed: () async {
               if (listingTitleController.text == '') {
-                final action =
-                await Dialogs.errorAbortDialog(context, 'Name of product is empty.\nPlease fill up the respective field.');
                 print("No listing title inputted");
-                return;
+                return; //TODO frontend user warning for empty listingTitle/itemName
               }
 
               String imageString = image != null && imageURL == 'newimagechosen'
@@ -386,7 +380,7 @@ class _BodyState extends State<Body> {
                 borderRadius: BorderRadius.circular(30.0)),
 
             child: Text('Update',
-                style: TextStyle(color: Colors.grey[600], fontSize: 20)),
+                style: TextStyle(color: Colors.grey[600], fontSize: 35)),
           ),
         ),
 
