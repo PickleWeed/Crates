@@ -102,6 +102,7 @@ class _BodyState extends State<Body> {
               children: <Widget>[
                 SizedBox(height: 20),
                 InkWell(
+                  key: Key('image'),
                   onTap: () async {
                     _showPicker(context);
                   },
@@ -195,6 +196,7 @@ class _BodyState extends State<Body> {
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
+                        key: Key('category'),
                         focusColor: Colors.red,
                         value: valueChoose,
                         icon: const Icon(Icons.keyboard_arrow_down),
@@ -340,6 +342,7 @@ class _BodyState extends State<Body> {
                 Container(
                   padding: EdgeInsets.fromLTRB(100, 5, 100, 20),
                   child: CustomCurvedButton(
+                    btnKey: 'CreateListing',
                     btnText: 'Create Listing',
                     btnPressed: () async {
                       // validation
@@ -466,6 +469,7 @@ class _BodyState extends State<Body> {
               child: Wrap(
                 children: <Widget>[
                   ListTile(
+                      key : Key('PhotoLibrary'),
                       leading: Icon(Icons.photo_library),
                       title: Text('Photo Library'),
                       onTap: () {
@@ -473,6 +477,7 @@ class _BodyState extends State<Body> {
                         Navigator.of(context).pop();
                       }),
                   ListTile(
+                    key : Key('Camera'),
                     leading: Icon(Icons.photo_camera),
                     title: Text('Camera'),
                     onTap: () {
@@ -546,6 +551,7 @@ Widget matchesDialog(context, List<Listing> matches, postAnyway) {
 // builds each matched row
 Widget matchCard(String title, String description, String listingImg, onTap) {
   return InkWell(
+    key: Key('popup'),
     onTap: onTap,
     child: Card(
         margin: EdgeInsets.fromLTRB(5, 2, 2, 5),

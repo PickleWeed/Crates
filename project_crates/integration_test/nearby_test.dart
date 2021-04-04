@@ -29,7 +29,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(loginButton);
-      await tester.pumpAndSettle(Duration(seconds: 1));
+      await tester.pumpAndSettle(Duration(seconds: 3));
 
       final loginFinder = find.text('Login Successful');
 
