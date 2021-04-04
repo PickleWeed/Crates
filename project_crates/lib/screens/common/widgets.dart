@@ -134,7 +134,9 @@ class CustomListingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: GestureDetector(
+          key: Key('listingIDWidget:'+listingID),
           onTap: () {
+            print('listingWidget:'+owner);
             print('listingIDWidget:'+listingID);
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => Selectedlisting_page(listingID: listingID)));
           },
