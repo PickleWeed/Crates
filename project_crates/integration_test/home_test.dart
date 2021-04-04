@@ -81,7 +81,7 @@ void main() {
 
     //TODO Select navigationBar Home
     //TODO Select navigationBar Nearby
-    /*testWidgets('Go to Nearby', (WidgetTester tester) async {
+    testWidgets('Go to Nearby', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
       final nearbyBtn = find.byIcon(Icons.gps_fixed);
@@ -91,7 +91,7 @@ void main() {
 
       expect(find.byWidgetPredicate((widget) => widget is Nearby),findsOneWidget);
       expect(find.byWidgetPredicate((widget) => widget is GoogleMap),findsOneWidget);
-    });*/
+    });
     //TODO Select navigationBar New Listing
     //TODO Select navigationBar Activity
     //TODO Select navigationBar Profile
