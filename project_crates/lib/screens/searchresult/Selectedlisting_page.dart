@@ -15,6 +15,7 @@ import 'package:flutter_application_1/screens/nearby/nearby_MapHandler.dart';
 import 'package:flutter_application_1/screens/profile/profile.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../listing/Editinglist_page.dart';
+import 'package:flutter_application_1/backend/auth.dart';
 
 class Selectedlisting_page extends StatefulWidget {
   final String listingID;
@@ -48,6 +49,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
         description = response['listing'].description;
         listingImg = response['listing'].listingImage;
         username = response['poster'].username;
+        isAdmin = response['isAdmin'];
         currentuser = response['currentUID'] == response['listing'].userID;
         center =
             LatLng(response['listing'].latitude, response['listing'].longitude);
@@ -83,6 +85,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
 
   // TODO: This variable determines what buttons are built (true -> edit button, false-> report and chat buttons)
   bool currentuser;
+  bool isAdmin;
   String listingTitle;
   String listingImg;
   String username;
@@ -97,12 +100,14 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
 
   @override
   Widget build(BuildContext context) {
+    print('isAdmin : $isAdmin');
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
           backgroundColor: primaryColor,
           elevation: 0,
-          title: Text(listingTitle, style: TextStyle(color: Colors.white)),
+          title: Text(listingTitle == null ? 'Loading...' : listingTitle,
+              style: TextStyle(color: Colors.white)),
         ),
         backgroundColor: offWhite,
         body: listingTitle == null
@@ -110,7 +115,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
             : SingleChildScrollView(
                 child: Column(children: <Widget>[
                   listingDetailsTopCard(listingTitle, listingImg, currentuser,
-                      widget.listingID, context),
+                      widget.listingID, isAdmin, context),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Row(
@@ -194,12 +199,18 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
     Listing listing = await dao.getListing(listingID);
     User poster = await profilePresenter.retrieveUserProfile(listing.userID);
     String currentUID = await getUID();
-    return {'listing': listing, 'poster': poster, 'currentUID': currentUID};
+    bool isAdmin = await isAdminCheck(currentUID);
+    return {
+      'listing': listing,
+      'poster': poster,
+      'currentUID': currentUID,
+      'isAdmin': isAdmin
+    };
   }
 }
 
 Widget listingDetailsTopCard(
-    title, listingImg, currentUser, listingID, context) {
+    title, listingImg, currentUser, listingID, isAdmin, context) {
   DatabaseAccess dao = DatabaseAccess();
 
   return Stack(clipBehavior: Clip.none, children: <Widget>[
@@ -232,7 +243,7 @@ Widget listingDetailsTopCard(
           )),
     ),
     //TODO: Set the functions when the buttons are clicked (for backend ppl)
-    ...ownerButtons(currentUser, context, listingID,
+    ...ownerButtons(currentUser, isAdmin, context, listingID,
         // CompleteBtnPressed
         () async {
       await FirebaseDatabase.instance
@@ -244,8 +255,10 @@ Widget listingDetailsTopCard(
       //TODO show completion message to user and remove complete button
       print('Listing completed');
 
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Profile()));
+      // Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => Profile()));
+
+      Navigator.of(context).pop();
     },
         // EditBtnPressed
         () {
@@ -262,11 +275,13 @@ Widget listingDetailsTopCard(
 
       print('Delete completed');
 
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Profile()));
+      // Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => Profile()));
+
+      Navigator.of(context).pop();
     }),
 
-    ...normalUserButtons(currentUser, context, listingID,
+    ...normalUserButtons(currentUser, isAdmin, context, listingID,
         //chat btn pressed
         () {
       print('Chat button pressed!');
@@ -274,9 +289,9 @@ Widget listingDetailsTopCard(
   ]);
 }
 
-List<Widget> ownerButtons(currentuser, context, listingID, CompleteBtnPressed,
-    EditBtnPressed, DeleteBtnPressed) {
-  if (currentuser == true) {
+List<Widget> ownerButtons(currentuser, isAdmin, context, listingID,
+    CompleteBtnPressed, EditBtnPressed, DeleteBtnPressed) {
+  if (currentuser == true && isAdmin == false) {
     return [
       Positioned(
         right: 190,
@@ -320,8 +335,8 @@ List<Widget> ownerButtons(currentuser, context, listingID, CompleteBtnPressed,
 
 // return a report button only if this is true
 List<Widget> normalUserButtons(
-    currentuser, context, listingID, chatBtnPressed) {
-  if (currentuser == false) {
+    currentuser, isAdmin, context, listingID, chatBtnPressed) {
+  if (currentuser == false && isAdmin == false) {
     return [
       Positioned(
           right: 15,
