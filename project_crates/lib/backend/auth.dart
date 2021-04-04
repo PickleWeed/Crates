@@ -59,9 +59,13 @@ Future<String> currentUser() async {
    currentUser().then((value) => {
     print("LoginUserID:" + value)
    });
-*/
-  FirebaseUser user = await _auth.currentUser();
-  return user.uid;
+*/try {
+    FirebaseUser user = await _auth.currentUser();
+    return user.uid;
+  } catch (e) {
+  print(e);
+  }
+
 }
 
 //For Sign Out Button

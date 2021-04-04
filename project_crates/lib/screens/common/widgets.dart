@@ -9,12 +9,15 @@ class CustomButton extends StatelessWidget {
   final String btnText;
   final Function btnPressed;
 
+  final String btnKey;
+
   // constructor
-  CustomButton({this.btnText, this.btnPressed});
+  CustomButton({this.btnText, this.btnPressed, this.btnKey});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+        key: ValueKey(btnKey),
         onPressed: btnPressed,
         child: SizedBox(
             width: double.infinity,

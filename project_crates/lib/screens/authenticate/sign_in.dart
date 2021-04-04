@@ -105,6 +105,7 @@ class _SignInState extends State<SignIn> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
+                            key: const ValueKey('email'),
                             validator: (value)=> value.isEmpty ? "Email Required" : !value.contains("@") ? "Invalid Email" : null,
                             controller: emailController,
                             decoration: InputDecoration(
@@ -113,6 +114,7 @@ class _SignInState extends State<SignIn> {
                                 hintText: 'Email')),
                         SizedBox(height: 5),
                         TextFormField(
+                            key: const ValueKey('password'),
                             obscureText: true,
                             validator: (value)=> value.isEmpty ? "Password Required": null,
                             controller: passwordController,
@@ -122,6 +124,7 @@ class _SignInState extends State<SignIn> {
                                 hintText: 'Password')),
                         SizedBox(height: 20),
                         CustomButton(
+                            btnKey: 'Login',
                             btnText: 'Log In',
                             btnPressed: (){
                               // Login Validation
@@ -152,6 +155,7 @@ class _SignInState extends State<SignIn> {
                           ),
                         ),
                         CustomButton(
+                            btnKey: 'Register',
                             btnText: 'Register',
                             btnPressed: (){
                               registerUserClick();

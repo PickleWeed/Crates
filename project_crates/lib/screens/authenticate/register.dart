@@ -67,6 +67,7 @@ class _RegisterState extends State<Register> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
+                            key: const Key('email'),
                             validator: (value)=> value.isEmpty ? "Email Required" : !value.contains("@") ? "Invalid Email" : null,
                             controller: emailController,
                             decoration: InputDecoration(
@@ -75,6 +76,7 @@ class _RegisterState extends State<Register> {
                                 hintText: 'Email')),
                         SizedBox(height: 10),
                         CustomButton(
+                            btnKey: 'Next',
                             btnText: 'Next',
                             btnPressed: () {
                               //Email Validation
@@ -108,6 +110,7 @@ class _RegisterState extends State<Register> {
                           ),
                         ),
                         CustomButton(
+                            btnKey: 'SignIn',
                             btnText: 'Sign In',
                             btnPressed: (){
                               //Navigate to Sign In Page
@@ -213,6 +216,7 @@ class _RegisterNextState extends State<RegisterNext> {
                                 hintText: 'Email')),
                         SizedBox(height: 10),
                         TextFormField(
+                            key: const Key('username'),
                             validator: (value)=> value.isEmpty ? "Username Required" : value.length < 3 ? "Username must be at least 3 characters" : null,
                             controller: usernameController,
                             decoration: InputDecoration(
@@ -221,6 +225,7 @@ class _RegisterNextState extends State<RegisterNext> {
                                 hintText: 'Username')),
                         SizedBox(height: 10),
                         CustomButton(
+                            btnKey: 'Next2',
                             btnText: 'Next',
                             btnPressed: () {
                               // Username validation
