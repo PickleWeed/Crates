@@ -95,7 +95,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     ),
                     Positioned(
                       right: 20,
-                      left: 250,
+                      left: 280,
                       bottom:-20,
                       child: Container(
                           height: 40,
@@ -109,7 +109,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     ),
                     Positioned(
                       right: 120,
-                      left: 150,
+                      left: 200,
                       bottom:-20,
                       child: Container(
                           height: 40,

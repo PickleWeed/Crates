@@ -15,6 +15,7 @@ import 'package:flutter_application_1/screens/nearby/nearby_MapHandler.dart';
 import 'package:flutter_application_1/screens/profile/profile.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../listing/Editinglist_page.dart';
+import 'package:flutter_application_1/backend/auth.dart';
 
 class Selectedlisting_page extends StatefulWidget {
   final String listingID;
@@ -48,6 +49,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
         description = response['listing'].description;
         listingImg = response['listing'].listingImage;
         username = response['poster'].username;
+        isAdmin = response['isAdmin'];
         currentuser = response['currentUID'] == response['listing'].userID;
         center =
             LatLng(response['listing'].latitude, response['listing'].longitude);
@@ -83,6 +85,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
 
   // TODO: This variable determines what buttons are built (true -> edit button, false-> report and chat buttons)
   bool currentuser;
+  bool isAdmin;
   String listingTitle;
   String listingImg;
   String username;
@@ -97,12 +100,14 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
 
   @override
   Widget build(BuildContext context) {
+    print('isAdmin : $isAdmin');
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
           backgroundColor: primaryColor,
           elevation: 0,
-          title: Text(listingTitle, style: TextStyle(color: Colors.white)),
+          title: Text(listingTitle == null ? 'Loading...' : listingTitle,
+              style: TextStyle(color: Colors.white)),
         ),
         backgroundColor: offWhite,
         body: listingTitle == null
@@ -110,7 +115,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
             : SingleChildScrollView(
                 child: Column(children: <Widget>[
                   listingDetailsTopCard(listingTitle, listingImg, currentuser,
-                      widget.listingID, context),
+                      widget.listingID, isAdmin, context),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Row(
@@ -179,36 +184,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
                       markers: _markers,
                     ),
                   ),
-                  currentuser == true
-                      ? Row(
-                          children: [
-                            Flexible(
-                              //padding: EdgeInsets.all(15),
-                              child: CustomCurvedButton(
-                                btnText: 'Mark as complete',
-                                btnPressed: () {
-                                  dao.markListingAsComplete(widget.listingID);
-                                },
-                              ),
-                            ),
-                            Flexible(
-                              //padding: EdgeInsets.all(15),
-                              child: CustomCurvedButton(
-                                btnText: 'Delete',
-                                btnPressed: () async {
-                                  await dao
-                                      .deleteListingOnKey(widget.listingID);
-
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Profile()));
-                                },
-                              ),
-                            ),
-                          ],
-                        )
-                      : Container()
+                  SizedBox(height: 20),
                 ]),
                 //bottomNavigationBar: Navigationbar(0),
               ));
@@ -223,12 +199,20 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
     Listing listing = await dao.getListing(listingID);
     User poster = await profilePresenter.retrieveUserProfile(listing.userID);
     String currentUID = await getUID();
-    return {'listing': listing, 'poster': poster, 'currentUID': currentUID};
+    bool isAdmin = await isAdminCheck(currentUID);
+    return {
+      'listing': listing,
+      'poster': poster,
+      'currentUID': currentUID,
+      'isAdmin': isAdmin
+    };
   }
 }
 
 Widget listingDetailsTopCard(
-    title, listingImg, currentUser, listingID, context) {
+    title, listingImg, currentUser, listingID, isAdmin, context) {
+  DatabaseAccess dao = DatabaseAccess();
+
   return Stack(clipBehavior: Clip.none, children: <Widget>[
     Container(
       width: double.infinity,
@@ -246,7 +230,6 @@ Widget listingDetailsTopCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-
               Expanded(
                 child: Center(
                   child: Image.network(
@@ -260,90 +243,131 @@ Widget listingDetailsTopCard(
           )),
     ),
     //TODO: Set the functions when the buttons are clicked (for backend ppl)
-    reportCompleteButtons(currentUser, context, listingID, () {}, () {
-      FirebaseDatabase.instance
+    ...ownerButtons(currentUser, isAdmin, context, listingID,
+        // CompleteBtnPressed
+        () async {
+      await FirebaseDatabase.instance
           .reference()
           .child('Listing')
           .child(listingID)
           .child('isComplete')
           .set(true);
-      print(
-          'Listing completed'); //TODO show completion message to user and remove complete button
-    }),
-    chatEditButtons(currentUser, () {
+      //TODO show completion message to user and remove complete button
+      print('Listing completed');
+
+      // Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => Profile()));
+
+      Navigator.of(context).pop();
+    },
+        // EditBtnPressed
+        () {
       print('edit button pressed');
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => Editinglist_page(),
               settings: RouteSettings(arguments: {'listingID': listingID})));
-    }, () {}),
+    },
+        // DeleteBtnPressed
+        () async {
+      await dao.deleteListingOnKey(listingID);
+
+      print('Delete completed');
+
+      // Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => Profile()));
+
+      Navigator.of(context).pop();
+    }),
+
+    ...normalUserButtons(currentUser, isAdmin, context, listingID,
+        //chat btn pressed
+        () {
+      print('Chat button pressed!');
+    }),
   ]);
 }
 
-// return a report button only if this is true
-Widget reportCompleteButtons(
-    currentuser, context, listingID, ReportBtnPressed, CompleteBtnPressed) {
-  print(currentuser);
-  if (currentuser == false) {
-    return Positioned(
-        right: 110,
-        left: 200,
+List<Widget> ownerButtons(currentuser, isAdmin, context, listingID,
+    CompleteBtnPressed, EditBtnPressed, DeleteBtnPressed) {
+  if (currentuser == true && isAdmin == false) {
+    return [
+      Positioned(
+        right: 190,
+        left: 100,
         bottom: -20,
         child: Container(
-          height: 40,
-          child: CustomCurvedButton(
-            btnText: 'Report',
-            btnPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          SendListingReport(listingID: listingID)));
-            },
-          ),
-        ));
-  } else {
-    return Positioned(
-      right: 110,
-      left: 160,
-      bottom: -20,
-      child: Container(
-          height: 40,
-          child: CustomCurvedButton(
-            btnText: 'Complete',
-            btnPressed: CompleteBtnPressed,
-          )),
-    );
+            height: 40,
+            child: CustomCurvedButton(
+              btnText: 'Complete',
+              btnPressed: CompleteBtnPressed,
+            )),
+      ),
+      Positioned(
+        right: 110,
+        left: 210,
+        bottom: -20,
+        child: Container(
+            height: 40,
+            child: CustomCurvedButton(
+              btnText: 'Edit',
+              btnPressed: EditBtnPressed,
+            )),
+      ),
+      Positioned(
+        right: 10,
+        left: 290,
+        bottom: -20,
+        child: Container(
+            height: 40,
+            child: CustomCurvedButton(
+              btnText: 'Delete',
+              btnPressed: DeleteBtnPressed,
+            )),
+      ),
+    ];
   }
-
-  return Row();
+  {
+    return <Widget>[];
+  }
 }
 
-Widget chatEditButtons(bool currentuser, EditBtnPressed, ChatBtnPressed) {
-  if (currentuser == true) {
-    return Positioned(
-      right: 20,
-      left: 290,
-      bottom: -20,
-      child: Container(
-          height: 40,
-          child: CustomCurvedButton(
-            btnText: 'Edit',
-            btnPressed: EditBtnPressed,
+// return a report button only if this is true
+List<Widget> normalUserButtons(
+    currentuser, isAdmin, context, listingID, chatBtnPressed) {
+  if (currentuser == false && isAdmin == false) {
+    return [
+      Positioned(
+          right: 15,
+          left: 290,
+          bottom: -20,
+          child: Container(
+            height: 40,
+            child: CustomCurvedButton(
+              btnText: 'Report',
+              btnPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SendListingReport(listingID: listingID)));
+              },
+            ),
           )),
-    );
+      Positioned(
+          right: 110,
+          left: 200,
+          bottom: -20,
+          child: Container(
+            height: 40,
+            child: CustomCurvedButton(
+              btnText: 'Chat',
+              btnPressed: chatBtnPressed,
+            ),
+          ))
+    ];
   } else {
-    return Positioned(
-      right: 20,
-      left: 290,
-      bottom: -20,
-      child: Container(
-          height: 40,
-          child: CustomCurvedButton(
-            btnText: 'Chat',
-            btnPressed: ChatBtnPressed,
-          )),
-    );
+    return <Widget>[];
   }
 }

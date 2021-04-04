@@ -6,6 +6,7 @@ import 'package:flutter_application_1/models/ReportListing.dart';
 import 'package:flutter_application_1/models/ReportListingAction.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/common/widgets.dart';
+import 'package:flutter_application_1/screens/searchresult/Selectedlisting_page.dart';
 
 import 'oneListingAction.dart';
 
@@ -84,6 +85,7 @@ class _OneReportListingState extends State<OneReportListing> {
                             //backbutton
                             InkWell(
                               onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Selectedlisting_page(listingID: widget.listing.listingID)));
                                 //TODO Link to listing
                               },
                               child: Row(

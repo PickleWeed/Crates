@@ -100,8 +100,8 @@ class _ReportListingPageState extends State<ReportListingPage> {
                                   icon: Icon(Icons.sort),
                                   label: Text('Sort'),
                                   onPressed: () {
-                                    reportListings.sort((a, b) {
-                                      if(sort == false){
+                                    if (sort == false) {
+                                      reportListings.sort((a, b) {
                                         sort = true;
                                         return a.reportTitle
                                             .toString()
@@ -109,19 +109,20 @@ class _ReportListingPageState extends State<ReportListingPage> {
                                             .compareTo(b.reportTitle
                                             .toString()
                                             .toLowerCase());
-                                      }
-                                      else{
+                                      });
+                                    } else {
+                                      reportListings.sort((b, a) {
                                         sort = false;
-                                        return b.reportTitle
+                                        return a.reportTitle
                                             .toString()
                                             .toLowerCase()
-                                            .compareTo(a.reportTitle
+                                            .compareTo(b.reportTitle
                                             .toString()
                                             .toLowerCase());
-                                      }
-                                    });
+                                      });
+                                    }
 
-                                    setState((){});
+                                    setState(() {});
                                   },
                                 )))
                       ],
