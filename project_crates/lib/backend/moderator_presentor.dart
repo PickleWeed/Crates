@@ -34,14 +34,11 @@ class ModeratorPresentor{
         if(name != ""){
           if(reportListing.complete == "False" && reportListing.reportTitle.toLowerCase().contains(name.toLowerCase())){
             reportListingList.add(reportListing);
-            print("test");
           }
         }
         else{
           if(reportListing.complete == "False"){
             reportListingList.add(reportListing);
-            print("test2");
-            print(name);
           }
         }
       });
@@ -83,6 +80,24 @@ class ModeratorPresentor{
         reportDate: DateTime.parse(snapshot.value['reportDate']), userID: snapshot.value['userID']);
 
     return reportListing;
+  }
+
+  //Get instances with listing ID
+  Future<List<ReportListing>> readReportListings(String listingID) async{
+    List<ReportListing> reportListingList = new List<ReportListing>();
+    await _databaseRef.child('ReportListing').once().then((DataSnapshot snapshot) {
+      Map<dynamic, dynamic> map = snapshot.value;
+      map.forEach((key, value) {
+        ReportListing reportListing = new ReportListing(reportID: key, listingID: value['listingID'],
+            reportTitle: value['reportTitle'], reportOffense: value['reportOffense'],
+            reportDescription: value['reportDescription'], complete: value['complete'],
+            reportDate: DateTime.parse(value['reportDate']), userID: value['userID']);
+        if(reportListing.listingID == listingID){
+          reportListingList.add(reportListing);
+        }
+      });
+    });
+    return reportListingList;
   }
 
   //Add
@@ -155,16 +170,11 @@ class ModeratorPresentor{
       updateToR = data.updateToReporter;
     }
 
-    await _databaseRef.child("ReportListingAction").child(data.reportID).set({
-      "actionsTaken": data.actionsTaken,
-      "updateToReporter": updateToR,
-      "updateToOffender": updateToO,
-      "moderatorID": data.moderatorID,
-      "actionDate": data.actionDate.toString()
-    });
-
     //Get ReportListing
     ReportListing rl = await readReportListing(data.reportID);
+
+    //Get all reports with the same listing id
+    List<ReportListing> rlList = await readReportListings(rl.listingID);
 
     //Get Listing
     Listing l = await readListing(rl.listingID);
@@ -174,6 +184,7 @@ class ModeratorPresentor{
     //Notification
     String notiText = data.updateToReporter + "\n" + "Actions Taken: " + "\n";
 
+    //Check actions taken
     if(data.actionsTaken.length > 0){
       for(var i = 0; i < data.actionsTaken.length; i++){
         notiText += data.actionsTaken[i] + "\n";
@@ -190,17 +201,27 @@ class ModeratorPresentor{
       notiText += "None";
     }
 
-    Notification noti = new Notification(notificationText: notiText, isMatch: "ListingReport", reportID: data.reportID,userID: rl.userID);
-    addNotification(noti);
+    //Insert into db for both action & noti
+    for(int i = 0; i < rlList.length; i++){
+      await _databaseRef.child("ReportListingAction").child(rlList[i].reportID).set({
+        "actionsTaken": data.actionsTaken,
+        "updateToReporter": updateToR,
+        "updateToOffender": updateToO,
+        "moderatorID": data.moderatorID,
+        "actionDate": data.actionDate.toString()
+      });
 
+      Notification noti = new Notification(notificationText: notiText, isMatch: "ListingReport", reportID: rlList[i].reportID,userID: rlList[i].userID);
+      await addNotification(noti);
+    }
+
+    //Delete listing
     if(data.actionsTaken.length > 1){
-      //Delete listing
       deleteListing(l);
     }
 
     //Update user
     updateUser(l.userID, action);
-
   }
 
   //
