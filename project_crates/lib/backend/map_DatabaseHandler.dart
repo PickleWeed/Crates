@@ -19,7 +19,12 @@ class DataHandler {
   final _storageRef = FirebaseStorage.instance.ref();
   //insert current location as argument
   Future<List<Listing>> retrieveFilteredListing(double distance, String category, LatLng center) async {
-    final user = await currentUser();
+    var user;
+    try{
+      final user = await currentUser();
+    } catch(e){
+      final user = '';
+    }
     List<Listing> userNormalListing = new List<Listing>();
     try {
       if(category == "All" || category ==''){
@@ -89,7 +94,12 @@ class DataHandler {
   //TODO for testing, almost never use
   Future<List<Listing>> retrieveAllListing() async {
     //print('retrieveAllListing!');
-    final user = await currentUser();
+    var user;
+    try{
+      final user = await currentUser();
+    } catch(e){
+      final user = '';
+    }
     List<Listing> userNormalListing = new List<Listing>();
     String url = "";
     try {

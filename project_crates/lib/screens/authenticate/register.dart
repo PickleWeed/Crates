@@ -353,6 +353,7 @@ class _RegisterFinalState extends State<RegisterFinal> {
                                 hintText: 'Username')),
                         SizedBox(height: 10),
                         TextFormField(
+                            key: Key('password'),
                             validator: (value)=> value.isEmpty ? "Password Required" : value.length < 6 ? "Password must have at least 6 characters" : null,
                             obscureText: true,
                             controller: passwordController,
@@ -362,6 +363,7 @@ class _RegisterFinalState extends State<RegisterFinal> {
                                 hintText: 'Password')),
                         SizedBox(height: 10),
                         CustomButton(
+                            btnKey: 'Register',
                             btnText: 'Register',
                             btnPressed: () async {
                               // Password Validation

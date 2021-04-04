@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/authenticate/register.dart';
-import 'package:flutter_application_1/screens/authenticate/root.dart' as root;
 import 'package:flutter_application_1/screens/authenticate/root.dart';
 import 'package:flutter_application_1/screens/home/home.dart';
 import 'package:flutter_test/flutter_test.dart';
