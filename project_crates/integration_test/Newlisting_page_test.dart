@@ -55,8 +55,6 @@ void main() {
       expect(find.byWidgetPredicate((widget) => widget is Home),findsOneWidget);
     }
 
-
-
     IntegrationTestWidgetsFlutterBinding.ensureInitialized();
     /*testWidgets('listing Page', (WidgetTester tester) async {
       await login(tester);
@@ -87,7 +85,7 @@ void main() {
       await tester.pumpAndSettle(Duration(seconds: 1));
 
       await tester.pumpAndSettle(Duration(seconds: 1));
-
+      //TODO expect for camera
     });
     testWidgets('Select Photo Library', (WidgetTester tester) async {
       await login(tester);
@@ -108,23 +106,14 @@ void main() {
       await tester.pumpAndSettle(Duration(seconds: 1));
 
 
-      /*enableFlutterDriverExtension();
-      const channel =
-      MethodChannel('plugins.flutter.io/image_picker');
-
-      channel.setMockMethodCallHandler((MethodCall methodCall) async {
-        var data = await rootBundle.load('coffee.png');
-        var bytes = data.buffer.asUint8List();
-        var tempDir = await getTemporaryDirectory();
-        var file = await File('${tempDir.path}/tmp.tmp', ).writeAsBytes(bytes);
-        print(file.path);
-        return file.path;
-      });*/
+      //TODO expect for Photo library
 
       await tester.pumpAndSettle(Duration(seconds: 1));
 
     });
-    testWidgets('Picture needed', (WidgetTester tester) async {
+
+    //Picture cannot be empty
+    testWidgets('Please select a photo!', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
       final newListingBtn = find.byIcon(Icons.add_circle_outline);
@@ -141,6 +130,7 @@ void main() {
       final createListingBtn = find.byKey(Key('CreateListing'));
       await tester.tap(createListingBtn);
 
+      //TODO expect for alert dialog
       await tester.pumpAndSettle(Duration(seconds: 2));
       expect(find.byType(Dialogs), findsNothing);
       //expect(find.byWidgetPredicate((widget) => widget is Dialogs),findsOneWidget);
@@ -150,6 +140,9 @@ void main() {
       //await tester.pumpAndSettle(Duration(seconds: 1));
       //expect(errorTextFinder, findsOneWidget);
     });
+
+    //TODO Please select a category!
+    //TODO name of product cannot be empty
     testWidgets('Name of product cannot be empty!', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
@@ -184,12 +177,35 @@ void main() {
       await tester.pumpAndSettle(Duration(seconds: 1));
       await tester.pumpAndSettle(Duration(seconds: 1));
 
-      //TODO Expect
+      //TODO Expect for alert dialog
       //expect(find.byWidgetPredicate((widget) => widget is Dialogs),findsOneWidget);
       //expect(find.byType(Dialogs), findsNothing);
-    });*/
-    //TODO Address cannot be empty!
-    //TODO Selecting requesting For
+    });
+     //TODO Address cannot be empty!
+    testWidgets('Select Giving Away!', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+      final newListingBtn = find.byIcon(Icons.add_circle_outline);
+
+      await tester.tap(newListingBtn);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      expect(
+          find.byWidgetPredicate((widget) => widget is Body), findsOneWidget);
+
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      final toggleBtn = find.byKey(Key('toggleBtn'));
+      expect(tester
+          .widget<ToggleButtons>(toggleBtn)
+          .isSelected, [isTrue, isFalse]);
+
+
+      await tester.tap(find.byKey(Key('RequestingFor')));
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      expect(tester
+          .widget<ToggleButtons>(toggleBtn)
+          .isSelected, [isFalse, isTrue]);
+    });
     testWidgets('Select Request For!', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
@@ -202,13 +218,13 @@ void main() {
           find.byWidgetPredicate((widget) => widget is Body), findsOneWidget);
 
       await tester.pumpAndSettle(Duration(seconds: 1));
-      //expect(find.byKey(Key('GivingAway')), findsOneWidget);
-      final toggleBtn = find.byKey(Key('GivingAway'));
+      final toggleBtn = find.byKey(Key('toggleBtn'));
+      expect(tester.widget<ToggleButtons>(toggleBtn).isSelected, [isTrue, isFalse]);
 
-      List<bool> isselected = [true, false];
-
-      expect(isselected[0], isTrue);
-      expect(isselected[1], isFalse);
+      
+      await tester.tap(find.byKey(Key('GivingAway')));
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      expect(tester.widget<ToggleButtons>(toggleBtn).isSelected, [isTrue, isFalse]);
 
       //expect (tester.getSemantics(toggleBtn), matchesSemantics(
       //  isButton: true,
@@ -220,15 +236,96 @@ void main() {
       expect(finder, findsOneWidget);*/
       //await tester.tap(find.byKey(Key('GivingAway')));
       
-      /*expect(
+      expect(
           find.byWidgetPredicate((widget) =>
           widget is ToggleButtons &&
           widget.children is Text &&
-          (widget.children as Text).data.startsWith('Requesting for')), findsOneWidget);*/
+          (widget.children as Text).data.startsWith('Requesting for')), findsOneWidget);
     });
-    //TODO select category
-    //TODO enter Listing Title
-    //TODO enter description
-    //TODO Enter location
+    testWidgets('Select Category', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+      final newListingBtn = find.byIcon(Icons.add_circle_outline);
+
+      await tester.tap(newListingBtn);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      expect(
+          find.byWidgetPredicate((widget) => widget is Body), findsOneWidget);
+
+      await tester.tap(find.byType(DropdownButtonHideUnderline).first);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+      await tester.tap(find.text('Dairy Product').last);
+      await tester.pump();
+      await tester.pumpAndSettle(Duration(seconds: 1));
+
+      expect(find.text('Dairy Product'), findsOneWidget);
+    });
+    testWidgets('Enter Listing Title', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+      final newListingBtn = find.byIcon(Icons.add_circle_outline);
+
+      await tester.tap(newListingBtn);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      expect(
+          find.byWidgetPredicate((widget) => widget is Body), findsOneWidget);
+
+      final listingTitleTextField = find
+          .byType(TextField)
+          .first;
+      await tester.tap(listingTitleTextField);
+      await tester.pump();
+      await tester.enterText(listingTitleTextField, 'Food Test Listing');
+
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      expect(find.text('Food Test Listing'), findsOneWidget);
+    });
+    testWidgets('Enter description', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+      final newListingBtn = find.byIcon(Icons.add_circle_outline);
+
+      await tester.tap(newListingBtn);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      expect(
+          find.byWidgetPredicate((widget) => widget is Body), findsOneWidget);
+
+      final descriptionTextField = find.byKey(Key('description'));
+      await tester.tap(descriptionTextField);
+      await tester.pump();
+      await tester.enterText(descriptionTextField, 'Food Test Description');
+
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      expect(find.text('Food Test Description'), findsOneWidget);
+    });
+    testWidgets('Enter Location', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+      final newListingBtn = find.byIcon(Icons.add_circle_outline);
+
+      await tester.tap(newListingBtn);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      expect(
+          find.byWidgetPredicate((widget) => widget is Body), findsOneWidget);
+
+      final gesture = await tester.startGesture(Offset(0, 300)); //Position of the scrollview
+      await gesture.moveBy(Offset(0, -300)); //How much to scroll by
+      await tester.pumpAndSettle(Duration(seconds: 1));
+
+      final locationTextField = find
+          .byType(TextField)
+          .last;
+      await tester.tap(locationTextField);
+      await tester.pump();
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      await tester.enterText(locationTextField, 'Test');
+
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      expect(find.text('Test'), findsOneWidget);
+    });*/
   });
 }

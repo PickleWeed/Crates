@@ -272,6 +272,7 @@ class _BodyState extends State<Body> {
                     padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                     child: Container(
                       child: TextField(
+                          key: const Key('description'),
                           minLines: 4,//Normal textInputField will be displayed
                           maxLines: 4,
                           style: TextStyle(fontSize: 16),
