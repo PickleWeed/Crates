@@ -33,7 +33,7 @@ class _CompletedReportListingPageState
     });
 
     reportListings =
-        await _moderatorPresentor.readReportListingListCompleted(_searchName);
+    await _moderatorPresentor.readReportListingListCompleted(_searchName);
 
     setState(() {
       reportListings = reportListings;
@@ -53,84 +53,85 @@ class _CompletedReportListingPageState
               style: TextStyle(fontSize: 30, color: Colors.white)),
           shape: RoundedRectangleBorder(
               borderRadius:
-                  BorderRadius.vertical(bottom: Radius.circular(40.0))),
+              BorderRadius.vertical(bottom: Radius.circular(40.0))),
         ),
         body: dataLoading == false
             ? Column(children: <Widget>[
-                Container(
-                    margin: EdgeInsets.fromLTRB(20, 3, 20, 3),
-                    decoration: BoxDecoration(
-                        border:
-                            Border(bottom: BorderSide(color: primaryColor))),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Icon(Icons.search),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: TextFormField(
-                              controller: _searchController,
-                              decoration: InputDecoration(
-                                  hintText: 'Search',
-                                  border: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none),
-                              onEditingComplete: () {
-                                setState(() {
-                                  loadData();
+          Container(
+              margin: EdgeInsets.fromLTRB(20, 3, 20, 3),
+              decoration: BoxDecoration(
+                  border:
+                  Border(bottom: BorderSide(color: primaryColor))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Icon(Icons.search),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextFormField(
+                        key: Key('SearchCompleted'),
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                            hintText: 'Search',
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none),
+                        onEditingComplete: () {
+                          setState(() {
+                            loadData();
+                          });
+                        },
+                        onChanged: (val) => setState(() {
+                          _searchName = val;
+                        }),
+                      ),
+                    ),
+                  ),
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                          padding: EdgeInsets.only(right: 10.0),
+                          child: TextButton.icon(
+                            icon: Icon(Icons.sort),
+                            label: Text('Sort'),
+                            onPressed: () {
+                              if (sort == false) {
+                                reportListings.sort((a, b) {
+                                  sort = true;
+                                  return a.reportTitle
+                                      .toString()
+                                      .toLowerCase()
+                                      .compareTo(b.reportTitle
+                                      .toString()
+                                      .toLowerCase());
                                 });
-                              },
-                              onChanged: (val) => setState(() {
-                                _searchName = val;
-                              }),
-                            ),
-                          ),
-                        ),
-                        Align(
-                            alignment: Alignment.centerRight,
-                            child: Container(
-                                padding: EdgeInsets.only(right: 10.0),
-                                child: TextButton.icon(
-                                  icon: Icon(Icons.sort),
-                                  label: Text('Sort'),
-                                  onPressed: () {
-                                    if (sort == false) {
-                                      reportListings.sort((a, b) {
-                                        sort = true;
-                                        return a.reportTitle
-                                            .toString()
-                                            .toLowerCase()
-                                            .compareTo(b.reportTitle
-                                                .toString()
-                                                .toLowerCase());
-                                      });
-                                    } else {
-                                      reportListings.sort((b, a) {
-                                        sort = false;
-                                        return a.reportTitle
-                                            .toString()
-                                            .toLowerCase()
-                                            .compareTo(b.reportTitle
-                                                .toString()
-                                                .toLowerCase());
-                                      });
-                                    }
+                              } else {
+                                reportListings.sort((b, a) {
+                                  sort = false;
+                                  return a.reportTitle
+                                      .toString()
+                                      .toLowerCase()
+                                      .compareTo(b.reportTitle
+                                      .toString()
+                                      .toLowerCase());
+                                });
+                              }
 
-                                    setState(() {});
-                                  },
-                                )))
-                      ],
-                    )),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: reportListings.length,
-                  itemBuilder: (context, index) {
-                    return reportCard(context, reportListings[index]);
-                  },
-                ),
-              ])
+                              setState(() {});
+                            },
+                          )))
+                ],
+              )),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: reportListings.length,
+            itemBuilder: (context, index) {
+              return reportCard(context, reportListings[index]);
+            },
+          ),
+        ])
             : Center(child: CircularProgressIndicator()));
     // body: Body());
   }
@@ -145,7 +146,7 @@ Widget reportCard(BuildContext context, ReportListing report) {
             child: GestureDetector(
                 child: ListTile(
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   title: Text(report.reportTitle),
                   subtitle: Text(report.reportDescription),
                   isThreeLine: false,
@@ -154,7 +155,7 @@ Widget reportCard(BuildContext context, ReportListing report) {
                 onTap: () async {
                   // Load other listing details
                   Listing listing =
-                      await ModeratorPresentor().readListing(report.listingID);
+                  await ModeratorPresentor().readListing(report.listingID);
 
                   // Call listing to display
                   Navigator.push(
