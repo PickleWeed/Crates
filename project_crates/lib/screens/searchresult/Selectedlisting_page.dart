@@ -255,10 +255,8 @@ Widget listingDetailsTopCard(
       //TODO show completion message to user and remove complete button
       print('Listing completed');
 
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => Profile()));
-
-      Navigator.of(context).pop();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Profile()));
     },
         // EditBtnPressed
         () {
@@ -275,10 +273,8 @@ Widget listingDetailsTopCard(
 
       print('Delete completed');
 
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => Profile()));
-
-      Navigator.of(context).pop();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Profile()));
     }),
 
     ...normalUserButtons(currentUser, isAdmin, context, listingID,
