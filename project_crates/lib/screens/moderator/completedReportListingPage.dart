@@ -71,6 +71,7 @@ class _CompletedReportListingPageState
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: TextFormField(
+                              key: Key('SearchCompleted'),
                               controller: _searchController,
                               decoration: InputDecoration(
                                   hintText: 'Search',
@@ -123,12 +124,14 @@ class _CompletedReportListingPageState
                                 )))
                       ],
                     )),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: reportListings.length,
-                  itemBuilder: (context, index) {
-                    return reportCard(context, reportListings[index]);
-                  },
+                SingleChildScrollView(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: reportListings.length,
+                    itemBuilder: (context, index) {
+                      return reportCard(context, reportListings[index]);
+                    },
+                  ),
                 ),
               ])
             : Center(child: CircularProgressIndicator()));

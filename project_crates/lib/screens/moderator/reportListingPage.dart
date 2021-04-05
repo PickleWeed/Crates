@@ -36,7 +36,8 @@ class _ReportListingPageState extends State<ReportListingPage> {
       dataLoading = true;
     });
 
-    reportListings = await _moderatorPresentor.readReportListingList(_searchName);
+    reportListings =
+        await _moderatorPresentor.readReportListingList(_searchName);
 
     setState(() {
       reportListings = reportListings;
@@ -74,21 +75,21 @@ class _ReportListingPageState extends State<ReportListingPage> {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: TextFormField(
+                              key: Key('SearchReport'),
                               controller: _searchController,
                               decoration: InputDecoration(
-                                hintText: 'Search',
+                                  hintText: 'Search',
                                   border: InputBorder.none,
                                   enabledBorder: InputBorder.none,
                                   focusedBorder: InputBorder.none),
-                              onEditingComplete: (){
+                              onEditingComplete: () {
                                 setState(() {
                                   loadData();
                                 });
                               },
-                              onChanged: (val) =>
-                                  setState(() {
-                                    _searchName = val;
-                                  }),
+                              onChanged: (val) => setState(() {
+                                _searchName = val;
+                              }),
                             ),
                           ),
                         ),
@@ -107,8 +108,8 @@ class _ReportListingPageState extends State<ReportListingPage> {
                                             .toString()
                                             .toLowerCase()
                                             .compareTo(b.reportTitle
-                                            .toString()
-                                            .toLowerCase());
+                                                .toString()
+                                                .toLowerCase());
                                       });
                                     } else {
                                       reportListings.sort((b, a) {
@@ -117,8 +118,8 @@ class _ReportListingPageState extends State<ReportListingPage> {
                                             .toString()
                                             .toLowerCase()
                                             .compareTo(b.reportTitle
-                                            .toString()
-                                            .toLowerCase());
+                                                .toString()
+                                                .toLowerCase());
                                       });
                                     }
 
@@ -127,12 +128,14 @@ class _ReportListingPageState extends State<ReportListingPage> {
                                 )))
                       ],
                     )),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: reportListings.length,
-                  itemBuilder: (context, index) {
-                    return reportCard(context, reportListings[index]);
-                  },
+                SingleChildScrollView(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: reportListings.length,
+                    itemBuilder: (context, index) {
+                      return reportCard(context, reportListings[index]);
+                    },
+                  ),
                 ),
               ])
             : Center(child: CircularProgressIndicator()));

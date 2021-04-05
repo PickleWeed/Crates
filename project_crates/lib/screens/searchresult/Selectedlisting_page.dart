@@ -307,6 +307,7 @@ List<Widget> ownerButtons(currentuser, isAdmin, context, listingID,
         bottom: -20,
         child: Container(
             height: 40,
+            key: Key('Edit'),
             child: CustomCurvedButton(
               btnText: 'Edit',
               btnPressed: EditBtnPressed,
