@@ -29,7 +29,7 @@ class MatchPresenter {
 
     // check response
     if (response.statusCode == 200) {
-      //print(response.body);
+      print(response.body);
       var responseJson = json.decode(response.body);
       var categories = responseJson['food_results_by_category'];
       var length = responseJson['food_results_by_category'].length;
@@ -37,8 +37,14 @@ class MatchPresenter {
       for (var i = 0; i < length; i++) {
         var weight = double.parse(categories[i][1]);
         // don't store if the weight is not at least 0.7
-        if (weight >= 0.7) {
-          map[categories[i][0]] = weight;
+        if (weight >= 0.6) {
+          var cat = categories[i][0].replaceAll('/', '_');
+          cat = cat.replaceAll('.', '_');
+          cat = cat.replaceAll('#', '_');
+          cat = cat.replaceAll('\$', '_');
+          cat = cat.replaceAll('[', '_');
+          cat = cat.replaceAll(']', '_');
+          map[cat] = weight;
         }
       }
     }
@@ -58,6 +64,7 @@ class MatchPresenter {
       'listingID': data.listingID,
       'categories': data.categories,
     });
+    await print('Added to LID model');
   }
 
   Future<List<String>> getMatchedListingIDs(
