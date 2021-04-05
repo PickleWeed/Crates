@@ -14,6 +14,23 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter_driver/driver_extension.dart';
 
+import '../lib/screens/common/theme.dart';
+
+class _IsToggled extends CustomMatcher {
+  _IsToggled(dynamic matcher)
+      : super('Check if a switch if enabled or not', 'isToggled', matcher);
+
+  @override
+  Object featureValueOf(dynamic actual) {
+    final finder =actual as Finder;
+    final result = finder.evaluate().single as Switch;
+
+    return result.value;
+  }
+}
+
+Matcher isToggled(bool value) => _IsToggled(value);
+
 void main() {
   group('New Listing', () {
 
@@ -132,7 +149,7 @@ void main() {
       //await tester.tap(errorPopUp);
       //await tester.pumpAndSettle(Duration(seconds: 1));
       //expect(errorTextFinder, findsOneWidget);
-    });*/
+    });
     testWidgets('Name of product cannot be empty!', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
@@ -163,14 +180,55 @@ void main() {
 
       final createListingBtn = find.byKey(Key('CreateListing'));
       await tester.tap(createListingBtn);
-      await tester.tap(createListingBtn);
-      await tester.tap(createListingBtn);
-      await tester.pumpAndSettle(Duration(seconds: 1));
-
       await tester.pump();
       await tester.pumpAndSettle(Duration(seconds: 1));
+      await tester.pumpAndSettle(Duration(seconds: 1));
+
+      //TODO Expect
       //expect(find.byWidgetPredicate((widget) => widget is Dialogs),findsOneWidget);
       //expect(find.byType(Dialogs), findsNothing);
+    });*/
+    //TODO Address cannot be empty!
+    //TODO Selecting requesting For
+    testWidgets('Select Request For!', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+      final newListingBtn = find.byIcon(Icons.add_circle_outline);
+
+      await tester.tap(newListingBtn);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      expect(
+          find.byWidgetPredicate((widget) => widget is Body), findsOneWidget);
+
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      //expect(find.byKey(Key('GivingAway')), findsOneWidget);
+      final toggleBtn = find.byKey(Key('GivingAway'));
+
+      List<bool> isselected = [true, false];
+
+      expect(isselected[0], isTrue);
+      expect(isselected[1], isFalse);
+
+      //expect (tester.getSemantics(toggleBtn), matchesSemantics(
+      //  isButton: true,
+      //),);
+      /*Matcher isToggled(bool value) => _IsToggled(value);
+      final finder = find.byWidgetPredicate(
+              (widget) => widget is Switch && widget.key == toggleBtn && widget.value == true,
+          description: 'Giving away');
+      expect(finder, findsOneWidget);*/
+      //await tester.tap(find.byKey(Key('GivingAway')));
+      
+      /*expect(
+          find.byWidgetPredicate((widget) =>
+          widget is ToggleButtons &&
+          widget.children is Text &&
+          (widget.children as Text).data.startsWith('Requesting for')), findsOneWidget);*/
     });
+    //TODO select category
+    //TODO enter Listing Title
+    //TODO enter description
+    //TODO Enter location
   });
 }

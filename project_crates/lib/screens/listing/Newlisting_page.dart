@@ -140,6 +140,7 @@ class _BodyState extends State<Body> {
                   child: Container(
                     height: 40,
                     child: ToggleButtons(
+                      key: const Key('toggleBtn'),
                       borderRadius: BorderRadius.circular(8.0),
                       isSelected: isselected,
                       color: Colors.grey[500],
@@ -148,11 +149,13 @@ class _BodyState extends State<Body> {
                       renderBorder: true,
                       children: <Widget>[
                         Padding(
+                          key: const Key('GivingAway'),
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child:
                               Text('Giving away', style: TextStyle(fontSize: 17)),
                         ),
                         Padding(
+                          key: const Key('RequestingFor'),
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text('Requesting for ',
                               style: TextStyle(fontSize: 17)),

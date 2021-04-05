@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/backend/auth.dart';
 import 'package:flutter_application_1/screens/authenticate/register.dart';
 import 'package:flutter_application_1/screens/authenticate/root.dart';
 import 'package:flutter_application_1/screens/home/home.dart';
@@ -163,7 +164,7 @@ void main() {
       expect(emailErrorFinder, findsOneWidget);
       expect(passwordErrorFinder, findsOneWidget);
     });
-    testWidgets('Email Required, Password required', (WidgetTester tester) async {
+    testWidgets('Login Email Required, Password required', (WidgetTester tester) async {
       app.main();
       await tester.pumpAndSettle();
       final emailFormField = find.byKey(Key('email'));
@@ -183,6 +184,64 @@ void main() {
       final passwordErrorFinder = find.text('Password Required');
       expect(emailErrorFinder, findsOneWidget);
       expect(passwordErrorFinder, findsOneWidget);
+    });
+    //TODO login banned acc
+    testWidgets('Banned acc 30 days', (WidgetTester tester) async {
+      app.main();
+      await tester.pumpAndSettle();
+      final emailFormField = find.byKey(Key('email'));
+      final passwordFormField = find.byKey(Key('password'));
+      final loginButton = find.byKey(Key('Login'));
+
+      await tester.tap(emailFormField);
+      await tester.pump();
+      await tester.enterText(emailFormField, 'sam@gg.com');
+      await tester.tap(passwordFormField);
+      await tester.pump();
+      await tester.enterText(passwordFormField, 'password');
+      await tester.pumpAndSettle();
+
+      await tester.tap(loginButton);
+      await tester.pump();
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      await tester.pumpAndSettle(Duration(seconds: 1));
+
+      //TODO Expect
+      //expect(find.byElementType(Fluttertoast), findsOneWidget);
+
+      //await tester.pump();
+      //await tester.pumpAndSettle(Duration(seconds: 1));
+      //expect(find.text('Your account is banned for 30 days'), findsOneWidget);
+      //expect(find.byWidgetPredicate((widget) => widget is Fluttertoast),findsOneWidget);
+    });
+    //TODO login banned acc
+    testWidgets('Banned acc forever', (WidgetTester tester) async {
+      app.main();
+      await tester.pumpAndSettle();
+      final emailFormField = find.byKey(Key('email'));
+      final passwordFormField = find.byKey(Key('password'));
+      final loginButton = find.byKey(Key('Login'));
+
+      await tester.tap(emailFormField);
+      await tester.pump();
+      await tester.enterText(emailFormField, 'sam@gg.com');
+      await tester.tap(passwordFormField);
+      await tester.pump();
+      await tester.enterText(passwordFormField, 'password');
+      await tester.pumpAndSettle();
+
+      await tester.tap(loginButton);
+      await tester.pump();
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      await tester.pumpAndSettle(Duration(seconds: 1));
+
+      //TODO Expect
+      //expect(find.byElementType(Fluttertoast), findsOneWidget);
+
+      //await tester.pump();
+      //await tester.pumpAndSettle(Duration(seconds: 1));
+      //expect(find.text('Your account is banned'), findsOneWidget);
+      //expect(find.byWidgetPredicate((widget) => widget is Fluttertoast),findsOneWidget);
     });
   });
 }
