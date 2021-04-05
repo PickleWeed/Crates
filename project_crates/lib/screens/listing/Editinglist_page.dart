@@ -35,7 +35,7 @@ class Editinglist_page extends StatelessWidget {
                     child: Column(children: <Widget>[
                       Text('Edit Listing',
                           style: TextStyle(
-                              color: Colors.white,)),
+                            color: Colors.white,)),
                     ]))
               ]),
           leading: IconButton(
@@ -171,6 +171,7 @@ class _BodyState extends State<Body> {
                 child: Container(
                   height: 40,
                   child: ToggleButtons(
+                    key: const Key('toggleBtn'),
                     borderRadius: BorderRadius.circular(8.0),
                     isSelected: isselected,
                     color: Colors.grey[500],
@@ -179,10 +180,12 @@ class _BodyState extends State<Body> {
                     renderBorder: true,
                     children: <Widget>[
                       Padding(
+                        key: const Key('GivingAway'),
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text('Giving away', style: TextStyle(fontSize: 17)),
+                        child: Text('Giving away',style: TextStyle(fontSize: 17)),
                       ),
                       Padding(
+                        key: const Key('RequestingFor'),
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child:
                         Text('Requesting for ', style: TextStyle(fontSize: 17)),
@@ -265,6 +268,7 @@ class _BodyState extends State<Body> {
                 child: Container(
                   height: 50,
                   child: TextField(
+                      key: Key('Title'),
                       style: TextStyle(fontSize: 16),
                       controller: listingTitleController,
                       decoration: InputDecoration(
@@ -370,8 +374,9 @@ class _BodyState extends State<Body> {
                 ),
               ),
               SizedBox(height: 20),
-            Container(
+              Container(
                 padding: EdgeInsets.fromLTRB(100, 5, 100, 20),
+                key: const Key('Save'),
                 child: CustomCurvedButton(btnText: 'Save Changes', btnPressed: () async {
                   if (listingTitleController.text == '') {
                     await Dialogs.errorAbortDialog(context,
@@ -411,7 +416,7 @@ class _BodyState extends State<Body> {
                   await Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => UserMain()));
                 }),
-            ),
+              ),
 
             ]),
           ),
