@@ -186,15 +186,17 @@ class ModeratorPresentor{
 
     //Check actions taken
     if(data.actionsTaken.length > 0){
-      for(var i = 0; i < data.actionsTaken.length; i++){
-        notiText += data.actionsTaken[i] + "\n";
-      }
-
       if(data.actionsTaken[0] == "temporary"){
+        notiText += "Account temporarily banned" + "\n";
         action = "1";
       }
       else if(data.actionsTaken[0] == "permanent"){
+        notiText += "Account permanently banned" + "\n";
         action = "2";
+      }
+      else if(data.actionsTaken[0] == "none"){
+        notiText += "No actions taken" + "\n";
+        action = "0";
       }
     }
     else{
@@ -211,7 +213,7 @@ class ModeratorPresentor{
         "actionDate": data.actionDate.toString()
       });
 
-      Notification noti = new Notification(notificationText: notiText, isMatch: "ListingReport", reportID: rlList[i].reportID,userID: rlList[i].userID);
+      Notification noti = new Notification(notificationText: notiText, isMatch: "ListingReport", reportID: rlList[i].reportID,userID: rlList[i].userID, listingID: l.listingID);
       await addNotification(noti);
     }
 
