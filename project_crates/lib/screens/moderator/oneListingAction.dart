@@ -4,8 +4,10 @@ import 'package:flutter_application_1/backend/moderator_presentor.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/ReportListing.dart';
 import 'package:flutter_application_1/models/ReportListingAction.dart';
+import 'package:flutter_application_1/screens/common/admin_main.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/common/widgets.dart';
+import 'package:flutter_application_1/screens/moderator/completedReportListingPage.dart';
 
 enum Penalties { temporary, permanent, none }
 
@@ -213,8 +215,10 @@ class _ListingActionFormState extends State<ListingActionForm> {
                           await ModeratorPresentor().updateReportListingData(
                               widget.reportListing.reportID);
 
-                          Navigator.of(context)
-                              .popUntil((route) => route.isFirst);
+                          await Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AdminMain()));
                         },
                       )),
                       SizedBox(width: 20),

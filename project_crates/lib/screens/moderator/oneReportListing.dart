@@ -4,8 +4,10 @@ import 'package:flutter_application_1/backend/moderator_presentor.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/ReportListing.dart';
 import 'package:flutter_application_1/models/ReportListingAction.dart';
+import 'package:flutter_application_1/screens/common/admin_main.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/common/widgets.dart';
+import 'package:flutter_application_1/screens/moderator/reportListingPage.dart';
 import 'package:flutter_application_1/screens/searchresult/Selectedlisting_page.dart';
 
 import 'oneListingAction.dart';
@@ -285,7 +287,8 @@ Widget dismissReport(
     btnText: "Dismiss Report",
     btnPressed: () async {
       String currUser = await currentUser();
-      List<String> actions;
+      List<String> actions = new List<String>();
+      actions.add("none");
       ReportListingAction action = new ReportListingAction(
           reportID: reportListing.reportID,
           actionsTaken: actions,
@@ -296,7 +299,11 @@ Widget dismissReport(
       await ModeratorPresentor().addReportListingActionData(action);
       await ModeratorPresentor()
           .updateReportListingData(reportListing.reportID);
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      displayToastMessage('Successfully submitted', context);
+      await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AdminMain()));
     }, //show popup dialog
   );
 }
