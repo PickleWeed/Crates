@@ -85,7 +85,23 @@ class DatabaseAccess {
       }
     });
 
-    //after storage deletion, delete database entry
+    // delete from ListingImageData model as well
+    try {
+      await databaseRef.child('ListingImageData').once().then((DataSnapshot snapshot){
+        Map<dynamic, dynamic> map = snapshot.value;
+        map.forEach((k, v) {
+          if(v['listingID'] == key ){
+            print('LID deleted from LID model');
+            databaseRef.child('ListingImageData').child(k).remove();
+          }
+        });
+      });
+    } catch (e) {
+      print('LID Deletion unsuccessful');
+      print(e);
+    }
+
+    //after storage and LID deletion, delete database entry
     try {
       await databaseRef.child('Listing').child(key).remove();
       print('Listing deleted from listing model');
@@ -93,8 +109,7 @@ class DatabaseAccess {
       print('Listing Deletion unsuccessful');
       print(e);
     }
-
-
+    
   }
 
   //update an entire listing node with a new listing, postDateTime updated to DateTime.now()

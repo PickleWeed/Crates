@@ -8,8 +8,13 @@ class MatchPresenter {
   final _databaseRef = FirebaseDatabase.instance.reference();
   String url = 'api.foodai.org';
 
+
+  // Given a picture, fetch categories that is above 0.7 confidence
   Future<Map<String, double>> fetchCategories(String foodurl) async {
+    // map to store the categories
     Map map = <String, double>{};
+
+    // make API request
     final response = await http.post(
       Uri.https('api.foodai.org', 'v1/classify'),
       headers: <String, String>{
@@ -22,6 +27,7 @@ class MatchPresenter {
       }),
     );
 
+    // check response
     if (response.statusCode == 200) {
       //print(response.body);
       var responseJson = json.decode(response.body);
@@ -39,9 +45,11 @@ class MatchPresenter {
     //If no response == 200, means no match
     else {}
 
+    // if the map is empty, return null early
     if (map.isEmpty){
       return null;
     }
+
     return map;
   }
 
@@ -67,6 +75,7 @@ class MatchPresenter {
           .once()
           .then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> map = snapshot.value;
+        print('Retrieved LID: $map');
         map.forEach((key, value) {
           var lid = ListingImageData(
             listingID: value['listingID'],
@@ -74,9 +83,9 @@ class MatchPresenter {
           );
           listingImageDataList.add(lid);
         });
+        print('Retrieved ${listingImageDataList.length} listingImageData (LIDs) from db!');
       });
-      print(
-          'Retrieved ${listingImageDataList.length} listingImageData (LIDs) from db!');
+
     } catch (e) {
       print(e);
       print(
@@ -153,15 +162,24 @@ class MatchPresenter {
     return matchedListings;
   }
 
+  // takes in a map of classifications
   Future<List<Listing>> getMatches(Map<String, double> classifications) async{
+
+    // get matched listing IDs
+    print('In getMatches(), calling getMatchedListingIDs()');
     var matchedListingsID = await getMatchedListingIDs(classifications);
 
-    if (matchedListingsID.isEmpty){
+    print('returned from getMatchedListingIDs(), matchedListingIDs: $matchedListingsID');
+
+    // if no matches, return null early
+    if (matchedListingsID == null){
       return null;
     }
 
+    // get matchedListings itself
     var matchedListings = await getMatchedListings(matchedListingsID);
 
+    // if no matches (can happen if the listing is already completed) return null early
     if (matchedListings.isEmpty){
       return null;
     }

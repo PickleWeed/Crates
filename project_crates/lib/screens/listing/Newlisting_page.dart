@@ -381,16 +381,20 @@ class _BodyState extends State<Body> {
                       var mp = MatchPresenter();
                       var classifications = await mp.fetchCategories(imageString);
 
+                      print('fetchCategories() done, classifications: $classifications}');
+
                       // if it is a request listing, then try to find matches
                       var matches;
-                      if (isselected[1]) {
+                      if (isselected[1] && classifications != null) {
+                        print('This is a request listing, and classifications is not null. doing getMatches()');
                         matches = await mp.getMatches(classifications);
+                        print('getMatches() done, matches: $matches');
                       }
 
-                      // if there are matches, display matches dialog
+                      // if it is a request listing and there are matches, display matches dialog
+                      // if not, just post the listing
                       if (isselected[1] && matches != null) {
-                        print(matches.length);
-                        print('At least one match was found!');
+                        print('At least one match was found! (#${matches.length})');
 
                         await showDialog(
                             context: context,
@@ -411,7 +415,7 @@ class _BodyState extends State<Body> {
                                 );
 
                                 // close popup
-                                await Navigator.of(context).pop();
+                                Navigator.of(context).pop();
 
                                 // push replace home page
                                 await Navigator.pushReplacement(
@@ -438,9 +442,15 @@ class _BodyState extends State<Body> {
                         );
 
                         // add image classification for this listing to db
-                        var temp = await ListingImageData(
-                            listingID: listingID, categories: classifications);
-                        await mp.addListingImageData(temp);
+                        // only add if classifications is not empty
+                        if (isselected[0] && classifications!=null){
+                          print('This is a "Giving" listing, and classifications not null, adding to LID model');
+                          var temp = await ListingImageData(listingID: listingID, categories: classifications);
+                          await mp.addListingImageData(temp);
+                        }else{
+                          print('Not a "Giving" listing, or classifications is null. Not adding to LID model');
+                        }
+
 
                         // push replace home page
                         await Navigator.pushReplacement(context,
