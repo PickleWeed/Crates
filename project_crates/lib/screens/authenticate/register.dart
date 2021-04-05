@@ -370,7 +370,7 @@ class _RegisterFinalState extends State<RegisterFinal> {
                               if (validatePassword()) {
                                 // Register User
                                 FirebaseUser user = await createUserWithEmailAndPassword(emailController.text, passwordController.text, context);
-                                createUserDetails(user, usernameController.text, emailController.text);
+                                await createUserDetails(user, usernameController.text, emailController.text);
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => RootPage()));
                               }
                             }
