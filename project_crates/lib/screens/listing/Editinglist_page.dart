@@ -33,10 +33,11 @@ class Editinglist_page extends StatelessWidget {
               children: <Widget>[
                 Container(
                     child: Column(children: <Widget>[
-                      Text('Edit Listing',
-                          style: TextStyle(
-                              color: Colors.white,)),
-                    ]))
+                  Text('Edit Listing',
+                      style: TextStyle(
+                        color: Colors.white,
+                      )),
+                ]))
               ]),
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_rounded),
@@ -130,249 +131,251 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-          //body: Center(
-          child: Container(
-            color: offWhite,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
-                Widget>[
-              SizedBox(height: 20),
-              InkWell(
-                onTap: () {
-                  _showPicker(context);
-                },
-                child: Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: image != null
-                        ? Image.file(image, height: 200.0, width: 200.0)
-                        : Container(
-                      height: 200.0,
-                      width: 200.0,
-                      color: Colors.grey[300],
-                      child: Icon(Icons.photo_camera,
-                          color: Colors.white, size: 50.0),
-                    ),
+      //body: Center(
+      child: Container(
+        color: offWhite,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+            Widget>[
+          SizedBox(height: 20),
+          InkWell(
+            onTap: () {
+              _showPicker(context);
+            },
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: image != null
+                    ? Image.file(image, height: 200.0, width: 200.0)
+                    : Container(
+                        height: 200.0,
+                        width: 200.0,
+                        color: Colors.grey[300],
+                        child: Icon(Icons.photo_camera,
+                            color: Colors.white, size: 50.0),
+                      ),
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            child: Text('I am ...',
+                // Text placement will change depend on the search result
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+            child: Container(
+              height: 40,
+              child: ToggleButtons(
+                borderRadius: BorderRadius.circular(8.0),
+                isSelected: isselected,
+                color: Colors.grey[500],
+                selectedColor: primaryColor,
+                fillColor: Colors.grey[800],
+                renderBorder: true,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text('Giving away', style: TextStyle(fontSize: 17)),
                   ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: Text('I am ...',
-                    // Text placement will change depend on the search result
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold)),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-                child: Container(
-                  height: 40,
-                  child: ToggleButtons(
-                    borderRadius: BorderRadius.circular(8.0),
-                    isSelected: isselected,
-                    color: Colors.grey[500],
-                    selectedColor: primaryColor,
-                    fillColor: Colors.grey[800],
-                    renderBorder: true,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text('Giving away', style: TextStyle(fontSize: 17)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child:
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child:
                         Text('Requesting for ', style: TextStyle(fontSize: 17)),
-                      ),
-                    ],
-                    onPressed: (int newIndex) {
-                      setState(() {
-                        for (var buttonIndex = 0;
+                  ),
+                ],
+                onPressed: (int newIndex) {
+                  setState(() {
+                    for (var buttonIndex = 0;
                         buttonIndex < isselected.length;
                         buttonIndex++) {
-                          if (buttonIndex == newIndex) {
-                            isselected[buttonIndex] = true;
-                          } else {
-                            isselected[buttonIndex] = false;
-                          }
-                        }
-                      });
-                    },
+                      if (buttonIndex == newIndex) {
+                        isselected[buttonIndex] = true;
+                      } else {
+                        isselected[buttonIndex] = false;
+                      }
+                    }
+                  });
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            child: Text('a ...',
+                // Text placement will change depend on the search result
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
+            child: Container(
+              padding: EdgeInsets.fromLTRB(25, 0, 10, 0),
+              height: 50,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15.0),
+                color: Colors.white,
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  focusColor: Colors.red,
+                  value: valueChoose,
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  iconSize: 24,
+                  elevation: 16,
+                  style: TextStyle(
+                    color: Colors.grey[800],
+                    fontSize: 16,
                   ),
+                  onChanged: (newValue) {
+                    setState(() {
+                      valueChoose = newValue;
+                    });
+                  },
+                  items: listItem.map((valueItem) {
+                    return DropdownMenuItem<String>(
+                      value: valueItem,
+                      child: Text(valueItem),
+                    );
+                  }).toList(),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: Text('a ...',
-                    // Text placement will change depend on the search result
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold)),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(25, 0, 10, 0),
-                  height: 50,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    color: Colors.white,
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      focusColor: Colors.red,
-                      value: valueChoose,
-                      icon: const Icon(Icons.keyboard_arrow_down),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(
-                        color: Colors.grey[800],
-                        fontSize: 16,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+            child: Text("it's called ...",
+                // Text placement will change depend on the search result
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: Container(
+              height: 50,
+              child: TextField(
+                  style: TextStyle(fontSize: 16),
+                  controller: listingTitleController,
+                  decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
                       ),
-                      onChanged: (newValue) {
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'name of the item')),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+            child: Text('description ...',
+                // Text placement will change depend on the search result
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              child: Container(
+                child: TextField(
+                    minLines: 4,
+                    //Normal textInputField will be displayed
+                    maxLines: 4,
+                    style: TextStyle(fontSize: 16),
+                    controller: descriptionController,
+                    decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.white, width: 1.0),
+                          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.white, width: 1.0),
+                          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'description of the item')),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+            child: Text('location',
+                // Text placement will change depend on the search result
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              child: Container(
+                child: TextField(
+                    style: TextStyle(fontSize: 15, color: Colors.grey),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    onTap: () async {
+                      var prediction = await PlacesAutocomplete.show(
+                          context: context,
+                          apiKey: _mapHandler.LocationAPIkey,
+                          mode: Mode.overlay, // Mode.fullscreen
+                          language: "en");
+                      if (prediction != null) {
+                        var _selected = await _mapHandler.getLatLng(prediction);
                         setState(() {
-                          valueChoose = newValue;
+                          _newLocation = _selected;
+                          addressController.text = prediction.description;
+                          _prediction = prediction;
                         });
-                      },
-                      items: listItem.map((valueItem) {
-                        return DropdownMenuItem<String>(
-                          value: valueItem,
-                          child: Text(valueItem),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-                child: Text("it's called ...",
-                    // Text placement will change depend on the search result
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold)),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                child: Container(
-                  height: 50,
-                  child: TextField(
-                      style: TextStyle(fontSize: 16),
-                      controller: listingTitleController,
-                      decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white, width: 1.0),
-                            borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white, width: 1.0),
-                            borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: 'name of the item')),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-                child: Text('description ...',
-                    // Text placement will change depend on the search result
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold)),
-              ),
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: Container(
-                    child: TextField(
-                        minLines: 4,
-                        //Normal textInputField will be displayed
-                        maxLines: 4,
-                        style: TextStyle(fontSize: 16),
-                        controller: descriptionController,
-                        decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
+                      }
+                    },
+                    controller: addressController,
+                    decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
                               BorderSide(color: Colors.white, width: 1.0),
-                              borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
+                          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
                               BorderSide(color: Colors.white, width: 1.0),
-                              borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'description of the item')),
-                  ),
-                ),
+                          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'pick a location')),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-                child: Text('location',
-                    // Text placement will change depend on the search result
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold)),
-              ),
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: Container(
-                    child: TextField(
-                        style: TextStyle(fontSize: 15, color: Colors.grey),
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        onTap: () async {
-                          var prediction = await PlacesAutocomplete.show(
-                              context: context,
-                              apiKey: _mapHandler.LocationAPIkey,
-                              mode: Mode.overlay, // Mode.fullscreen
-                              language: "en");
-                          if (prediction != null) {
-                            var _selected = await _mapHandler.getLatLng(prediction);
-                            setState(() {
-                              _newLocation = _selected;
-                              addressController.text = prediction.description;
-                              _prediction = prediction;
-                            });
-                          }
-                        },
-                        controller: addressController,
-                        decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                              BorderSide(color: Colors.white, width: 1.0),
-                              borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                              BorderSide(color: Colors.white, width: 1.0),
-                              borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'pick a location')),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-            Container(
-                padding: EdgeInsets.fromLTRB(100, 5, 100, 20),
-                child: CustomCurvedButton(btnText: 'Save Changes', btnPressed: () async {
+            ),
+          ),
+          SizedBox(height: 20),
+          Container(
+            padding: EdgeInsets.fromLTRB(100, 5, 100, 20),
+            child: CustomCurvedButton(
+                btnText: 'Save Changes',
+                btnPressed: () async {
                   if (listingTitleController.text == '') {
                     await Dialogs.errorAbortDialog(context,
                         'Name of product is empty.\nPlease fill up the respective field.');
@@ -380,42 +383,75 @@ class _BodyState extends State<Body> {
                     return; //TODO frontend user warning for empty listingTitle/itemName
                   }
 
-                  var imageString =
-                  image != null && imageURL == 'newimagechosen'
-                      ? await storageAccess.uploadFile(image)
-                      : imageURL;
+                  try {
+                    var imageString =
+                        image != null && imageURL == 'newimagechosen'
+                            ? await storageAccess.uploadFile(image)
+                            : imageURL;
 
-                  if (imageURL == 'newimagechosen') {
-                    await storageAccess.deleteListingImage(listing.listingImage);
+                    if (imageURL == 'newimagechosen') {
+                      await storageAccess
+                          .deleteListingImage(listing.listingImage);
+                    }
+
+                    var updatedListing = Listing(
+                        userID: uid,
+                        listingTitle: listingTitleController.text,
+                        longitude: _prediction != null
+                            ? _newLocation.longitude
+                            : listing.longitude,
+                        latitude: _prediction != null
+                            ? _newLocation.latitude
+                            : listing.latitude,
+                        category: valueChoose,
+                        isRequest: isselected[1],
+                        listingImage: imageString,
+                        description: descriptionController.text,
+                        isComplete: false);
+
+                    dao.updateListing(widget.listingID, updatedListing);
+
+                    await showDialog<void>(
+                      context: context,
+                      barrierDismissible: false, // user must tap button!
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Success'),
+                          content: SingleChildScrollView(
+                            child: ListBody(
+                              children: <Widget>[
+                                Text('Your listing has been edited.'),
+                              ],
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: Text('Acknowledge'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    await Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => UserMain()));
+                  } catch (e) {
+                    await Dialogs.errorAbortDialog(
+                        context, 'Edit unsuccessful! Please try again.');
+                    print('Unsuccessful edit: $e');
+                    Navigator.of(context).pop();
                   }
-
-                  var updatedListing = Listing(
-                      userID: uid,
-                      listingTitle: listingTitleController.text,
-                      longitude: _prediction != null
-                          ? _newLocation.longitude
-                          : listing.longitude,
-                      latitude: _prediction != null
-                          ? _newLocation.latitude
-                          : listing.latitude,
-                      category: valueChoose,
-                      isRequest: isselected[1],
-                      listingImage: imageString,
-                      description: descriptionController.text,
-                      isComplete: false);
-
-                  dao.updateListing(widget.listingID, updatedListing);
 
                   // Navigator.push(
                   //     context, MaterialPageRoute(builder: (context) => Home()));
-                  await Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => UserMain()));
                 }),
-            ),
-
-            ]),
           ),
-        ));
+        ]),
+      ),
+    ));
   }
 
   void _showPicker(context) {

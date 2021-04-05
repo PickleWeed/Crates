@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/profile_presenter.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/user.dart';
+import 'package:flutter_application_1/screens/common/error_popup_widgets.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
+import 'package:flutter_application_1/screens/common/user_main.dart';
 import 'package:flutter_application_1/screens/common/widgets.dart';
 import 'package:flutter_application_1/backend/databaseAccess.dart';
 import 'package:flutter_application_1/screens/listing/SendListingReport.dart';
@@ -49,6 +51,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
         description = response['listing'].description;
         listingImg = response['listing'].listingImage;
         username = response['poster'].username;
+        isComplete = response['listing'].isComplete;
         isAdmin = response['isAdmin'];
         currentuser = response['currentUID'] == response['listing'].userID;
         center =
@@ -86,6 +89,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
   // TODO: This variable determines what buttons are built (true -> edit button, false-> report and chat buttons)
   bool currentuser;
   bool isAdmin;
+  bool isComplete;
   String listingTitle;
   String listingImg;
   String username;
@@ -115,7 +119,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
             : SingleChildScrollView(
                 child: Column(children: <Widget>[
                   listingDetailsTopCard(listingTitle, listingImg, currentuser,
-                      widget.listingID, isAdmin, context),
+                      widget.listingID, isComplete, isAdmin, context),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Row(
@@ -210,7 +214,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
 }
 
 Widget listingDetailsTopCard(
-    title, listingImg, currentUser, listingID, isAdmin, context) {
+    title, listingImg, currentUser, listingID, isComplete, isAdmin, context) {
   DatabaseAccess dao = DatabaseAccess();
 
   return Stack(clipBehavior: Clip.none, children: <Widget>[
@@ -243,22 +247,49 @@ Widget listingDetailsTopCard(
           )),
     ),
     //TODO: Set the functions when the buttons are clicked (for backend ppl)
-    ...ownerButtons(currentUser, isAdmin, context, listingID,
+    ...ownerButtons(currentUser, isAdmin, context, listingID, isComplete,
         // CompleteBtnPressed
         () async {
-      await FirebaseDatabase.instance
-          .reference()
-          .child('Listing')
-          .child(listingID)
-          .child('isComplete')
-          .set(true);
-      //TODO show completion message to user and remove complete button
-      print('Listing completed');
-
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => Profile()));
-
-      Navigator.of(context).pop();
+      try {
+        await FirebaseDatabase.instance
+            .reference()
+            .child('Listing')
+            .child(listingID)
+            .child('isComplete')
+            .set(true);
+        //TODO show completion message to user and remove complete button
+        await showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Success'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text('Your listing has been completed.'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Acknowledge'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        print('Listing completed');
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => UserMain()));
+      } catch (e) {
+        await Dialogs.errorAbortDialog(
+            context, 'Completion unsuccessful! Please try again.');
+        print('Listing completion unsuccessful: $e');
+      }
     },
         // EditBtnPressed
         () {
@@ -271,14 +302,40 @@ Widget listingDetailsTopCard(
     },
         // DeleteBtnPressed
         () async {
-      await dao.deleteListingOnKey(listingID);
-
-      print('Delete completed');
-
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => Profile()));
-
-      Navigator.of(context).pop();
+      try {
+        await dao.deleteListingOnKey(listingID);
+        await showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Success'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text('Your listing has been deleted.'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Acknowledge'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        print('Delete completed');
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => UserMain()));
+      } catch (e) {
+        await Dialogs.errorAbortDialog(
+            context, 'Deletion unsuccessful! Please try again.');
+        print('Deletion unsuccessful: $e');
+      }
     }),
 
     ...normalUserButtons(currentUser, isAdmin, context, listingID,
@@ -289,7 +346,7 @@ Widget listingDetailsTopCard(
   ]);
 }
 
-List<Widget> ownerButtons(currentuser, isAdmin, context, listingID,
+List<Widget> ownerButtons(currentuser, isAdmin, context, listingID, isComplete,
     CompleteBtnPressed, EditBtnPressed, DeleteBtnPressed) {
   if (currentuser == true && isAdmin == false) {
     return [
@@ -299,10 +356,24 @@ List<Widget> ownerButtons(currentuser, isAdmin, context, listingID,
         bottom: -20,
         child: Container(
             height: 40,
-            child: CustomCurvedButton(
-              btnText: 'Complete',
-              btnPressed: CompleteBtnPressed,
-            )),
+            child: isComplete == false
+                ? CustomCurvedButton(
+                    btnText: 'Complete',
+                    btnPressed: CompleteBtnPressed,
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(30.0),
+                    child: Container(
+                      color: Colors.grey[350],
+                      child: Center(
+                        child: Text('Complete',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green[400],
+                            )),
+                      ),
+                    ),
+                  )),
       ),
       Positioned(
         right: 110,
