@@ -196,7 +196,7 @@ class _BodyState extends State<Body> {
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
-                        key: Key('category'),
+                        key: Key(valueChoose),
                         focusColor: Colors.red,
                         value: valueChoose,
                         icon: const Icon(Icons.keyboard_arrow_down),

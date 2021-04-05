@@ -151,19 +151,25 @@ void main() {
       await tester.tap(cameraBtn);
       await tester.pumpAndSettle(Duration(seconds: 1));
 
-      await tester.tap(find.byKey(Key('category')));
+      await tester.tap(find.byType(DropdownButtonHideUnderline).first);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+      await tester.tap(find.text('Dairy Product').last);
+      await tester.pump();
       await tester.pumpAndSettle(Duration(seconds: 1));
-      //await tester.tap(find.text('Canned Food'));
-      //await tester.pumpAndSettle(Duration(seconds: 1));
 
-      //final gesture = await tester.startGesture(Offset(0, 300)); //Position of the scrollview
-      //await gesture.moveBy(Offset(0, -300)); //How much to scroll by
-      //await tester.pumpAndSettle(Duration(seconds: 1));
+      final gesture = await tester.startGesture(Offset(0, 300)); //Position of the scrollview
+      await gesture.moveBy(Offset(0, -300)); //How much to scroll by
+      await tester.pumpAndSettle(Duration(seconds: 1));
 
-      //final createListingBtn = find.byKey(Key('CreateListing'));
-      //await tester.tap(createListingBtn);
+      final createListingBtn = find.byKey(Key('CreateListing'));
+      await tester.tap(createListingBtn);
+      await tester.tap(createListingBtn);
+      await tester.tap(createListingBtn);
+      await tester.pumpAndSettle(Duration(seconds: 1));
 
-     //await tester.pumpAndSettle(Duration(seconds: 2));
+      await tester.pump();
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      //expect(find.byWidgetPredicate((widget) => widget is Dialogs),findsOneWidget);
       //expect(find.byType(Dialogs), findsNothing);
     });
   });
