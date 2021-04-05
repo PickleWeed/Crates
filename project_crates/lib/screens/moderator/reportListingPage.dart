@@ -75,6 +75,7 @@ class _ReportListingPageState extends State<ReportListingPage> {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: TextFormField(
+                              key: Key('SearchReport'),
                               controller: _searchController,
                               decoration: InputDecoration(
                                   hintText: 'Search',

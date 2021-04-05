@@ -71,6 +71,7 @@ class _CompletedReportListingPageState
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: TextFormField(
+                              key: Key('SearchCompleted'),
                               controller: _searchController,
                               decoration: InputDecoration(
                                   hintText: 'Search',
