@@ -136,7 +136,8 @@ class CustomListingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: GestureDetector(
-          key: Key('listingIDWidget:'+listingID),
+          // key: Key('listingIDWidget:'+listingID),
+          key: Key('ListingCard'),
           onTap: () {
             print('listingWidget:'+owner);
             print('listingIDWidget:'+listingID);

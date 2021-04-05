@@ -182,6 +182,7 @@ Widget CategoryList(context){
               height:140.0,
               width: 140.0,
               child:GestureDetector(
+                  key: Key('All'),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('All Categories')));
                   },
@@ -215,6 +216,7 @@ Widget CategoryList(context){
               height:140.0,
               width: 140.0,
               child:GestureDetector(
+                  key: Key('Vegetable'),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Vegetables')));
                   },
@@ -248,6 +250,7 @@ Widget CategoryList(context){
               height:140.0,
               width: 140.0,
               child:GestureDetector(
+                  key: Key('CannedFood'),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Canned Food')));
                   },
@@ -281,6 +284,7 @@ Widget CategoryList(context){
               height:140.0,
               width: 140.0,
               child:GestureDetector(
+                  key: Key('Snacks'),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Snacks')));
                   },
@@ -314,6 +318,7 @@ Widget CategoryList(context){
               height:140.0,
               width: 140.0,
               child:GestureDetector(
+                  key: Key('Beverages'),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Beverages')));
                   },
@@ -347,6 +352,7 @@ Widget CategoryList(context){
               height:140.0,
               width: 140.0,
               child:GestureDetector(
+                  key: Key('Diary'),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Dairy Product')));
                   },
@@ -379,6 +385,7 @@ Widget CategoryList(context){
               height:140.0,
               width: 140.0,
               child:GestureDetector(
+                  key: Key('DryFood'),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage('Dry Food')));
                   },
