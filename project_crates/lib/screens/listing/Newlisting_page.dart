@@ -398,6 +398,7 @@ class _BodyState extends State<Body> {
                             builder: (BuildContext context) {
                               return matchesDialog(context, matches, () async {
                                 // user clicks on "Post Anyway"
+                                print("User clicks on 'post anyway', just post don't need to add to LID model");
                                 var listingID = await postListing(
                                   context,
                                   dao,
