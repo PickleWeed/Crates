@@ -31,7 +31,7 @@ class DataHandler {
             calculatedDistance = haversine(
                 center.latitude, center.longitude, value['latitude'],
                 value['longitude']);
-            print('calculated: $calculatedDistance');
+            // print('calculated: $calculatedDistance');
             if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance && value['userID'] != user) {
               //url = getImg("normalListings", snapshot.key).toString();
               Listing normalListing = new Listing(listingID: snapshot.key,
@@ -46,7 +46,7 @@ class DataHandler {
                   longitude: value['longitude'],
                   latitude: value['latitude']);
               userNormalListing.add(normalListing);
-              print(userNormalListing.length);
+              // print(userNormalListing.length);
             }
           });
         });
@@ -75,7 +75,7 @@ class DataHandler {
                   longitude: value['longitude'],
                   latitude: value['latitude']);
               userNormalListing.add(normalListing);
-              print(userNormalListing.length);
+              // print(userNormalListing.length);
             }
           });
         });
@@ -119,7 +119,7 @@ class DataHandler {
   //return distance
   double haversine(double lat1, double lon1, double lat2, double lon2){
     if(lat1 == null || lat2 == null || lon1 == null || lon2 == null) {
-      print('List Error! Null value - GPS position: $lat1, $lon1, listing position: $lat2, $lon2.');
+      // print('List Error! Null value - GPS position: $lat1, $lon1, listing position: $lat2, $lon2.');
       return null;
     }
     else{

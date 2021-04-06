@@ -36,11 +36,11 @@ class _NearbyState extends State<Nearby> {
   List<Listing> _listing;
   List<String> _username;
   List<LatLng> _positions;
-  LatLng _center;
+  LatLng _center = LatLng(1.3521, 103.8198);
 
   //initial preset values
   final double distance = 20;
-  final String category = '';
+  final String category = 'All';
 
 
   @override
@@ -50,25 +50,33 @@ class _NearbyState extends State<Nearby> {
     _runSystem();
 
   }
-   Future<void> _checkLocationPermission() async {
-      _serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if(!_serviceEnabled){
-        return Future.error('Location services are disabled.');
-      }
-      _permission = await Geolocator.checkPermission();
-      if(_permission == LocationPermission.denied) {
-        _permission = await Geolocator.requestPermission();
-        if(_permission == LocationPermission.deniedForever) {
-          print(_permission);
-          print(_serviceEnabled);
-          return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+   void _checkLocationPermission() async {
+      // _serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      try {
+        _serviceEnabled = await Geolocator.isLocationServiceEnabled();
+        _permission = await Geolocator.checkPermission();
+        if(_permission == LocationPermission.denied) {
+          _permission = await Geolocator.requestPermission();
+          if (_permission == LocationPermission.deniedForever) {
+            print(_permission);
+            print(_serviceEnabled);
+            return Future.error(
+                'Location permissions are permanently denied, we cannot request permissions.');
+          }else{
+            _center = await mapHandler.getCurrentLocation();
+            print(_permission);
+            setState(() {
+              _center = _center;
+            });
+          }
         }
+        setState(() {
+          _serviceEnabled = _serviceEnabled;
+          _permission = _permission;
+        });
+      } catch (e) {
+        print(e);
       }
-      print('got permission');
-      _center = await mapHandler.getCurrentLocation();
-      setState(() {
-        _center = _center;
-      });
   }
 
 
@@ -79,6 +87,7 @@ class _NearbyState extends State<Nearby> {
   String date = '';
   String user = '';
   String imageUrl;
+  String locationInfo = '';
 
   Future<Set<Marker>> generateMarkersFeature() async {
     var markers = <Marker>[];
@@ -118,7 +127,7 @@ class _NearbyState extends State<Nearby> {
             position: _center,
             icon: BitmapDescriptor.fromBytes(locationIcon),
             infoWindow: InfoWindow(
-                title: 'Selected location'
+                title: locationInfo
             )
         )
     );
@@ -129,30 +138,28 @@ class _NearbyState extends State<Nearby> {
 
   void _runSystem()  async{
     setState(() {
-       dataLoadingStatus = true;
+      dataLoadingStatus = true;
       _markers = {};
       _cardVisibility = false;
     });
-    await _checkLocationPermission(); //get GPS permission
+    print("test$_center");
+    await _checkLocationPermission();
+    if (_permission == LocationPermission.always || _permission == LocationPermission.whileInUse && _serviceEnabled == true) {
+      _center = await mapHandler.getCurrentLocation();
+      setState(() {
+        _center = _center;
+        locationInfo = 'Your current location';
+      });
+    }else{
+      setState(() {
+        locationInfo = 'Default location';
+      });
+    }
+    setState(() {
+      dataLoadingStatus = false;
+    });
     if(_filterMode == false){
-      if (_permission == LocationPermission.denied || !_serviceEnabled) {
-        _listing = await dataHandler.retrieveAllListing();
-        _positions = mapHandler.getPositionFromListing(_listing);
-        _markers = await mapHandler.generateMarkers(_positions);
-        _username = await dataHandler.getUsernameList(_listing);
-        print(_username);
-        setState(() {
-          _markers = _markers;
-          dataLoadingStatus = false;
-        });
-      }
-      else if (_permission == LocationPermission.always && _serviceEnabled == true) {
         print('go to my location');
-        _center = await mapHandler.getCurrentLocation();
-        setState(() {
-          dataLoadingStatus = false;
-        });
-        await mapHandler.goToMyLocation(_controller, _center);
         _listing = await dataHandler.retrieveFilteredListing(distance, category, _center);
         _username = await dataHandler.getUsernameList(_listing);
         if(_listing.isNotEmpty) {
@@ -164,19 +171,16 @@ class _NearbyState extends State<Nearby> {
           });
         } else
           print('listing is empty!');
-      }
     }else if(_filterMode == true){
-      if(_mapFilter.center == null){
-        _center = await mapHandler.getCurrentLocation();
-      }else{
+      if(_mapFilter.center != null){
         setState(() {
           _center = _mapFilter.center;
+          locationInfo = 'Selected location';
         });
       }
-      setState(() {
-        dataLoadingStatus = false;
-      });
-      await mapHandler.goToMyLocation(_controller, _center);
+      if (_permission == LocationPermission.always && _serviceEnabled == true) {
+        await mapHandler.goToMyLocation(_controller, _center);
+      }
       _listing = await dataHandler.retrieveFilteredListing(_mapFilter.distance, _mapFilter.category, _center);
       _username = await dataHandler.getUsernameList(_listing);
       if(_listing.isNotEmpty) {
@@ -189,6 +193,14 @@ class _NearbyState extends State<Nearby> {
 
     }
   }
+  void _onMapCreated(GoogleMapController controller) {
+    // _controller.complete(controller);
+    if (!_controller.isCompleted) {
+      _controller.complete(controller);
+    }else{
+     print("prevent call complete twice");
+    }
+  }
 
 
 
@@ -199,9 +211,7 @@ class _NearbyState extends State<Nearby> {
         body: dataLoadingStatus == false ? Stack(
             children: <Widget>[
               GoogleMap(
-                onMapCreated: (GoogleMapController controller) async {
-                  _controller.complete(controller);
-                },
+                onMapCreated: _onMapCreated,
                 myLocationEnabled: _serviceEnabled,
                 myLocationButtonEnabled: _serviceEnabled,
                 initialCameraPosition: CameraPosition(
