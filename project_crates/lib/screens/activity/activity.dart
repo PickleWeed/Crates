@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import '../activity/items.dart';
 import '../activity/chatpage.dart';
 import '../activity/notificationpage.dart';
 
-class ActivityPage extends StatelessWidget {
+
+class ActivityPage extends StatefulWidget {
+  @override
+  _ActivityPageState createState() => _ActivityPageState();
+}
+
+class _ActivityPageState extends State<ActivityPage> {
+
+  final List<Tab> myTabs = <Tab>[
+    Tab(text: 'Notification'),
+    Tab(text: 'Chat'),
+  ];
+
+
+  // testing of notif
+  List<NotifItem> notifications = [
+    MessageItem('Sender Edan :)', 'Message body is empty!'),
+    MessageItem('Sender hello!', 'but really I am still testing only')
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,29 +30,75 @@ class ActivityPage extends StatelessWidget {
           centerTitle: false,
           automaticallyImplyLeading: false,
           backgroundColor: Colors.amber[400],
-          title: Text("Activity page",
+          title: Text("Activity Page",
               style: TextStyle(fontSize: 30, color: Colors.white)),
           shape: RoundedRectangleBorder(
               borderRadius:
-                  BorderRadius.vertical(bottom: Radius.circular(40.0))),
+              BorderRadius.vertical(bottom: Radius.circular(40.0))),
         ),
-        bottomNavigationBar: BottomAppBar(
-          child: Container(
-            height: 0,
-            color: Colors.pink,
-          ),
-        ),
-        body: Body());
-    // body: Body());
+        body: DefaultTabController(
+            length: 2,
+            child: Scaffold(
+              appBar: AppBar(
+                backgroundColor: Theme.of(context).canvasColor,
+                shape: Border(
+                  top: BorderSide(color: Theme.of(context).canvasColor),
+                ),
+                bottom: TabBar(
+                  tabs: myTabs,
+                  isScrollable: false,
+                  indicatorWeight: 3.0,
+                  //TODO OnTap Function
+                ),
+                automaticallyImplyLeading: false,
+                toolbarHeight: 60,
+              ),
+              body: TabBarView(
+                children: [
+                  Column(
+                    // mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      notificationHeader(context),
+                      Container(
+                          child: SingleChildScrollView(
+                            child: // CHILD 1
+                            ListView.builder(
+                              //CHILD 2
+                              shrinkWrap: true,
+                              //physics: NeverScrollableScrollPhysics(),
+                              itemCount: notifications.length,
+                              itemBuilder: (context, index) {
+                                //TODO: BACKEND POPULATE HERE
+                                final item = notifications[index];
+                                return Card(
+                                    child: ListTile(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => NotificationPage(
+                                                    messageitem: notifications[index]))); // to go  to notifcation
+                                      },
+                                      title: item.buildTitle(context),
+                                      subtitle: item.buildSubtitle(context),
+                                      trailing: Icon(Icons.keyboard_arrow_right),
+                                    ));
+                              },
+                            ),
+                          ))
+                    ],
+                  ),
+                 Container(),
+                  // ChatPage(),
+                ],
+              ),
+            )),
+    );
   }
 }
 
-class Body extends StatefulWidget {
-  @override
-  _BodyState createState() => _BodyState();
-}
-
 Widget notificationHeader(BuildContext context) {
+
   return Container(
       child: Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,76 +125,3 @@ Widget notificationHeader(BuildContext context) {
   ));
 }
 
-// testing of notif
-List<NotifItem> hello = [
-  MessageItem('Sender Edan :)', 'Message body is empty!'),
-  MessageItem('Sender hello!', 'but really I am still testing only')
-];
-
-class _BodyState extends State<Body> {
-  final List<Tab> myTabs = <Tab>[
-    Tab(text: 'Notification'),
-    Tab(text: 'Chat'),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).canvasColor,
-            shape: Border(
-              top: BorderSide(color: Theme.of(context).canvasColor),
-            ),
-            bottom: TabBar(
-              tabs: myTabs,
-              isScrollable: false,
-              indicatorWeight: 3.0,
-              //TODO OnTap Function
-            ),
-            automaticallyImplyLeading: false,
-            toolbarHeight: 60,
-          ),
-          body: TabBarView(
-            children: [
-              Column(
-                // mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  notificationHeader(context),
-                  Container(
-                      child: SingleChildScrollView(
-                    child: // CHILD 1
-                        ListView.builder(
-                      //CHILD 2
-                      shrinkWrap: true,
-                      //physics: NeverScrollableScrollPhysics(),
-                      itemCount: hello.length,
-                      itemBuilder: (context, index) {
-                        final item = hello[index];
-                        return Card(
-                            child: ListTile(
-                          onTap: () {
-                            print("Hello");
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => NotificationPage(
-                                        messageitem: hello[
-                                            index]))); // to go  to notifcation
-                          },
-                          title: item.buildTitle(context),
-                          subtitle: item.buildSubtitle(context),
-                          trailing: Icon(Icons.keyboard_arrow_right),
-                        ));
-                      },
-                    ),
-                  ))
-                ],
-              ),
-              ChatPage(),
-            ],
-          ),
-        ));
-  }
-}
