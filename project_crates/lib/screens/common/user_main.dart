@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/activity/activity.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/home/home.dart';
 import 'package:flutter_application_1/screens/listing/Newlisting_page.dart';
@@ -18,7 +18,7 @@ class _UserMainState extends State<UserMain>{
     Home(),
     Nearby(),
     Newlisting_page(),
-    Container(),
+    ActivityPage(),
     Profile()
   ];
   @override

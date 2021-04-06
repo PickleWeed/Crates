@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/auth.dart';
 import 'package:flutter_application_1/backend/moderator_presentor.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/ReportListing.dart';

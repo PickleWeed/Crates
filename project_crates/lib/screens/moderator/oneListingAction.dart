@@ -48,8 +48,7 @@ class _ListingActionFormState extends State<ListingActionForm> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          child: ListView(
-            children: [
+            child:
               Padding(
                 padding:
                     const EdgeInsets.only(left: 25.0, right: 25.0, top: 32.0),
@@ -236,8 +235,6 @@ class _ListingActionFormState extends State<ListingActionForm> {
                   ],
                 ),
               )
-            ],
-          ),
         ),
       ),
     ));

@@ -7,7 +7,6 @@ import 'package:flutter_application_1/models/ReportListingAction.dart';
 import 'package:flutter_application_1/screens/common/admin_main.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/common/widgets.dart';
-import 'package:flutter_application_1/screens/moderator/reportListingPage.dart';
 import 'package:flutter_application_1/screens/searchresult/Selectedlisting_page.dart';
 
 import 'oneListingAction.dart';
