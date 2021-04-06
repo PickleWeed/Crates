@@ -168,31 +168,7 @@ class _ActivityPageState extends State<ActivityPage> {
                       // Chat part
                       SingleChildScrollView(
                         child: Column(children: [
-                          Container(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  //search bar
-                                  Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Container(
-                                        padding: EdgeInsets.only(left: 15.0),
-                                        child: Text('Chat',
-                                            style: TextStyle(fontSize: 20)),
-                                      )),
-                                  Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Container(
-                                          padding: EdgeInsets.only(right: 10.0),
-                                          child: TextButton.icon(
-                                            icon: Icon(Icons.sort),
-                                            label: Text('Sort'),
-                                            onPressed: () {},
-                                          )))
-                                ],
-                              )),
+                          SizedBox(height:20),
                           Container(
                               child: ListView.builder(
                             shrinkWrap: true,

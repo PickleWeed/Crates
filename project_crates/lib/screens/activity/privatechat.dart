@@ -226,6 +226,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
 
     if (!mounted) return;
     setState(() {
+      print('setting state');
       messagesList.insert(0, new_cm);
     });
   }
