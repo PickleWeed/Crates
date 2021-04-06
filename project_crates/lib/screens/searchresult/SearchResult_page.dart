@@ -3,7 +3,8 @@ import 'package:flutter_application_1/screens/common/widgets.dart';
 
 class SearchResult_page extends StatelessWidget {
   String _search;
-
+  final String product;
+  SearchResult_page({this.product});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +14,7 @@ class SearchResult_page extends StatelessWidget {
           backgroundColor: Color(0xFFFFC857),
           shape: RoundedRectangleBorder(
               borderRadius:
-              BorderRadius.vertical(bottom: Radius.circular(70.0))),
+                  BorderRadius.vertical(bottom: Radius.circular(70.0))),
           actions: <Widget>[
             Container(
               width: 300,
@@ -72,7 +73,7 @@ class _BodyState extends State<Body> {
         context: context,
         builder: (context) {
           final TextEditingController _textEditingController =
-          TextEditingController();
+              TextEditingController();
           bool isChecked = false;
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
@@ -136,7 +137,7 @@ class _BodyState extends State<Body> {
         context: context,
         builder: (context) {
           final TextEditingController _textEditingController =
-          TextEditingController();
+              TextEditingController();
           bool isChecked = false;
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
@@ -232,7 +233,7 @@ class _BodyState extends State<Body> {
 
                     child: Text('Fliters',
                         style:
-                        TextStyle(color: Colors.grey[600], fontSize: 20)),
+                            TextStyle(color: Colors.grey[600], fontSize: 20)),
                   ),
                 ),
                 Container(
@@ -251,7 +252,7 @@ class _BodyState extends State<Body> {
 
                     child: Text('Sort',
                         style:
-                        TextStyle(color: Colors.grey[600], fontSize: 20)),
+                            TextStyle(color: Colors.grey[600], fontSize: 20)),
                   ),
                 )
               ]),
@@ -362,7 +363,7 @@ class _BodyState extends State<Body> {
                                 hintText: '  eg 2', fillColor: Colors.grey),
 
                             style:
-                            TextStyle(fontSize: 15.0, color: Colors.black),
+                                TextStyle(fontSize: 15.0, color: Colors.black),
                             validator: (val) => val.isEmpty ? 'distance' : null,
 
                             onChanged: (val) => setState(() => _distance = val),
