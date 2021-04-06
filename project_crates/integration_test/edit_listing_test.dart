@@ -228,9 +228,32 @@ void main() {
       expect(find.byWidgetPredicate((widget) => widget is UserMain),findsOneWidget);
     });
     //TODO take a photo from photo library
+    testWidgets('Edit Picture, take picture', (WidgetTester tester) async {
+      await loginAndProfileAndListing(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
 
+      final imageBtn = find.byKey(Key('image'));
+      await tester.tap(imageBtn);
+      await tester.pumpAndSettle(Duration(seconds: 1));
 
+      final photoBtn = find.byKey(Key('Photo Library'));
+      await tester.tap(photoBtn);
+      await tester.pumpAndSettle(Duration(seconds: 1));
 
+      await tester.pumpAndSettle(Duration(seconds: 1));
+
+      final gesture = await tester.startGesture(Offset(0, 300)); //Position of the scrollview
+      await gesture.moveBy(Offset(0, -300)); //How much to scroll by
+      await tester.pumpAndSettle(Duration(seconds: 1));
+
+      await tester.pump(const Duration(milliseconds: 100));
+      ElevatedButton button = find.widgetWithText(ElevatedButton, 'Save Changes').evaluate().first.widget;
+      button.onPressed();
+      await tester.pumpAndSettle(const Duration(seconds: 1));
+
+      expect(find.byWidgetPredicate((widget) => widget is UserMain),findsOneWidget);
+    });
+    
     testWidgets('No Title', (WidgetTester tester) async {
       await loginAndProfileAndListing(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
