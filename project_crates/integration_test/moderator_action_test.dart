@@ -36,6 +36,10 @@ void main() {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 2));
 
+      final viewBtn = find.byKey(Key('ReportListing')).first;
+      await tester.tap(viewBtn);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+
       final dismissBtn = find.byKey(Key('DismissReport')).first;
       await tester.tap(dismissBtn);
       await tester.pumpAndSettle(Duration(seconds: 3));
@@ -48,8 +52,29 @@ void main() {
 
       final viewBtn = find.byKey(Key('ReportListing')).first;
       await tester.tap(viewBtn);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      final actionBtn = find.byKey(Key('ChooseAction'));
+      await tester.tap(actionBtn);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+
+      final firstCheckbox = find.byType(Checkbox).first;
+      await tester.tap(firstCheckbox);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+
+      final firstField = find.byKey(Key('MsgReporter'));
+      await tester.tap(firstField);
+      await tester.enterText(firstField, 'this listing has been deleted');
+      await tester.pumpAndSettle(Duration(seconds: 3));
+
+      final secondField = find.byKey(Key('MsgOffender'));
+      await tester.tap(secondField);
+      await tester.enterText(secondField, 'your listing has been reported and deleted by admin');
+      await tester.pumpAndSettle(Duration(seconds: 3));
+
+      final submitBtn = find.byKey(Key('Submit'));
+      await tester.tap(submitBtn);
       await tester.pumpAndSettle(Duration(seconds: 3));
     });
-
   });
 }
