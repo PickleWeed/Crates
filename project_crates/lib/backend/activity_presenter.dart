@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_application_1/models/ChatMessage.dart';
+import 'package:flutter_application_1/models/ConversationCard.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/Notifications.dart';
 import 'package:flutter_application_1/models/ReportListing.dart';
@@ -83,6 +84,12 @@ class ActivityPresenter{
     List<Conversation> conList = new List<Conversation>();
     await _databaseRef.child('Conversation').once().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> map = snapshot.value;
+
+      // if no conversation in entire db, then return empty map
+      if (map == null){
+        return conList;
+      }
+
       map.forEach((key, value) {
         Conversation con = new Conversation(conversation_id: key, messages: value['messages'].cast<String>());
         if(con.conversation_id.contains(userID)) {
@@ -93,6 +100,54 @@ class ActivityPresenter{
     return conList;
   }
 
+
+  Future<List<ConversationCard>> readConversationCardList(List<Conversation> convo_list, String userID) async{
+    var conversationCardList = <ConversationCard>[];
+
+    convo_list.forEach((element) async {
+
+      // get listing id from conversation_id (first 20 char)
+      var listing_id = await element.conversation_id.substring(0,20);
+
+      // get the listing
+      var listing = await readListing(listing_id);
+
+      // listing title
+      var listing_title = await listing.listingTitle;
+
+      // determine who is the partner
+      var partner_uid;
+      if (listing.userID == userID){ // current user is owner
+        partner_uid = await getSecondUserIDFromConversation(element.conversation_id);
+      }else{
+        partner_uid = await listing.userID;
+      }
+
+      // get username of partner
+      var partner_username = await readUsername(partner_uid);
+
+      // construct Conversation Card object and add to list
+      await conversationCardList.add(ConversationCard(conversation_id: element.conversation_id, listing_title: listing_title, partner_username:partner_username));
+    });
+
+    // return
+    return conversationCardList;
+  }
+
+
+  String getListingIDFromConversation(String conversation_id){
+    return conversation_id.substring(0,20);
+  }
+
+  String getFirstUserIDFromConversation(String conversation_id){
+    return conversation_id.substring(20,40);
+  }
+
+  String getSecondUserIDFromConversation(String conversation_id){
+    return conversation_id.substring(40,60);
+  }
+
+
   //Retrieve one convo
   Future<Conversation> readConversation(String conversationID) async{
     DataSnapshot snapshot = await _databaseRef.child('Conversation').child(conversationID).once();
@@ -101,7 +156,7 @@ class ActivityPresenter{
 
   //Check if conversation exists
   Future<bool> checkConvoExists(String listingID, String ownerID, String getterID) async{
-    DataSnapshot snapshot = await _databaseRef.child('Conversation').child(listingID+"-"+ownerID+"-"+getterID).once();
+    DataSnapshot snapshot = await _databaseRef.child('Conversation').child(listingID+ownerID+getterID).once();
     if(snapshot.value == null){
       return false;
     }
@@ -113,7 +168,7 @@ class ActivityPresenter{
   //Add convo
   //For initial. Add message first, then get the ID, then add it to convo
   Future addConversation(String listingID, String ownerID, String getterID, String messageID) async{
-    await _databaseRef.child("Conversation").child(listingID+"-"+ownerID+"-"+getterID).set({
+    await _databaseRef.child("Conversation").child(listingID+ownerID+getterID).set({
       "messages": messageID,
     });
   }

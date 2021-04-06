@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/activity_presenter.dart';
 import 'package:flutter_application_1/backend/auth.dart';
 import 'package:flutter_application_1/models/Conversation.dart';
+import 'package:flutter_application_1/models/ConversationCard.dart';
 import 'package:flutter_application_1/models/Notifications.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import '../activity/notificationpage.dart';
@@ -20,7 +21,12 @@ class _ActivityPageState extends State<ActivityPage> {
   bool dataLoading = false;
   bool sort = false;
   List<Notifications> notiList = <Notifications>[];
-  final ActivityPresenter _notificationPresenter = ActivityPresenter();
+  List<Conversation> conversationList = <Conversation>[];
+  List<ConversationCard> conversationCardList = <ConversationCard>[];
+  String current_user;
+
+  final ActivityPresenter _activityPresenter = ActivityPresenter();
+
 
   void initState() {
     loadData();
@@ -33,8 +39,17 @@ class _ActivityPageState extends State<ActivityPage> {
       dataLoading = true;
     });
 
+    current_user = await currentUser();
+
     // load notifications
-    notiList = await _notificationPresenter.readNotificationList(await currentUser());
+    notiList = await _activityPresenter.readNotificationList(current_user);
+
+    // load conversations
+    conversationList = await _activityPresenter.readConversationList(current_user);
+
+    // load notifications cards
+    conversationCardList = await _activityPresenter.readConversationCardList(conversationList, current_user);
+    await print('Retrieved ${conversationCardList.length} conversationCardLists');
 
     // set state
     setState(() {
@@ -167,9 +182,9 @@ class _ActivityPageState extends State<ActivityPage> {
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
                                 // TODO: update here for populating a list of conversations
-                                itemCount: 10,
+                                itemCount: conversationCardList.length,
                                 itemBuilder: (context, index) {
-                                  return chatCard(context, Conversation('asd',[])); // pass in dummy Conversation instance
+                                  return chatCard(context, conversationCardList[index]); // pass in dummy Conversation instance
                                 },
                               ),
                             ))
@@ -211,7 +226,7 @@ Widget notiCard(BuildContext context, Notifications noti) {
 }
 
 
-Widget chatCard(BuildContext context, Conversation convo){
+Widget chatCard(BuildContext context, ConversationCard cc){
   return Container(
     color: offWhite,
     child: Padding(
@@ -224,14 +239,14 @@ Widget chatCard(BuildContext context, Conversation convo){
                   leading: CircleAvatar(
                     backgroundImage: AssetImage('assets/icons/default.png'),
                   ),
-                  title: Text('Listing Title'),
-                  subtitle: Text('@leejunwei'),
+                  title: Text(cc.listing_title),
+                  subtitle: Text('@${cc.partner_username}'),
                   isThreeLine: false,
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
                 onTap: () async {
                   //TODO: update on tapped action for chat row
-                  print('Chat tapped');
+                  print('Chat tapped, conversation ID: ${cc.conversation_id}');
 
                 }))),
   );
