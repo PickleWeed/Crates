@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/activity_presenter.dart';
 import 'package:flutter_application_1/backend/auth.dart';
+import 'package:flutter_application_1/models/Conversation.dart';
 import 'package:flutter_application_1/models/Notifications.dart';
+import 'package:flutter_application_1/screens/common/theme.dart';
 import '../activity/notificationpage.dart';
 
 class ActivityPage extends StatefulWidget {
@@ -10,16 +12,15 @@ class ActivityPage extends StatefulWidget {
 }
 
 class _ActivityPageState extends State<ActivityPage> {
-
   final List<Tab> myTabs = <Tab>[
-    Tab(text: 'Notification'),
-    Tab(text: 'Chat'),
+    Tab(text: 'Notifications'),
+    Tab(text: 'Chats'),
   ];
 
   bool dataLoading = false;
   bool sort = false;
-  List<Notifications> notiList = new List<Notifications>();
-  ActivityPresenter _notificationPresenter = new ActivityPresenter();
+  List<Notifications> notiList = <Notifications>[];
+  final ActivityPresenter _notificationPresenter = ActivityPresenter();
 
   void initState() {
     loadData();
@@ -32,11 +33,13 @@ class _ActivityPageState extends State<ActivityPage> {
       dataLoading = true;
     });
 
-    notiList =
-    await _notificationPresenter.readNotificationList(await currentUser());
+    // load notifications
+    notiList = await _notificationPresenter.readNotificationList(await currentUser());
 
+    // set state
     setState(() {
       notiList = notiList;
+
       // Data is done loading
       dataLoading = false;
     });
@@ -45,40 +48,41 @@ class _ActivityPageState extends State<ActivityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: false,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.amber[400],
-          title: Text("Activity Page",
-              style: TextStyle(fontSize: 30, color: Colors.white)),
-          shape: RoundedRectangleBorder(
-              borderRadius:
-              BorderRadius.vertical(bottom: Radius.circular(40.0))),
+      appBar: AppBar(
+        centerTitle: false,
+        automaticallyImplyLeading: false,
+        backgroundColor: primaryColor,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Text('Activity', style: TextStyle(color: Colors.white)),
         ),
-        body: dataLoading == false ?
-        DefaultTabController(
-            length: 2,
-            child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Theme.of(context).canvasColor,
-                shape: Border(
-                  top: BorderSide(color: Theme.of(context).canvasColor),
-                ),
-                bottom: TabBar(
-                  tabs: myTabs,
-                  isScrollable: false,
-                  indicatorWeight: 3.0,
-                  //TODO OnTap Function
-                ),
-                automaticallyImplyLeading: false,
-                toolbarHeight: 60,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(15.0))),
+      ),
+      body: dataLoading == false
+          ? DefaultTabController(
+          length: 2,
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).canvasColor,
+              shape: Border(
+                top: BorderSide(color: Theme.of(context).canvasColor),
               ),
-              body: TabBarView(
-                children: [
-                  Column(
-                    // mainAxisAlignment: MainAxisAlignment.end,
+              bottom: TabBar(
+                tabs: myTabs,
+                isScrollable: false,
+                indicatorWeight: 3.0,
+                //TODO OnTap Function
+              ),
+              automaticallyImplyLeading: false,
+              toolbarHeight: 60,
+            ),
+            body: TabBarView(
+              children: [
+                SingleChildScrollView(
+                  child: Column(
                     children: [
                       Container(
+                          color: offWhite,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.max,
@@ -86,7 +90,7 @@ class _ActivityPageState extends State<ActivityPage> {
                               Align(
                                   alignment: Alignment.topLeft,
                                   child: Container(
-                                    padding: EdgeInsets.only(left: 10.0),
+                                    padding: EdgeInsets.only(left: 15.0),
                                     child: Text('Notifications', style: TextStyle(fontSize: 20)),
                                   )),
                               Align(
@@ -100,22 +104,12 @@ class _ActivityPageState extends State<ActivityPage> {
                                           if (sort == false) {
                                             notiList.sort((a, b) {
                                               sort = true;
-                                              return a.notiDate
-                                                  .toString()
-                                                  .toLowerCase()
-                                                  .compareTo(b.notiDate
-                                                  .toString()
-                                                  .toLowerCase());
+                                              return a.notiDate.toString().toLowerCase().compareTo(b.notiDate.toString().toLowerCase());
                                             });
                                           } else {
                                             notiList.sort((b, a) {
                                               sort = false;
-                                              return a.notiDate
-                                                  .toString()
-                                                  .toLowerCase()
-                                                  .compareTo(b.notiDate
-                                                  .toString()
-                                                  .toLowerCase());
+                                              return a.notiDate.toString().toLowerCase().compareTo(b.notiDate.toString().toLowerCase());
                                             });
                                           }
                                           setState(() {});
@@ -125,11 +119,10 @@ class _ActivityPageState extends State<ActivityPage> {
                           )),
                       Container(
                           child: SingleChildScrollView(
-                            child: // CHILD 1
+                            child:
                             ListView.builder(
-                              //CHILD 2
                               shrinkWrap: true,
-                              //physics: NeverScrollableScrollPhysics(),
+                              physics: NeverScrollableScrollPhysics(),
                               itemCount: notiList.length,
                               itemBuilder: (context, index) {
                                 return notiCard(context, notiList[index]);
@@ -138,41 +131,108 @@ class _ActivityPageState extends State<ActivityPage> {
                           ))
                     ],
                   ),
-                 Container(),
-                  // ChatPage(),
-                ],
-              ),
-            )):Center(child: CircularProgressIndicator()),
+                ),
+                // Chat part
+                SingleChildScrollView(
+                  child: Column(
+                      children:[
+                        Container(
+                          color: offWhite,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                //search bar
+                                Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Container(
+                                      padding: EdgeInsets.only(left: 15.0),
+                                      child: Text('Chat', style: TextStyle(fontSize: 20)),
+                                    )),
+                                Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Container(
+                                        padding: EdgeInsets.only(right: 10.0),
+                                        child: TextButton.icon(
+                                          icon: Icon(Icons.sort),
+                                          label: Text('Sort'),
+                                          onPressed: () {},
+                                        )))
+                              ],
+                            )),
+                        Container(
+                            child: SingleChildScrollView(
+                              child:
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                // TODO: update here for populating a list of conversations
+                                itemCount: 10,
+                                itemBuilder: (context, index) {
+                                  return chatCard(context, Conversation('asd',[])); // pass in dummy Conversation instance
+                                },
+                              ),
+                            ))
+                      ]
+                  ),
+                ),
+                // ChatPage(),
+              ],
+            ),
+          ))
+          : Center(child: CircularProgressIndicator()),
     );
   }
 }
 
 Widget notiCard(BuildContext context, Notifications noti) {
   return Container(
+    color: offWhite,
     child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
         child: Card(
             margin: EdgeInsets.fromLTRB(5, 2, 2, 5),
             child: GestureDetector(
                 child: ListTile(
-                  contentPadding:
-                  EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  title: Text("Update of report on " + noti.reportID),
-                  subtitle: Text(noti.notificationText),
+                  contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  title: Text('Update of report on ' + noti.reportID),
+                  subtitle: Text(noti.notificationText.trim()),
                   isThreeLine: false,
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
                 onTap: () async {
                   // Load other listing details
-                  Notifications notification =
-                  await ActivityPresenter().readNotification(noti.notificationID);
+                  var notification = await ActivityPresenter().readNotification(noti.notificationID);
 
                   // Call listing to display
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NotificationPage(noti: notification)));
+                  await Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationPage(noti: notification)));
                 }))),
   );
 }
 
+
+Widget chatCard(BuildContext context, Conversation convo){
+  return Container(
+    color: offWhite,
+    child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+        child: Card(
+            margin: EdgeInsets.fromLTRB(5, 2, 2, 5),
+            child: GestureDetector(
+                child: ListTile(
+                  contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  leading: CircleAvatar(
+                    backgroundImage: AssetImage('assets/icons/default.png'),
+                  ),
+                  title: Text('Listing Title'),
+                  subtitle: Text('@leejunwei'),
+                  isThreeLine: false,
+                  trailing: Icon(Icons.keyboard_arrow_right),
+                ),
+                onTap: () async {
+                  //TODO: update on tapped action for chat row
+                  print('Chat tapped');
+
+                }))),
+  );
+}
