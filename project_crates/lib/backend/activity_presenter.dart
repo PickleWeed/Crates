@@ -204,11 +204,11 @@ class ActivityPresenter{
 
   //Add chat message
   Future addChatMessage(ChatMessage data) async{
-    await _databaseRef.child("ChatMessage").push().set({
-      "text": data.text,
-      "imageUrl": data.imageUrl,
-      "sender_uid": data.sender_uid,
-      "date_sent": DateTime.now().toString(),
+    await _databaseRef.child('ChatMessage').push().set({
+      'text': data.text ?? '',
+      'imageUrl': data.imageUrl ?? '',
+      'sender_uid': data.sender_uid ?? '',
+      'date_sent': DateTime.now().toString(),
     });
 
   }
