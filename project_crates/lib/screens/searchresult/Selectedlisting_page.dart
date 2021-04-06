@@ -329,8 +329,9 @@ Widget listingDetailsTopCard(
           },
         );
         print('Delete completed');
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => UserMain()));
+        Navigator.of(context).pop();
+        // Navigator.pushReplacement(
+        //     context, MaterialPageRoute(builder: (context) => UserMain()));
       } catch (e) {
         await Dialogs.errorAbortDialog(
             context, 'Deletion unsuccessful! Please try again.');
