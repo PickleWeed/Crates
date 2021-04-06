@@ -1,7 +1,10 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_application_1/models/ChatMessage.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/Notifications.dart';
 import 'package:flutter_application_1/models/ReportListing.dart';
+import 'package:flutter_application_1/models/Conversation.dart';
+
 
 class ActivityPresenter{
 
@@ -16,10 +19,7 @@ class ActivityPresenter{
         Notifications noti = new Notifications(notificationID: key, notificationText: value['notificationText'],
             listingID: value['listingID'], reportID: value['reportID'],
             userID: value['userID'], notiDate: DateTime.parse(value['notiDate']) ?? "");
-        print(userID.toString());
-        print("  " + noti.userID);
         if(noti.userID == userID){
-          print("test");
           notiList.add(noti);
         }
 
@@ -74,5 +74,88 @@ class ActivityPresenter{
     return reportListing;
   }
 
+  //
+  // Chat
+  //
+
+  //Retrieve list of convo
+  Future<List<Conversation>> readConversationList(String userID) async{
+    List<Conversation> conList = new List<Conversation>();
+    await _databaseRef.child('Conversation').once().then((DataSnapshot snapshot) {
+      Map<dynamic, dynamic> map = snapshot.value;
+      map.forEach((key, value) {
+        Conversation con = new Conversation(conversation_id: key, messages: value['messages'].cast<String>());
+        if(con.conversation_id.contains(userID)) {
+          conList.add(con);
+        }
+      });
+    });
+    return conList;
+  }
+
+  //Retrieve one convo
+  Future<Conversation> readConversation(String conversationID) async{
+    DataSnapshot snapshot = await _databaseRef.child('Conversation').child(conversationID).once();
+    Conversation convo = new Conversation(conversation_id: conversationID, messages: snapshot.value['messages'].cast<String>());
+  }
+
+  //Check if conversation exists
+  Future<bool> checkConvoExists(String listingID, String ownerID, String getterID) async{
+    DataSnapshot snapshot = await _databaseRef.child('Conversation').child(listingID+"-"+ownerID+"-"+getterID).once();
+    if(snapshot.value == null){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
+  //Add convo
+  //For initial. Add message first, then get the ID, then add it to convo
+  Future addConversation(String listingID, String ownerID, String getterID, String messageID) async{
+    await _databaseRef.child("Conversation").child(listingID+"-"+ownerID+"-"+getterID).set({
+      "messages": messageID,
+    });
+  }
+
+  //Update convo
+  //Add more messages to list
+  Future updateConversation(Conversation data) async{
+    await _databaseRef.child("Conversation").child(data.conversation_id).update({
+      "messages": data.messages,
+    });
+  }
+
+  //Retrieve listing info
+  Future<Listing> readListingInfo(String listingID) async{
+    DataSnapshot snapshot = await _databaseRef.child('Listing').child(listingID).once();
+    Listing listing = new Listing(listingID: listingID, listingTitle: snapshot.value['listingTitle'],
+        listingImage: snapshot.value['listingImage'], userID: snapshot.value['userID'],
+        isRequest: snapshot.value['isRequest'], isComplete: snapshot.value['isComplete'],
+        postDateTime: DateTime.parse(snapshot.value['reportDate']), description: snapshot.value['description']);
+
+    return listing;
+  }
+
+  //Retrieve chat messages
+  Future<List<ChatMessage>> readChatMessage(List<String> id) async{
+    for (int i = 0; i < id.length ; i++){
+      DataSnapshot snapshot = await _databaseRef.child('ChatMessage').child(id[i]).once();
+      ChatMessage chatMsg = new ChatMessage(text: snapshot.value['text'], imageUrl: snapshot.value['imageUrl'],
+          sender_uid: snapshot.value['sender_uid'], date_sent: DateTime.parse(snapshot.value['date_sent']));
+
+    }
+  }
+
+  //Add chat message
+  Future addChatMessage(ChatMessage data) async{
+    await _databaseRef.child("ChatMessage").push().set({
+      "text": data.text,
+      "imageUrl": data.imageUrl,
+      "sender_uid": data.sender_uid,
+      "date_sent": DateTime.now().toString(),
+    });
+
+  }
 
 }

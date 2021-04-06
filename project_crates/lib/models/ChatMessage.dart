@@ -4,5 +4,5 @@ class ChatMessage {
   String sender_uid;
   DateTime date_sent;
 
-  ChatMessage(this.text, this.imageUrl, this.sender_uid);
+  ChatMessage({this.text, this.imageUrl, this.sender_uid, this.date_sent});
 }
