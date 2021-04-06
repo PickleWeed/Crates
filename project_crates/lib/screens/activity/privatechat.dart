@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_application_1/backend/activity_presenter.dart';
 import 'package:flutter_application_1/backend/auth.dart';
 import 'package:flutter_application_1/models/ChatMessage.dart';
 import 'package:flutter_application_1/models/Conversation.dart';
+
 
 
 class PrivateChatScreen extends StatefulWidget {
@@ -19,6 +22,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
 
   // initialize activity presenter
   final ActivityPresenter _activityPresenter = ActivityPresenter();
+
   final TextEditingController _textController  = TextEditingController();
 
   bool _isComposing = false;
@@ -63,7 +67,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
     // add listener
     if (_messageDatabaseReference==null){
       _messageDatabaseReference = FirebaseDatabase.instance.reference().child('Conversation').child(convo.conversation_id).child('messages');
-      _messageDatabaseReference.onChildChanged.listen(_onMessageAdded);
+      _messageDatabaseReference.onChildAdded.listen(_onMessageAdded);
       print('listener added');
     }
 
@@ -78,7 +82,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CHANGE THIS TITLE LATER'),
+        title: Text('Chat'),
         elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
       ),
       body: dataLoading == false ?
@@ -203,6 +207,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
   // todo: send from cam
   void _sendImageFromCamera() async {
     //_sendImage(ImageSource.camera);
+    //_activityPresenter._sendImage(ImageSource.camera)
     print('sending from cam');
   }
 
@@ -214,14 +219,16 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
 
   // callback method for listener
   void _onMessageAdded(Event event) async{
-    await print('child addede detected!!!: ${event.snapshot.value}');
-    var new_cm_id = await event.snapshot.value;
+    await print('new message detected by listener!!!: ${event.snapshot.value}');
+    var new_cm_id = event.snapshot.value;
     var new_cm = await _activityPresenter.readOneChatMessage(new_cm_id);
 
     setState(() {
       messagesList.insert(0, new_cm);
     });
   }
+
+
 
 }
 

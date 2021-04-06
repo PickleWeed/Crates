@@ -5,11 +5,14 @@ import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/Notifications.dart';
 import 'package:flutter_application_1/models/ReportListing.dart';
 import 'package:flutter_application_1/models/Conversation.dart';
-
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class ActivityPresenter{
 
   final _databaseRef = FirebaseDatabase.instance.reference();
+  final _photoStorageReference = FirebaseStorage.instance.ref().child('chat_photos');
 
   //Get list
   Future<List<Notifications>> readNotificationList(String userID) async{
@@ -275,6 +278,23 @@ class ActivityPresenter{
     return newpush.key;
   }
 
+
+  // image submitted
+  void _sendImage(ImageSource imageSource, user_id) async {
+
+    // upload picture
+    var image = await ImagePicker.pickImage(source: imageSource);
+    var fileName = Uuid().v4();
+    var photoRef = _photoStorageReference.child(fileName);
+    var uploadTask = photoRef.putFile(image);
+    await uploadTask.onComplete;
+    String downloadUrl = await photoRef.getDownloadURL();
+    await print('chat image uploaded: $downloadUrl.ref.getDownloadURL()');
+
+    // add message to db
+    await addChatMessage(null, downloadUrl, user_id);
+
+  }
 
 
 
