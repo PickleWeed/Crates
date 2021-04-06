@@ -26,22 +26,26 @@ class ModeratorPresentor{
     List<ReportListing> reportListingList = new List<ReportListing>();
     await _databaseRef.child('ReportListing').once().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> map = snapshot.value;
-      map.forEach((key, value) {
-        ReportListing reportListing = new ReportListing(reportID: key, listingID: value['listingID'],
-            reportTitle: value['reportTitle'], reportOffense: value['reportOffense'],
-            reportDescription: value['reportDescription'], complete: value['complete'],
-            reportDate: DateTime.parse(value['reportDate']), userID: value['userID']);
-        if(name != ""){
-          if(reportListing.complete == "False" && reportListing.reportTitle.toLowerCase().contains(name.toLowerCase())){
-            reportListingList.add(reportListing);
+      if (map != null){
+        map.forEach((key, value) {
+          ReportListing reportListing = new ReportListing(reportID: key, listingID: value['listingID'],
+              reportTitle: value['reportTitle'], reportOffense: value['reportOffense'],
+              reportDescription: value['reportDescription'], complete: value['complete'],
+              reportDate: DateTime.parse(value['reportDate']), userID: value['userID']);
+          if(name != ""){
+            if(reportListing.complete == "False" && reportListing.reportTitle.toLowerCase().contains(name.toLowerCase())){
+              reportListingList.add(reportListing);
+            }
           }
-        }
-        else{
-          if(reportListing.complete == "False"){
-            reportListingList.add(reportListing);
+          else{
+            if(reportListing.complete == "False"){
+              reportListingList.add(reportListing);
+            }
           }
-        }
-      });
+        });
+      }else{
+        print("Empty data");
+      }
     });
 
     return reportListingList;
@@ -51,22 +55,26 @@ class ModeratorPresentor{
     List<ReportListing> reportListingList = new List<ReportListing>();
     await _databaseRef.child('ReportListing').once().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> map = snapshot.value;
-      map.forEach((key, value) {
-        ReportListing reportListing = new ReportListing(reportID: key, listingID: value['listingID'],
-            reportTitle: value['reportTitle'], reportOffense: value['reportOffense'],
-            reportDescription: value['reportDescription'], complete: value['complete'],
-            reportDate: DateTime.parse(value['reportDate']), userID: value['userID']);
-        if(name != ""){
-          if(reportListing.complete == "True" && reportListing.reportTitle.toLowerCase().contains(name.toLowerCase())){
-            reportListingList.add(reportListing);
+      if(map != null){
+        map.forEach((key, value) {
+          ReportListing reportListing = new ReportListing(reportID: key, listingID: value['listingID'],
+              reportTitle: value['reportTitle'], reportOffense: value['reportOffense'],
+              reportDescription: value['reportDescription'], complete: value['complete'],
+              reportDate: DateTime.parse(value['reportDate']), userID: value['userID']);
+          if(name != ""){
+            if(reportListing.complete == "True" && reportListing.reportTitle.toLowerCase().contains(name.toLowerCase())){
+              reportListingList.add(reportListing);
+            }
           }
-        }
-        else{
-          if(reportListing.complete == "True"){
-            reportListingList.add(reportListing);
+          else{
+            if(reportListing.complete == "True"){
+              reportListingList.add(reportListing);
+            }
           }
-        }
-      });
+        });
+      }else{
+        print("Empty data");
+      }
     });
     return reportListingList;
   }

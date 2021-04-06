@@ -19,15 +19,17 @@ class ActivityPresenter{
     List<Notifications> notiList = new List<Notifications>();
     await _databaseRef.child('Notification').once().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> map = snapshot.value;
-      map.forEach((key, value) {
-        Notifications noti = new Notifications(notificationID: key, notificationText: value['notificationText'],
-            listingID: value['listingID'], reportID: value['reportID'],
-            userID: value['userID'], notiDate: DateTime.parse(value['notiDate']) ?? "");
-        if(noti.userID == userID){
-          notiList.add(noti);
-        }
+      if(map != null){
+        map.forEach((key, value) {
+          Notifications noti = new Notifications(notificationID: key, notificationText: value['notificationText'],
+              listingID: value['listingID'], reportID: value['reportID'],
+              userID: value['userID'], notiDate: DateTime.parse(value['notiDate']) ?? "");
+          if(noti.userID == userID){
+            notiList.add(noti);
+          }
 
-      });
+        });
+      }
     });
     return notiList;
   }

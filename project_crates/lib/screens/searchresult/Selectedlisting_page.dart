@@ -47,6 +47,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
   @override
   initState() {
     super.initState();
+    print("Test" + widget.listingID);
     loadAsyncData(widget.listingID).then((response) {
       setState(() {
         listingTitle = response['listing'].listingTitle;
@@ -78,7 +79,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
 
   loadMarker(String title) async {
     markerIcon =
-    await mapHandler.getBytesFromAsset('assets/location_icon.png', 50);
+    await mapHandler.getBytesFromAsset('assets/location_icon.png', 100);
     setState(() {
       _markers.add(Marker(
           markerId: MarkerId('location'),
@@ -185,7 +186,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
                 onMapCreated: _onMapCreated,
                 initialCameraPosition: CameraPosition(
                   target: center,
-                  zoom: 11.0,
+                  zoom: 13.0,
                 ),
                 markers: _markers,
               ),
@@ -238,12 +239,17 @@ Widget listingDetailsTopCard(
             children: <Widget>[
               Expanded(
                 child: Center(
-                  child: Image.network(
-                    listingImg,
-                    fit: BoxFit.fitHeight,
-                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child:  Image.network(
+                          listingImg,
+                          fit: BoxFit.cover,
+                          height: 300.0,
+                          width: 300.0,
+                        ),
+                    ),
+                  )
                 ),
-              ),
               SizedBox(height: 30),
             ],
           )),

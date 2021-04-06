@@ -20,24 +20,26 @@ class ListingData {
           .once()
           .then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> map = snapshot.value;
-        map.forEach((key, value) {
-          if (value['isComplete'] == false &&
-              (category == value['category'] || noCategory)) {
-            var normalListing = Listing(
-                listingID: key,
-                userID: value['userID'],
-                listingTitle: value['listingTitle'],
-                category: value['category'],
-                postDateTime: DateTime.parse(value['postDateTime']),
-                description: value['description'],
-                isRequest: value['isRequest'],
-                isComplete: value['isComplete'],
-                listingImage: value['listingImage'],
-                longitude: value['longitude'],
-                latitude: value['latitude']);
-            userNormalListing.add(normalListing);
-          }
-        });
+        if(map != null){
+          map.forEach((key, value) {
+            if (value['isComplete'] == false &&
+                (category == value['category'] || noCategory)) {
+              var normalListing = Listing(
+                  listingID: key,
+                  userID: value['userID'],
+                  listingTitle: value['listingTitle'],
+                  category: value['category'],
+                  postDateTime: DateTime.parse(value['postDateTime']),
+                  description: value['description'],
+                  isRequest: value['isRequest'],
+                  isComplete: value['isComplete'],
+                  listingImage: value['listingImage'],
+                  longitude: value['longitude'],
+                  latitude: value['latitude']);
+              userNormalListing.add(normalListing);
+            }
+          });
+        }
       });
     } catch (e) {
       print(e);

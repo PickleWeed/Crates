@@ -64,10 +64,11 @@ class _CategoryPageState extends State<CategoryPage> {
                   alignment: Alignment(-1, -1),
                   child: TextButton.icon(
                       key: Key('CategoryBack'),
-                      icon: Icon(Icons.keyboard_backspace),
+                      icon: Icon(Icons.arrow_back_ios_rounded, color: Colors.white,),
                       label: Text('Back',
                           style: TextStyle(
                             color: offWhite,
+                            fontSize: 23
                           )),
                       onPressed: () {
                         Navigator.pop(context);

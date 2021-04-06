@@ -62,6 +62,10 @@ class _SearchResultCat_pageState extends State<SearchResultCat_page>{
           backgroundColor: Color(0xFFFFC857),
           title: Text('Search Result',
             style: TextStyle(color: Colors.white)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_rounded, color:Colors.white),
+          onPressed: () => Navigator.pop(context, false),
+        ),
       ),
       body: ListView(children: <Widget>[
         Container(

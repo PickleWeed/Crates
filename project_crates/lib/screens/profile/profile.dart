@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/auth.dart';
 import 'package:flutter_application_1/backend/profile_presenter.dart';
 import 'package:flutter_application_1/models/Listing.dart';
-import 'package:flutter_application_1/models/Review.dart';
 import 'package:flutter_application_1/models/user.dart';
 import 'package:flutter_application_1/screens/profile/editProfile.dart';
 import '../common/theme.dart';
@@ -147,34 +146,56 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               Expanded(
                 child: TabBarView(
                   children: [
-                FutureBuilder(
-                  future: _profilePresenter.retrieveUserListing(currentUserID),
-                  builder: (context, snapshot) {
-                              if(snapshot.hasData){
-                                userListings = snapshot.data;
-                                print(snapshot.data.length);
-                                return SingleChildScrollView(
-                                    child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: GridView.count(
-                                          shrinkWrap : true,
-                                          physics: NeverScrollableScrollPhysics(),
-                                          crossAxisCount: 2 ,
-                                          scrollDirection: Axis.vertical,
-                                          children: List.generate(userListings.length,(index){
-                                            return CustomListingCard(listingID:userListings[index].listingID,
-                                                title: userListings[index].listingTitle, owner: userDetails.username,
-                                                listingImg: userListings[index].listingImage, ownerImg:userDetails.imagePath);
-                                          }),
-                                        )
-                                    )
-                                );
-                              }else{
-                                return Center(child: CircularProgressIndicator());
-                              }
+                    userListings.length == 0? Padding(
+                        padding: EdgeInsets.all(25),
+                        child: Text(
+                            'You have no listing available...',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 15,
 
-                      },
+                            ),)
+                    ) :
+                    FutureBuilder(
+                    future: _profilePresenter.retrieveUserListing(currentUserID),
+                    builder: (context, snapshot) {
+                                if(snapshot.hasData){
+                                  userListings = snapshot.data;
+                                  print(snapshot.data.length);
+                                  return SingleChildScrollView(
+                                      child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: GridView.count(
+                                            shrinkWrap : true,
+                                            physics: NeverScrollableScrollPhysics(),
+                                            crossAxisCount: 2 ,
+                                            scrollDirection: Axis.vertical,
+                                            children: List.generate(userListings.length,(index){
+                                              return CustomListingCard(listingID:userListings[index].listingID,
+                                                  title: userListings[index].listingTitle, owner: userDetails.username,
+                                                  listingImg: userListings[index].listingImage, ownerImg:userDetails.imagePath);
+                                            }),
+                                          )
+                                      )
+                                  );
+                                }else{
+                                  return Center(child: CircularProgressIndicator());
+                                }
+
+                        },
                     ),
+                    userRequestListings.length == 0? Padding(
+                        padding: EdgeInsets.all(25),
+                        child: Text(
+                          'You have no request listing available...',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 15,
+
+                          ),)
+                    ) :
                     FutureBuilder(
                       future: _profilePresenter.retrieveUserRequestListing(currentUserID),
                       builder: (context, snapshot) {

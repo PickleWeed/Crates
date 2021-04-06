@@ -69,12 +69,14 @@ class _ActivityPageState extends State<ActivityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: false,
+        centerTitle: true,
         automaticallyImplyLeading: false,
         backgroundColor: primaryColor,
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Text('Activity', style: TextStyle(color: Colors.white)),
+          child: Text('Activity',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white)),
         ),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(15.0))),
@@ -100,58 +102,56 @@ class _ActivityPageState extends State<ActivityPage> {
                   ),
                   body: TabBarView(
                     children: [
+                      notiList.length ==0?
+                      Padding(
+                          padding: EdgeInsets.all(25),
+                          child: Text(
+                            'You have no notification available...',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 15,
+
+                            ),)
+                      ):
                       SingleChildScrollView(
                         child: Column(
                           children: [
                             Container(
-
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Container(
-                                          padding: EdgeInsets.only(left: 15.0),
-                                          child: Text('Notifications',
-                                              style: TextStyle(fontSize: 20)),
-                                        )),
-                                    Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Container(
-                                            padding:
-                                                EdgeInsets.only(right: 10.0),
-                                            child: TextButton.icon(
-                                              icon: Icon(Icons.sort),
-                                              label: Text('Sort'),
-                                              onPressed: () {
-                                                if (sort == false) {
-                                                  notiList.sort((a, b) {
-                                                    sort = true;
-                                                    return a.notiDate
-                                                        .toString()
-                                                        .toLowerCase()
-                                                        .compareTo(b.notiDate
-                                                            .toString()
-                                                            .toLowerCase());
-                                                  });
-                                                } else {
-                                                  notiList.sort((b, a) {
-                                                    sort = false;
-                                                    return a.notiDate
-                                                        .toString()
-                                                        .toLowerCase()
-                                                        .compareTo(b.notiDate
-                                                            .toString()
-                                                            .toLowerCase());
-                                                  });
-                                                }
-                                                setState(() {});
-                                              },
-                                            )))
-                                  ],
-                                )),
+                                child:Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Container(
+                                        padding:
+                                        EdgeInsets.only(right: 10.0),
+                                        child: TextButton.icon(
+                                          icon: Icon(Icons.sort),
+                                          label: Text('Sort'),
+                                          onPressed: () {
+                                            if (sort == false) {
+                                              notiList.sort((a, b) {
+                                                sort = true;
+                                                return a.notiDate
+                                                    .toString()
+                                                    .toLowerCase()
+                                                    .compareTo(b.notiDate
+                                                    .toString()
+                                                    .toLowerCase());
+                                              });
+                                            } else {
+                                              notiList.sort((b, a) {
+                                                sort = false;
+                                                return a.notiDate
+                                                    .toString()
+                                                    .toLowerCase()
+                                                    .compareTo(b.notiDate
+                                                    .toString()
+                                                    .toLowerCase());
+                                              });
+                                            }
+                                            setState(() {});
+                                          },
+                                        )))
+                            ),
                             Container(
                               child: ListView.builder(
                                 shrinkWrap: true,
@@ -166,6 +166,18 @@ class _ActivityPageState extends State<ActivityPage> {
                         ),
                       ),
                       // Chat part
+                      conversationCardList.length ==0?
+                      Padding(
+                          padding: EdgeInsets.all(25),
+                          child: Text(
+                            'You have no chat available...',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 15,
+
+                            ),)
+                      ):
                       SingleChildScrollView(
                         child: Column(children: [
                           SizedBox(height:20),

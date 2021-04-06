@@ -41,14 +41,16 @@ class ProfilePresenter{
     var userNormalListing = <Listing>[];
     await _databaseRef.child('Listing').once().then((DataSnapshot snapshot){
       Map<dynamic, dynamic> map = snapshot.value;
-      map.forEach((key, value) {
-        if(value['userID'] == uid && value['isRequest'] == false){
-          var normalListing = Listing(listingID:key,listingTitle: value['listingTitle'],category: value['category']
-              ,postDateTime: DateTime.parse(value['postDateTime']),description: value['description'],isRequest: value['isRequest'],isComplete: value['isComplete'],
-              listingImage: value['listingImage'],longitude: value['longitude'],latitude:value['latitude'] );
-          userNormalListing.add(normalListing);
-        }
-      });
+      if(map != null){
+        map.forEach((key, value) {
+          if(value['userID'] == uid && value['isRequest'] == false){
+            var normalListing = Listing(listingID:key,listingTitle: value['listingTitle'],category: value['category']
+                ,postDateTime: DateTime.parse(value['postDateTime']),description: value['description'],isRequest: value['isRequest'],isComplete: value['isComplete'],
+                listingImage: value['listingImage'],longitude: value['longitude'],latitude:value['latitude'] );
+            userNormalListing.add(normalListing);
+          }
+        });
+      }
     });
 
     return userNormalListing;
@@ -58,14 +60,16 @@ class ProfilePresenter{
     var userRequestListing = <Listing>[];
     await _databaseRef.child('Listing').once().then((DataSnapshot snapshot){
       Map<dynamic, dynamic> map = snapshot.value;
-      map.forEach((key, value) {
-        if(value['userID'] == uid && value['isRequest'] == true){
-          var normalListing = Listing(listingID: key,listingTitle: value['listingTitle'],category: value['category']
-              ,postDateTime: DateTime.parse(value['postDateTime']),description: value['description'],isRequest: value['isRequest'],isComplete: value['isComplete'],
-              listingImage: value['listingImage'],longitude: value['longitude'],latitude:value['latitude'] );
-          userRequestListing.add(normalListing);
-        }
-      });
+      if(map != null){
+        map.forEach((key, value) {
+          if(value['userID'] == uid && value['isRequest'] == true){
+            var normalListing = Listing(listingID: key,listingTitle: value['listingTitle'],category: value['category']
+                ,postDateTime: DateTime.parse(value['postDateTime']),description: value['description'],isRequest: value['isRequest'],isComplete: value['isComplete'],
+                listingImage: value['listingImage'],longitude: value['longitude'],latitude:value['latitude'] );
+            userRequestListing.add(normalListing);
+          }
+        });
+      }
     });
     return userRequestListing;
   }
@@ -119,9 +123,6 @@ class ProfilePresenter{
       print('Error: $e');
       return null;
     }
-    // if(credential != null){
-    //   correctPass = true;
-    // }
   }
 
 

@@ -40,12 +40,20 @@ class _HomeState extends State<Home> {
       var bdate = b.postDateTime;
       return -adate.compareTo(bdate);
     });
-
-    for (int i = 0; i < 4; i++) {
-      userDetail =
-      await ProfilePresenter().retrieveUserProfile(listings[i].userID);
-      userDetailList.add(userDetail);
+    if(listings.length > 4){
+      for (int i = 0; i < 4; i++) {
+        userDetail =
+        await ProfilePresenter().retrieveUserProfile(listings[i].userID);
+        userDetailList.add(userDetail);
+      }
+    }else{
+      for (int i = 0; i < listings.length; i++) {
+        userDetail =
+        await ProfilePresenter().retrieveUserProfile(listings[i].userID);
+        userDetailList.add(userDetail);
+      }
     }
+
     setState(() {
       // listings = reversedList;
       listings = listings;
@@ -425,15 +433,25 @@ Widget CategoryList(context) {
 
 Widget LatestList(List<User> userDetailList, List<Listing> listings) {
   List<CustomListingCard> listing_list = [];
-
   // Get First 4 Newest Listings
-  for (int i = 0; i < 4; i++) {
-    listing_list.add(CustomListingCard(
-        listingID: listings[i].listingID,
-        title: listings[i].listingTitle,
-        owner: userDetailList[i].username,
-        listingImg: listings[i].listingImage,
-        ownerImg: userDetailList[i].imagePath));
+  if(listings.length > 4){
+    for (int i = 0; i < 4; i++) {
+      listing_list.add(CustomListingCard(
+          listingID: listings[i].listingID,
+          title: listings[i].listingTitle,
+          owner: userDetailList[i].username,
+          listingImg: listings[i].listingImage,
+          ownerImg: userDetailList[i].imagePath));
+    }
+  }else{
+    for (int i = 0; i < listings.length; i++) {
+      listing_list.add(CustomListingCard(
+          listingID: listings[i].listingID,
+          title: listings[i].listingTitle,
+          owner: userDetailList[i].username,
+          listingImg: listings[i].listingImage,
+          ownerImg: userDetailList[i].imagePath));
+    }
   }
 
   return Padding(
