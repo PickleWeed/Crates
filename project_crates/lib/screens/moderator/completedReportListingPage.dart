@@ -56,84 +56,85 @@ class _CompletedReportListingPageState
                   BorderRadius.vertical(bottom: Radius.circular(40.0))),
         ),
         body: dataLoading == false
-            ? Column(children: <Widget>[
-                Container(
-                    margin: EdgeInsets.fromLTRB(20, 3, 20, 3),
-                    decoration: BoxDecoration(
-                        border:
-                            Border(bottom: BorderSide(color: primaryColor))),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Icon(Icons.search),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: TextFormField(
-                              key: Key('SearchCompleted'),
-                              controller: _searchController,
-                              decoration: InputDecoration(
-                                  hintText: 'Search',
-                                  border: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none),
-                              onEditingComplete: () {
-                                setState(() {
-                                  loadData();
-                                });
-                              },
-                              onChanged: (val) => setState(() {
-                                _searchName = val;
-                              }),
+            ? SingleChildScrollView(
+              child: Column(children: <Widget>[
+                  Container(
+                      margin: EdgeInsets.fromLTRB(20, 3, 20, 3),
+                      decoration: BoxDecoration(
+                          border:
+                              Border(bottom: BorderSide(color: primaryColor))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Icon(Icons.search),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: TextFormField(
+                                key: Key('SearchCompleted'),
+                                controller: _searchController,
+                                decoration: InputDecoration(
+                                    hintText: 'Search',
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none),
+                                onEditingComplete: () {
+                                  setState(() {
+                                    loadData();
+                                  });
+                                },
+                                onChanged: (val) => setState(() {
+                                  _searchName = val;
+                                }),
+                              ),
                             ),
                           ),
-                        ),
-                        Align(
-                            alignment: Alignment.centerRight,
-                            child: Container(
-                                padding: EdgeInsets.only(right: 10.0),
-                                child: TextButton.icon(
-                                  icon: Icon(Icons.sort),
-                                  label: Text('Sort'),
-                                  onPressed: () {
-                                    if (sort == false) {
-                                      reportListings.sort((a, b) {
-                                        sort = true;
-                                        return a.reportTitle
-                                            .toString()
-                                            .toLowerCase()
-                                            .compareTo(b.reportTitle
-                                                .toString()
-                                                .toLowerCase());
-                                      });
-                                    } else {
-                                      reportListings.sort((b, a) {
-                                        sort = false;
-                                        return a.reportTitle
-                                            .toString()
-                                            .toLowerCase()
-                                            .compareTo(b.reportTitle
-                                                .toString()
-                                                .toLowerCase());
-                                      });
-                                    }
+                          Align(
+                              alignment: Alignment.centerRight,
+                              child: Container(
+                                  padding: EdgeInsets.only(right: 10.0),
+                                  child: TextButton.icon(
+                                    icon: Icon(Icons.sort),
+                                    label: Text('Sort'),
+                                    onPressed: () {
+                                      if (sort == false) {
+                                        reportListings.sort((a, b) {
+                                          sort = true;
+                                          return a.reportTitle
+                                              .toString()
+                                              .toLowerCase()
+                                              .compareTo(b.reportTitle
+                                                  .toString()
+                                                  .toLowerCase());
+                                        });
+                                      } else {
+                                        reportListings.sort((b, a) {
+                                          sort = false;
+                                          return a.reportTitle
+                                              .toString()
+                                              .toLowerCase()
+                                              .compareTo(b.reportTitle
+                                                  .toString()
+                                                  .toLowerCase());
+                                        });
+                                      }
 
-                                    setState(() {});
-                                  },
-                                )))
-                      ],
-                    )),
-                SingleChildScrollView(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: reportListings.length,
-                    itemBuilder: (context, index) {
-                      return reportCard(context, reportListings[index]);
-                    },
-                  ),
-                ),
-              ])
+                                      setState(() {});
+                                    },
+                                  )))
+                        ],
+                      )),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: reportListings.length,
+                      itemBuilder: (context, index) {
+                        return reportCard(context, reportListings[index]);
+                      },
+                    ),
+
+                ]),
+            )
             : Center(child: CircularProgressIndicator()));
     // body: Body());
   }
