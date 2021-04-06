@@ -44,11 +44,14 @@ dependencies:
   tflite:
   meta:
   uuid:
+  flutter_typeahead: ^2.0.0
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test: ^1.0.2+2
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
