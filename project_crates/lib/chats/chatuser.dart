@@ -2,7 +2,7 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 //import 'package:flutter_application_1/Chat/chatscreenv2.dart';
-import 'package:flutter_application_1/chats/chatscreen.dart';
+import 'file:///D:/GitHub%20Repositories/CZ3003_Crates/project_crates/lib/screens/activity/chatscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatUserScreen extends StatefulWidget {
