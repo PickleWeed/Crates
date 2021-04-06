@@ -188,6 +188,7 @@ Widget CategoryList(context) {
               height: 140.0,
               width: 140.0,
               child: GestureDetector(
+                  key: Key('All'),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -221,6 +222,7 @@ Widget CategoryList(context) {
               height: 140.0,
               width: 140.0,
               child: GestureDetector(
+                  key: Key('Vegetable'),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -253,6 +255,7 @@ Widget CategoryList(context) {
               height: 140.0,
               width: 140.0,
               child: GestureDetector(
+                  key: Key('CannedFood'),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -284,6 +287,7 @@ Widget CategoryList(context) {
               height: 140.0,
               width: 140.0,
               child: GestureDetector(
+                  key: Key('Snacks'),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -315,6 +319,7 @@ Widget CategoryList(context) {
               height: 140.0,
               width: 140.0,
               child: GestureDetector(
+                  key: Key('Beverages'),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -346,6 +351,7 @@ Widget CategoryList(context) {
               height: 140.0,
               width: 140.0,
               child: GestureDetector(
+                  key: Key('Diary'),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -378,6 +384,7 @@ Widget CategoryList(context) {
               height: 140.0,
               width: 140.0,
               child: GestureDetector(
+                  key: Key('DryFood'),
                   onTap: () {
                     Navigator.push(
                         context,
