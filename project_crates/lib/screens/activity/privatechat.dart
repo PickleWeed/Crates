@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/activity_presenter.dart';
@@ -29,12 +30,15 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
   Map<String, String> usernameMap;
   Map<String, String> avatarMap;
 
+  // listener for new messages
+  DatabaseReference _messageDatabaseReference;
+
+
   @override
   void initState() {
     // TODO: implement initState
     loadData();
     super.initState();
-
   }
 
   void loadData() async{
@@ -56,6 +60,13 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
 
     // get list of messages
     messagesList = await _activityPresenter.readChatMessage(convo.messages);
+
+    // add listener
+    if (_messageDatabaseReference==null){
+      _messageDatabaseReference = FirebaseDatabase.instance.reference().child('Conversation').child(convo.conversation_id).child('messages');
+      _messageDatabaseReference.onChildChanged.listen(_onMessageAdded);
+      print('listener added');
+    }
 
     setState(() {
       // Data is done loading
@@ -83,7 +94,6 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                   itemBuilder: (_, int index) {
                     var msg = messagesList[index];
                     var sender = msg.sender_uid;
-                    print("msg.text: ${msg.text}, msg.imageUrl: ${msg.imageUrl}");
                     return chatBubble(context, avatarMap[sender], usernameMap[sender], msg.text, msg.imageUrl);
                   }
               ),
@@ -202,6 +212,17 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
   void _sendImageFromGallery() async {
     //_sendImage(ImageSource.gallery);
     print('sending from gallery');
+  }
+
+  // callback method for listener
+  void _onMessageAdded(Event event) async{
+    await print('child addede detected!!!: ${event.snapshot.value}');
+    var new_cm_id = await event.snapshot.value;
+    var new_cm = await _activityPresenter.readOneChatMessage(new_cm_id);
+
+    setState(() {
+      messagesList.insert(0, new_cm);
+    });
   }
 
 }

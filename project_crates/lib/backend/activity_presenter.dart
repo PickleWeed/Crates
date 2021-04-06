@@ -253,11 +253,23 @@ class ActivityPresenter{
     return messagesList;
   }
 
+  // retrieve a single chat message
+  Future<ChatMessage> readOneChatMessage(String id) async{
+
+    var snapshot = await _databaseRef.child('ChatMessage').child(id).once();
+
+    var chatMsg = ChatMessage(text: snapshot.value['text'], imageUrl: snapshot.value['imageUrl'],
+        sender_uid: snapshot.value['sender_uid'], date_sent: DateTime.parse(snapshot.value['date_sent']));
+
+    return chatMsg;
+  }
+
+
   //Add chat message
   Future addChatMessage(String text, String imageUrl, String user_id) async{
     var newpush = await _databaseRef.child('ChatMessage').push();
     await newpush.set({
-      'text': text ?? '',
+      'text': text,
       'imageUrl': imageUrl,
       'sender_uid': user_id ?? '',
       'date_sent': DateTime.now().toString(),
