@@ -7,7 +7,7 @@ import 'package:flutter_application_1/models/Notifications.dart';
 import 'package:flutter_application_1/screens/activity/privatechat.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import '../activity/notificationpage.dart';
-import 'chatscreen.dart';
+
 
 class ActivityPage extends StatefulWidget {
   @override

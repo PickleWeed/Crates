@@ -5,7 +5,6 @@ import 'package:flutter_application_1/backend/activity_presenter.dart';
 import 'package:flutter_application_1/backend/auth.dart';
 import 'package:flutter_application_1/models/ChatMessage.dart';
 import 'package:flutter_application_1/models/Conversation.dart';
-import 'package:flutter_application_1/models/user.dart';
 
 
 class PrivateChatScreen extends StatefulWidget {
@@ -192,7 +191,6 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
     mylist.add(newkey);
     convo.messages = mylist;
 
-    //convo.messages.add(newkey);
 
     print('after adding newkey: $mylist');
 

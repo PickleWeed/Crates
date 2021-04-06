@@ -81,8 +81,6 @@ class ActivityPresenter{
     usernameMap[user1] = await readUsername(user1);
     usernameMap[user2] = await readUsername(user2);
 
-    await print(usernameMap);
-
     return usernameMap;
   }
 
@@ -94,8 +92,6 @@ class ActivityPresenter{
 
     avatarMap[user1] = await readAvatar(user1);
     avatarMap[user2] = await readAvatar(user2);
-
-    await print(avatarMap);
 
     return avatarMap;
   }
@@ -250,7 +246,7 @@ class ActivityPresenter{
         messagesList.add(chatMsg);
       }
     }
-    return messagesList;
+    return messagesList.reversed.toList();
   }
 
   // retrieve a single chat message
