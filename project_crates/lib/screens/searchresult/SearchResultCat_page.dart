@@ -7,10 +7,11 @@ import 'package:flutter_application_1/screens/common/widgets.dart';
 import 'package:flutter_application_1/screens/home/searchdata.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-class SearchResult_page extends StatelessWidget {
+class SearchResultCat_page extends StatelessWidget {
   String _search;
   final String product;
-  SearchResult_page({this.product});
+  final String categoryName;
+  SearchResultCat_page({this.product, this.categoryName});
 
   //TODO: Fix appbar ui(searchbar)
   @override
@@ -47,15 +48,18 @@ class SearchResult_page extends StatelessWidget {
                         fillColor: Colors.white,
                         hintText: 'search')),
                 suggestionsCallback: (pattern) async {
-                  return await StateService().getListingTiles(pattern);
+                  return await StateService()
+                      .getListingTilesWithCat(pattern, categoryName);
                 },
                 itemBuilder: (context, suggestion) {
                   return ListTile(title: Text(suggestion));
                 },
                 onSuggestionSelected: (suggestion) {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          SearchResult_page(product: suggestion)));
+                      builder: (context) => SearchResultCat_page(
+                            product: suggestion,
+                            categoryName: categoryName,
+                          )));
                 },
               ),
             ),
@@ -65,6 +69,7 @@ class SearchResult_page extends StatelessWidget {
           ]),
       body: Body(
         searchString: product,
+        categoryName: categoryName,
       ),
     );
     // body: Body());
@@ -73,7 +78,8 @@ class SearchResult_page extends StatelessWidget {
 
 class Body extends StatefulWidget {
   final String searchString;
-  Body({this.searchString});
+  final String categoryName;
+  Body({this.searchString, this.categoryName});
   @override
   _BodyState createState() => _BodyState();
 }
