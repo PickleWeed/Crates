@@ -25,7 +25,6 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
 
   final TextEditingController _textController  = TextEditingController();
 
-  bool _isComposing = false;
   Conversation convo;
   List<ChatMessage> messagesList;
   bool dataLoading = false;
@@ -67,7 +66,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
     // add listener
     if (_messageDatabaseReference==null){
       _messageDatabaseReference = FirebaseDatabase.instance.reference().child('Conversation').child(convo.conversation_id).child('messages');
-      _messageDatabaseReference.onChildAdded.listen(_onMessageAdded);
+      _messageDatabaseReference.onChildChanged.listen(_onMessageAdded);
       print('listener added');
     }
 
@@ -92,6 +91,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
             Flexible(
               child: ListView.builder(
                   padding: EdgeInsets.all(8.0),
+
                   reverse: true,
                   itemCount: messagesList.length,
                   itemBuilder: (_, int index) {
@@ -137,11 +137,6 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
               Flexible(
                 child: TextField(
                   controller: _textController,
-                  onChanged: (String text) {
-                    setState(() {
-                      _isComposing = text.isNotEmpty;
-                    });
-                  },
                   onSubmitted: _handleSubmitted,
                   decoration:
                   InputDecoration.collapsed(hintText: 'Send a message'),
@@ -159,18 +154,11 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                         icon: Icon(Icons.image),
                         onPressed: _sendImageFromGallery,
                       ),
-                      Theme.of(context).platform == TargetPlatform.iOS
-                          ? CupertinoButton(
-                        child: Text("Send"),
-                        onPressed: _isComposing
-                            ? () => _handleSubmitted(_textController.text)
-                            : null,
-                      )
-                          : IconButton(
+                      IconButton(
                         icon: Icon(Icons.send),
-                        onPressed: _isComposing
-                            ? () => _handleSubmitted(_textController.text)
-                            : null,
+                        onPressed: () async{
+                          _handleSubmitted(_textController.text);
+                        }
                       ),
                     ],
                   ))
@@ -181,11 +169,11 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
 
   // text submitted
   void _handleSubmitted(String text) async {
-    _textController.clear();
+    if (text.isEmpty){
+      return;
+    }
 
-    setState(() {
-      _isComposing = false;
-    });
+    _textController.clear();
 
     // create ChatMessage instance
     // add into ChatMessage db and get its ID
@@ -218,11 +206,16 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
   }
 
   // callback method for listener
-  void _onMessageAdded(Event event) async{
-    await print('new message detected by listener!!!: ${event.snapshot.value}');
+  _onMessageAdded(Event event) async{
     var new_cm_id = event.snapshot.value;
+
+    if (new_cm_id == 'defaultmessage') return;
+
+    await print('new message detected by listener!!!: ${event.snapshot.value}');
+
     var new_cm = await _activityPresenter.readOneChatMessage(new_cm_id);
 
+    if (!mounted) return;
     setState(() {
       messagesList.insert(0, new_cm);
     });
@@ -241,7 +234,8 @@ Widget chatBubble(context, avatar, username, text, String imageUrl){
         Container(
           margin: const EdgeInsets.only(right: 16.0),
           child: CircleAvatar(
-            backgroundImage: NetworkImage(avatar),
+            child: Text(username.substring(0,1)),
+            //backgroundImage: NetworkImage(avatar),
           ),
         ),
         Expanded(

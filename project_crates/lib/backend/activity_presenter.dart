@@ -241,6 +241,7 @@ class ActivityPresenter{
   //Retrieve chat messages
   Future<List<ChatMessage>> readChatMessage(List<String> id) async{
     var messagesList = <ChatMessage>[];
+
     for (int i = 0; i < id.length ; i++){
       if(id[i] != "defaultempty"){
         DataSnapshot snapshot = await _databaseRef.child('ChatMessage').child(id[i]).once();
