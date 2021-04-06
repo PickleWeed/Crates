@@ -64,6 +64,44 @@ class ActivityPresenter{
     return name;
   }
 
+  //Get avatar of user
+  Future<String> readAvatar(String userID) async{
+    DataSnapshot snapshotName = await _databaseRef.child('users').child(userID).once();
+    String imgPath = snapshotName.value['imagePath'];
+    return imgPath;
+  }
+
+
+  Future<Map<String, String>> getUsernameMap(String conversation_id) async{
+    Map usernameMap = <String, String>{};
+
+    var user1 = getFirstUserIDFromConversation(conversation_id);
+    var user2 = getSecondUserIDFromConversation(conversation_id);
+
+    usernameMap[user1] = await readUsername(user1);
+    usernameMap[user2] = await readUsername(user2);
+
+    await print(usernameMap);
+
+    return usernameMap;
+  }
+
+  Future<Map<String, String>> getAvatarMap(String conversation_id) async{
+    Map avatarMap = <String, String>{};
+
+    var user1 = getFirstUserIDFromConversation(conversation_id);
+    var user2 = getSecondUserIDFromConversation(conversation_id);
+
+    avatarMap[user1] = await readAvatar(user1);
+    avatarMap[user2] = await readAvatar(user2);
+
+    await print(avatarMap);
+
+    return avatarMap;
+  }
+
+
+
   //Get one report listing
   Future<ReportListing> readReportListing(String reportID) async{
     DataSnapshot snapshot = await _databaseRef.child('ReportListing').child(reportID).once();
@@ -159,6 +197,7 @@ class ActivityPresenter{
   Future<Conversation> readConversation(String conversationID) async{
     DataSnapshot snapshot = await _databaseRef.child('Conversation').child(conversationID).once();
     Conversation convo = new Conversation(conversation_id: conversationID, messages: snapshot.value['messages'].cast<String>());
+    return convo;
   }
 
   //Check if conversation exists
@@ -186,6 +225,7 @@ class ActivityPresenter{
     await _databaseRef.child("Conversation").child(data.conversation_id).update({
       "messages": data.messages,
     });
+    await print("updateConversation completed");
   }
 
   //Retrieve listing info
@@ -201,23 +241,31 @@ class ActivityPresenter{
 
   //Retrieve chat messages
   Future<List<ChatMessage>> readChatMessage(List<String> id) async{
+    var messagesList = <ChatMessage>[];
     for (int i = 0; i < id.length ; i++){
       DataSnapshot snapshot = await _databaseRef.child('ChatMessage').child(id[i]).once();
       ChatMessage chatMsg = new ChatMessage(text: snapshot.value['text'], imageUrl: snapshot.value['imageUrl'],
           sender_uid: snapshot.value['sender_uid'], date_sent: DateTime.parse(snapshot.value['date_sent']));
-
+      messagesList.add(chatMsg);
     }
+    return messagesList;
   }
 
   //Add chat message
-  Future addChatMessage(ChatMessage data) async{
-    await _databaseRef.child('ChatMessage').push().set({
-      'text': data.text ?? '',
-      'imageUrl': data.imageUrl ?? '',
-      'sender_uid': data.sender_uid ?? '',
+  Future addChatMessage(String text, String imageUrl, String user_id) async{
+    var newpush = await _databaseRef.child('ChatMessage').push();
+    await newpush.set({
+      'text': text ?? '',
+      'imageUrl': imageUrl ?? '',
+      'sender_uid': user_id ?? '',
       'date_sent': DateTime.now().toString(),
     });
 
+    // return ID
+    return newpush.key;
   }
+
+
+
 
 }

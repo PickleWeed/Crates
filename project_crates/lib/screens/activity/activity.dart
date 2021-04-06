@@ -4,8 +4,10 @@ import 'package:flutter_application_1/backend/auth.dart';
 import 'package:flutter_application_1/models/Conversation.dart';
 import 'package:flutter_application_1/models/ConversationCard.dart';
 import 'package:flutter_application_1/models/Notifications.dart';
+import 'package:flutter_application_1/screens/activity/privatechat.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import '../activity/notificationpage.dart';
+import 'chatscreen.dart';
 
 class ActivityPage extends StatefulWidget {
   @override
@@ -266,7 +268,13 @@ Widget chatCard(BuildContext context, ConversationCard cc) {
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
                 onTap: () async {
-                  //TODO: update on tapped action for chat row
+                  //TODO: update on tapped action for chat row, dk if async is needed here
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PrivateChatScreen(
+                            conversation_id: cc.conversation_id,
+                          )));
                   print('Chat tapped, conversation ID: ${cc.conversation_id}');
                 }))),
   );
