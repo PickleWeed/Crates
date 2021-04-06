@@ -4,6 +4,7 @@ import 'package:flutter_application_1/screens/home/category_page.dart';
 import 'package:flutter_application_1/screens/home/home.dart';
 import 'package:flutter_application_1/screens/listing/Newlisting_page.dart';
 import 'package:flutter_application_1/screens/nearby/nearby.dart';
+import 'package:flutter_application_1/screens/searchresult/SearchResult_page.dart';
 import 'package:flutter_application_1/screens/searchresult/Selectedlisting_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_application_1/main.dart' as app;
@@ -55,8 +56,6 @@ void main() {
     await tester.tap(loginButton);
     await tester.pumpAndSettle(Duration(seconds: 3));
 
-
-    expect(find.byWidgetPredicate((widget) => widget is Home),findsOneWidget);
   }
 
   group('HomePage', () {
@@ -146,6 +145,54 @@ void main() {
       expect(find.byWidgetPredicate((widget) => widget is Selectedlisting_page),findsOneWidget);
     });
 
+    // Report Listing
+    testWidgets('Report Listing', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+      final listingBtn = find.byKey(Key('ListingCard')).first;
+      await tester.tap(listingBtn);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      expect(find.byWidgetPredicate((widget) => widget is Selectedlisting_page), findsOneWidget);
+
+      final reportBtn = find.byKey(Key('Report'));
+      await tester.tap(reportBtn);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+
+      final titleField = find.byKey(Key('Title'));
+      await tester.tap(titleField);
+      await tester.enterText(titleField, 'Item wrong');
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      final descriptionField = find.byKey(Key('Description'));
+      await tester.tap(descriptionField);
+      await tester.enterText(descriptionField, 'i think this item should be under dry food');
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      final sendBtn = find.byKey(Key('SendReport'));
+      await tester.tap(sendBtn);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+    });
+
+    //TODO: Show Chat from Listing?
+
+    //Demo search results
+    testWidgets('Search', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+      final searchBtn = find.byKey(Key('Search'));
+      await tester.tap(searchBtn);
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      await tester.enterText(searchBtn, 'Cof');
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      final queryBtn = find.byKey(Key('SearchResult')).first;
+      await tester.tap(queryBtn);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+
+      expect(find.byWidgetPredicate((widget) => widget is SearchResult_page ),findsOneWidget);
+    });
+
     //TODO: BYPASS PERMISSIONS
     testWidgets('Go to Nearby', (WidgetTester tester) async {
       await login(tester);
@@ -165,7 +212,7 @@ void main() {
       await tester.pumpAndSettle(Duration(seconds: 3));
       final newListBtn = find.byIcon(Icons.add_circle_outline);
       await tester.tap(newListBtn);
-      await tester.pumpAndSettle(Duration(seconds: 5));
+      await tester.pumpAndSettle(Duration(seconds: 3));
 
       expect(find.byWidgetPredicate((widget) => widget is Newlisting_page ),findsOneWidget);
     });
@@ -176,7 +223,7 @@ void main() {
       await tester.pumpAndSettle(Duration(seconds: 3));
       final profileBtn = find.byIcon(Icons.account_circle);
       await tester.tap(profileBtn);
-      await tester.pumpAndSettle(Duration(seconds: 5));
+      await tester.pumpAndSettle(Duration(seconds: 3));
       final listingBtn = find.byKey(Key('ListingCard')).first;
       await tester.tap(listingBtn);
       await tester.pumpAndSettle(Duration(seconds: 2));
@@ -184,7 +231,7 @@ void main() {
     });
 
     // Navigate to Activity Page AND back to home to show home bar working
-    testWidgets('Go to Activity', (WidgetTester tester) async {
+    testWidgets('Go to Activity & Home', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
       final activityBtn = find.byIcon(Icons.notifications_none);
@@ -195,7 +242,7 @@ void main() {
 
       final homeBtn = find.byIcon(Icons.home);
       await tester.tap(homeBtn);
-      await tester.pumpAndSettle(Duration(seconds: 5));
+      await tester.pumpAndSettle(Duration(seconds: 3));
 
       expect(find.byWidgetPredicate((widget) => widget is Home),findsOneWidget);
     });
@@ -209,8 +256,6 @@ void main() {
 
       expect(find.byWidgetPredicate((widget) => widget is Profile),findsOneWidget);
     }); */
-
-    //TODO Search
 
   });
 }

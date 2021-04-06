@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
 
     for (int i = 0; i < 4; i++) {
       userDetail =
-          await ProfilePresenter().retrieveUserProfile(listings[i].userID);
+      await ProfilePresenter().retrieveUserProfile(listings[i].userID);
       userDetailList.add(userDetail);
     }
     setState(() {
@@ -60,33 +60,33 @@ class _HomeState extends State<Home> {
         backgroundColor: offWhite,
         body: dataLoadingStatus == false
             ? ListView(children: <Widget>[
-                topCard(context),
-                SizedBox(height: 50),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(25, 0, 0, 10),
-                  child: Text('Categories',
-                      style: TextStyle(
-                        color: Colors.grey[800],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      )),
-                ),
-                CategoryList(context),
-                SizedBox(height: 15),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(25, 0, 0, 10),
-                  child: Text('Latest',
-                      style: TextStyle(
-                        color: Colors.grey[800],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      )),
-                ),
-                listings.isEmpty == true
-                    ? Text('No listings available', textAlign: TextAlign.center)
-                    : LatestList(userDetailList, listings),
-                SizedBox(height: 30),
-              ])
+          topCard(context),
+          SizedBox(height: 50),
+          Padding(
+            padding: EdgeInsets.fromLTRB(25, 0, 0, 10),
+            child: Text('Categories',
+                style: TextStyle(
+                  color: Colors.grey[800],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                )),
+          ),
+          CategoryList(context),
+          SizedBox(height: 15),
+          Padding(
+            padding: EdgeInsets.fromLTRB(25, 0, 0, 10),
+            child: Text('Latest',
+                style: TextStyle(
+                  color: Colors.grey[800],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                )),
+          ),
+          listings.isEmpty == true
+              ? Text('No listings available', textAlign: TextAlign.center)
+              : LatestList(userDetailList, listings),
+          SizedBox(height: 30),
+        ])
             : Center(child: CircularProgressIndicator()));
   }
 }
@@ -101,11 +101,11 @@ Widget topCard(BuildContext context) {
           color: primaryColor,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
-            topLeft: Radius.zero,
-            topRight: Radius.zero,
-            bottomLeft: Radius.circular(50),
-            bottomRight: Radius.circular(50),
-          )),
+                topLeft: Radius.zero,
+                topRight: Radius.zero,
+                bottomLeft: Radius.circular(50),
+                bottomRight: Radius.circular(50),
+              )),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -143,6 +143,7 @@ Widget topCard(BuildContext context) {
       bottom: -20,
       child: Container(
         height: 50,
+        key: Key('Search'),
         child: TypeAheadField(
           textFieldConfiguration: TextFieldConfiguration(
               decoration: InputDecoration(
@@ -165,7 +166,7 @@ Widget topCard(BuildContext context) {
             return await StateService().getListingTiles(pattern);
           },
           itemBuilder: (context, suggestion) {
-            return ListTile(title: Text(suggestion));
+            return ListTile(key:Key('SearchResult'),title: Text(suggestion));
           },
           onSuggestionSelected: (suggestion) {
             Navigator.of(context).push(MaterialPageRoute(
@@ -215,7 +216,7 @@ Widget CategoryList(context) {
                               padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
                               child: Image(
                                   image:
-                                      AssetImage('assets/icons/groceries.png')),
+                                  AssetImage('assets/icons/groceries.png')),
                             )
                           ])))),
           Container(
@@ -248,7 +249,7 @@ Widget CategoryList(context) {
                               padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
                               child: Image(
                                   image:
-                                      AssetImage('assets/icons/broccoli.png')),
+                                  AssetImage('assets/icons/broccoli.png')),
                             )
                           ])))),
           Container(
@@ -410,7 +411,7 @@ Widget CategoryList(context) {
                               padding: EdgeInsets.fromLTRB(40, 5, 5, 5),
                               child: Image(
                                   image:
-                                      AssetImage('assets/icons/pistachio.png')),
+                                  AssetImage('assets/icons/pistachio.png')),
                             )
                           ])))),
         ],
