@@ -58,11 +58,11 @@ class MapHandler {
 
           }
         );
-        print('marker added');
+        // print('marker added');
         markers.add(marker);
       }
     }
-    print('output markers');
+    // print('output markers');
     return markers.toSet();
   }
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -73,12 +73,12 @@ class MapHandler {
   }
   ///Obtain position latitude & longitude for markers
   List<LatLng> getPositionFromListing(List<Listing> listing){
-    print(listing.length);
-    print('getting positions');
+    // print(listing.length);
+    // print('getting positions');
     List<LatLng> positions = [];
     for (var location in listing) {
       positions.add(LatLng(location.latitude, location.longitude));
-      print('position: $positions');
+      // print('position: $positions');
     }
     return positions;
   }
