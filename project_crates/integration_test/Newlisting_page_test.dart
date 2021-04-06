@@ -117,10 +117,13 @@ void main() {
       await gesture.moveBy(Offset(0, -300)); //How much to scroll by
       await tester.pumpAndSettle(Duration(seconds: 1));
 
-      final locationTextField = find.byKey(Key('location'));
-      await tester.tap(locationTextField);
-      // await tester.pump();
-      //await tester.pumpAndSettle(Duration(seconds: 5));
+      await tester.pump(const Duration(milliseconds: 100));
+      TextField textField = find.widgetWithText(TextField, 'pick a location').evaluate().first.widget;
+      textField.onTap();
+
+      final locationTextField = find.byType(TextField).first;
+      //await tester.tap(locationTextField);
+      await tester.pumpAndSettle(Duration(seconds: 1));
       await tester.enterText(locationTextField, 'Singapore 530536');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle(Duration(seconds: 1));
