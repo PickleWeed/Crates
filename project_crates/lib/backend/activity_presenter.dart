@@ -213,7 +213,7 @@ class ActivityPresenter{
 
   //Add convo
   //For initial. Add message first, then get the ID, then add it to convo
-  Future addConversation(String listingID, String ownerID, String getterID, String messageID) async{
+  Future addConversation(String listingID, String ownerID, String getterID, List<String> messageID) async{
     await _databaseRef.child("Conversation").child(listingID+ownerID+getterID).set({
       "messages": messageID,
     });
@@ -243,10 +243,12 @@ class ActivityPresenter{
   Future<List<ChatMessage>> readChatMessage(List<String> id) async{
     var messagesList = <ChatMessage>[];
     for (int i = 0; i < id.length ; i++){
-      DataSnapshot snapshot = await _databaseRef.child('ChatMessage').child(id[i]).once();
-      ChatMessage chatMsg = new ChatMessage(text: snapshot.value['text'], imageUrl: snapshot.value['imageUrl'],
-          sender_uid: snapshot.value['sender_uid'], date_sent: DateTime.parse(snapshot.value['date_sent']));
-      messagesList.add(chatMsg);
+      if(id[i] != "defaultempty"){
+        DataSnapshot snapshot = await _databaseRef.child('ChatMessage').child(id[i]).once();
+        ChatMessage chatMsg = new ChatMessage(text: snapshot.value['text'] ?? "", imageUrl: snapshot.value['imageUrl'] ?? "",
+            sender_uid: snapshot.value['sender_uid'] ?? "", date_sent: DateTime.parse(snapshot.value['date_sent']));
+        messagesList.add(chatMsg);
+      }
     }
     return messagesList;
   }

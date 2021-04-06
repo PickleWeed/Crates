@@ -4,9 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/backend/activity_presenter.dart';
 import 'package:flutter_application_1/backend/profile_presenter.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/user.dart';
+import 'package:flutter_application_1/screens/activity/privatechat.dart';
 import 'package:flutter_application_1/screens/common/error_popup_widgets.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/common/user_main.dart';
@@ -17,7 +19,7 @@ import 'package:flutter_application_1/screens/nearby/nearby_MapHandler.dart';
 import 'package:flutter_application_1/screens/profile/profile.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../listing/Editinglist_page.dart';
-import 'package:flutter_application_1/backend/auth.dart';
+import 'package:flutter_application_1/backend/auth.dart' as auth;
 
 class Selectedlisting_page extends StatefulWidget {
   final String listingID;
@@ -203,7 +205,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
     Listing listing = await dao.getListing(listingID);
     User poster = await profilePresenter.retrieveUserProfile(listing.userID);
     String currentUID = await getUID();
-    bool isAdmin = await isAdminCheck(currentUID);
+    bool isAdmin = await auth.isAdminCheck(currentUID);
     return {
       'listing': listing,
       'poster': poster,
@@ -341,8 +343,21 @@ Widget listingDetailsTopCard(
 
     ...normalUserButtons(currentUser, isAdmin, context, listingID,
         //chat btn pressed
-            () {
-          print('Chat button pressed!');
+            () async {
+          String curr = await auth.currentUser();
+          Listing listing = await ActivityPresenter().readListing(listingID);
+          List<String> msgs = new List<String>();
+          msgs.add("defaultempty");
+
+          await ActivityPresenter().addConversation(listingID, listing.userID, curr, msgs);
+
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PrivateChatScreen(
+                    conversation_id: listingID+listing.userID+curr,
+                  )));
+
         }),
   ]);
 }
