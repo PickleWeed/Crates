@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import '../models/ReportListing.dart';
 import '../models/ReportListingAction.dart';
-import '../models/Notification.dart';
+import '../models/Notifications.dart';
 import '../models/Listing.dart';
 
 class ModeratorPresentor{
@@ -213,7 +213,7 @@ class ModeratorPresentor{
         "actionDate": data.actionDate.toString()
       });
 
-      Notification noti = new Notification(notificationText: notiText, isMatch: "ListingReport", reportID: rlList[i].reportID,userID: rlList[i].userID, listingID: l.listingID);
+      Notifications noti = new Notifications(notificationText: notiText, reportID: rlList[i].reportID,userID: rlList[i].userID, listingID: l.listingID);
       await addNotification(noti);
     }
 
@@ -230,13 +230,13 @@ class ModeratorPresentor{
   // Add to notification
   //
 
-  Future addNotification(Notification data) async{
+  Future addNotification(Notifications data) async{
     await _databaseRef.child("Notification").push().set({
       "notificationText": data.notificationText,
-      "isMatch": data.isMatch,
       "listingID": data.listingID ?? "",
       "reportID": data.reportID ?? "",
-      "userID": data.userID
+      "userID": data.userID,
+      "notiDate": DateTime.now().toString()
     });
   }
 
