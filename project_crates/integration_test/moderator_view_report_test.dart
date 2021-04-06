@@ -49,7 +49,6 @@ void main() {
 
     });
 
-    //need test after fixed
     testWidgets('View a reported listing', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 2));

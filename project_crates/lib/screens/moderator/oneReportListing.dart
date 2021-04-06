@@ -41,9 +41,9 @@ class _OneReportListingState extends State<OneReportListing> {
     });
 
     usernameListing =
-        await _moderatorPresentor.readUsername(widget.listing.userID);
+    await _moderatorPresentor.readUsername(widget.listing.userID);
     usernameReport =
-        await _moderatorPresentor.readUsername(widget.reportListing.userID);
+    await _moderatorPresentor.readUsername(widget.reportListing.userID);
 
     setState(() {
       usernameListing = usernameListing;
@@ -65,201 +65,202 @@ class _OneReportListingState extends State<OneReportListing> {
               style: TextStyle(fontSize: 30, color: Colors.white)),
           shape: RoundedRectangleBorder(
               borderRadius:
-                  BorderRadius.vertical(bottom: Radius.circular(40.0))),
+              BorderRadius.vertical(bottom: Radius.circular(40.0))),
         ),
         body: dataLoading == false
             ? SingleChildScrollView(
-                child: Container(
-                    height: MediaQuery.of(context).size.height,
-                    child: Column(
-                      children: [
-                        Container(
-                          alignment: Alignment(-1, -1),
-                          child: TextButton.icon(
-                              icon: Icon(Icons.keyboard_backspace),
-                              label: Text('Back'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              }),
-                        ),
-                        //backbutton
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => Selectedlisting_page(
-                                    listingID: widget.listing.listingID)));
-                            //TODO Link to listing
-                          },
-                          child: Row(
+            child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment(-1, -1),
+                      child: TextButton.icon(
+                          icon: Icon(Icons.keyboard_backspace),
+                          label: Text('Back'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          }),
+                    ),
+                    //backbutton
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => Selectedlisting_page(
+                                listingID: widget.listing.listingID)));
+                        //TODO Link to listing
+                      },
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.all(15.0),
+                            child: CircleAvatar(
+                              backgroundImage:
+                              NetworkImage(widget.listing.listingImage),
+                              radius: 60,
+                            ),
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Container(
-                                margin: const EdgeInsets.all(15.0),
-                                child: CircleAvatar(
-                                  backgroundImage:
-                                      NetworkImage(widget.listing.listingImage),
-                                  radius: 60,
-                                ),
+                                width: 200.0,
+                                alignment: Alignment.centerLeft,
+                                child: Text.rich(TextSpan(
+                                    text: 'Listing ID:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text: widget.listing.listingID,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold))
+                                    ])),
                               ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 200.0,
-                                    alignment: Alignment.centerLeft,
-                                    child: Text.rich(TextSpan(
-                                        text: 'Listing ID:',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: widget.listing.listingID,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold))
-                                        ])),
-                                  ),
-                                  Container(
-                                    width: 200.0,
-                                    alignment: Alignment.centerLeft,
-                                    child: Text.rich(TextSpan(
-                                        text: 'Listing Title:',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: widget.listing.listingTitle,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold))
-                                        ])),
-                                  ),
-                                  Container(
-                                    width: 200.0,
-                                    alignment: Alignment.centerLeft,
-                                    child: Text.rich(TextSpan(
-                                        text: 'Listed by: ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: usernameListing,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold))
-                                        ])),
-                                  )
-                                ],
+                              Container(
+                                width: 200.0,
+                                alignment: Alignment.centerLeft,
+                                child: Text.rich(TextSpan(
+                                    text: 'Listing Title:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text: widget.listing.listingTitle,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold))
+                                    ])),
                               ),
+                              Container(
+                                width: 200.0,
+                                alignment: Alignment.centerLeft,
+                                child: Text.rich(TextSpan(
+                                    text: 'Listed by: ',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text: usernameListing,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold))
+                                    ])),
+                              )
                             ],
                           ),
-                        ),
-                        //picture + listing id:listing name + listed by
-                        Container(
-                            margin:
-                                const EdgeInsets.only(left: 23.0, top: 15.0),
-                            alignment: Alignment.centerLeft,
-                            child: Text.rich(TextSpan(
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 24),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: widget.reportListing.reportTitle,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold))
-                                ]))),
-                        Container(
-                            margin:
-                                const EdgeInsets.only(left: 23.0, top: 10.0),
-                            alignment: Alignment.centerLeft,
-                            child: Text.rich(TextSpan(
-                                text: 'Reported by: ',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: usernameReport,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold))
-                                ]))),
-                        Container(
-                            margin:
-                                const EdgeInsets.only(left: 23.0, top: 10.0),
-                            alignment: Alignment.centerLeft,
-                            child: Text.rich(TextSpan(
-                                text: 'Report Type: ',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: widget.reportListing.reportOffense,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold))
-                                ]))),
-                        Container(
-                            margin:
-                                const EdgeInsets.only(left: 23.0, top: 10.0),
-                            alignment: Alignment.centerLeft,
-                            child: Text.rich(TextSpan(
-                                text: 'Reported on: ',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: widget.reportListing.reportDate
-                                          .toString(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold))
-                                ]))),
-                        Container(
-                            margin:
-                                const EdgeInsets.only(left: 23.0, top: 10.0),
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Report Description: ',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
-                            )),
-                        // text of just report description
-                        Container(
-                            margin:
-                                const EdgeInsets.only(left: 23.0, top: 10.0),
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              widget.reportListing.reportDescription,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 14),
-                            )),
-                        SizedBox(height: 30),
+                        ],
+                      ),
+                    ),
+                    //picture + listing id:listing name + listed by
+                    Container(
+                        margin:
+                        const EdgeInsets.only(left: 23.0, top: 15.0),
+                        alignment: Alignment.centerLeft,
+                        child: Text.rich(TextSpan(
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 24),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: widget.reportListing.reportTitle,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold))
+                            ]))),
+                    Container(
+                        margin:
+                        const EdgeInsets.only(left: 23.0, top: 10.0),
+                        alignment: Alignment.centerLeft,
+                        child: Text.rich(TextSpan(
+                            text: 'Reported by: ',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: usernameReport,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold))
+                            ]))),
+                    Container(
+                        margin:
+                        const EdgeInsets.only(left: 23.0, top: 10.0),
+                        alignment: Alignment.centerLeft,
+                        child: Text.rich(TextSpan(
+                            text: 'Report Type: ',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: widget.reportListing.reportOffense,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold))
+                            ]))),
+                    Container(
+                        margin:
+                        const EdgeInsets.only(left: 23.0, top: 10.0),
+                        alignment: Alignment.centerLeft,
+                        child: Text.rich(TextSpan(
+                            text: 'Reported on: ',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: widget.reportListing.reportDate
+                                      .toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold))
+                            ]))),
+                    Container(
+                        margin:
+                        const EdgeInsets.only(left: 23.0, top: 10.0),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Report Description: ',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        )),
+                    // text of just report description
+                    Container(
+                        margin:
+                        const EdgeInsets.only(left: 23.0, top: 10.0),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          widget.reportListing.reportDescription,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14),
+                        )),
+                    SizedBox(height: 30),
 
-                        Row(
-                          children: [
-                            SizedBox(width: 40),
-                            Expanded(
-                              child: CustomButton(
-                                btnText: "Choose Actions",
-                                btnPressed: () {
-                                  print(widget.reportListing.listingID);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ListingActionForm(
-                                                  reportListing:
-                                                      widget.reportListing,
-                                                  listing: widget.listing)));
-                                }, //show popup dialog
-                              ),
-                            ),
-                            SizedBox(width: 20),
-                            Expanded(
-                              child: dismissReport(context,
-                                  widget.reportListing, widget.listing),
-                            ),
-                            SizedBox(width: 40),
-                          ],
+                    Row(
+                      children: [
+                        SizedBox(width: 40),
+                        Expanded(
+                          child: CustomButton(
+                            btnText: "Choose Actions",
+                            btnPressed: () {
+                              print(widget.reportListing.listingID);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ListingActionForm(
+                                              reportListing:
+                                              widget.reportListing,
+                                              listing: widget.listing)));
+                            }, //show popup dialog
+                          ),
                         ),
+                        SizedBox(width: 20),
+                        Expanded(
+                          key: Key('DismissReport'),
+                          child: dismissReport(context,
+                              widget.reportListing, widget.listing),
+                        ),
+                        SizedBox(width: 40),
                       ],
-                    )))
+                    ),
+                  ],
+                )))
             : Center(child: CircularProgressIndicator()));
   }
 }

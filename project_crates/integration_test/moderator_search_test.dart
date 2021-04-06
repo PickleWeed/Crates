@@ -32,11 +32,11 @@ void main() {
 
     testWidgets('Search reported listings', (WidgetTester tester) async {
       await login(tester);
-      await tester.pumpAndSettle(Duration(seconds: 5));
+      await tester.pumpAndSettle(Duration(seconds: 2));
 
       final searchBtn = find.byKey(Key('SearchReport'));
       await tester.tap(searchBtn);
-      await tester.enterText(searchBtn, 'ui');
+      await tester.enterText(searchBtn, 'sus');
       await tester.pumpAndSettle(Duration(seconds: 5));
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle(Duration(seconds: 5));
