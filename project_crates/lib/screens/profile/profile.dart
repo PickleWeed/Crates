@@ -147,40 +147,61 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               Expanded(
                 child: TabBarView(
                   children: [
-                    SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GridView.count(
-                            shrinkWrap : true,
-                            physics: NeverScrollableScrollPhysics(),
-                            crossAxisCount: 2 ,
-                            scrollDirection: Axis.vertical,
-                            children: List.generate(userListings.length,(index){
+                FutureBuilder(
+                  future: _profilePresenter.retrieveUserListing(currentUserID),
+                  builder: (context, snapshot) {
+                              if(snapshot.hasData){
+                                userListings = snapshot.data;
+                                print(snapshot.data.length);
+                                return SingleChildScrollView(
+                                    child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: GridView.count(
+                                          shrinkWrap : true,
+                                          physics: NeverScrollableScrollPhysics(),
+                                          crossAxisCount: 2 ,
+                                          scrollDirection: Axis.vertical,
+                                          children: List.generate(userListings.length,(index){
+                                            return CustomListingCard(listingID:userListings[index].listingID,
+                                                title: userListings[index].listingTitle, owner: userDetails.username,
+                                                listingImg: userListings[index].listingImage, ownerImg:userDetails.imagePath);
+                                          }),
+                                        )
+                                    )
+                                );
+                              }else{
+                                return Center(child: CircularProgressIndicator());
+                              }
 
-                              return CustomListingCard(listingID:userListings[index].listingID, title: userListings[index].listingTitle, owner: userDetails.username,
-                                  listingImg: userListings[index].listingImage, ownerImg:userDetails.imagePath);
-                            }),
-                          ),
-                        ),
+                      },
                     ),
-                    //TODO LOAD REQUEST Listing DYNAMICALLY
-                    SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GridView.count(
-                          shrinkWrap : true,
-                          physics: NeverScrollableScrollPhysics(),
-                          crossAxisCount: 2 ,
-                          scrollDirection: Axis.vertical,
-                          children: List.generate(userRequestListings.length,(index){
-                            return CustomListingCard(listingID:userRequestListings[index].listingID,
-                                title: userRequestListings[index].listingTitle,
-                                owner: userDetails.username,
-                                listingImg: userRequestListings[index].listingImage,
-                                ownerImg:userDetails.imagePath);
-                          }),
-                        ),
-                      ),
+                    FutureBuilder(
+                      future: _profilePresenter.retrieveUserRequestListing(currentUserID),
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData){
+                          userRequestListings = snapshot.data;
+                          print(snapshot.data.length);
+                          return SingleChildScrollView(
+                              child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GridView.count(
+                                    shrinkWrap : true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    crossAxisCount: 2 ,
+                                    scrollDirection: Axis.vertical,
+                                    children: List.generate(userRequestListings.length,(index){
+                                      return CustomListingCard(listingID:userRequestListings[index].listingID,
+                                          title: userRequestListings[index].listingTitle, owner: userDetails.username,
+                                          listingImg: userRequestListings[index].listingImage, ownerImg:userDetails.imagePath);
+                                    }),
+                                  )
+                              )
+                          );
+                        }else{
+                          return Center(child: CircularProgressIndicator());
+                        }
+
+                      },
                     ),
 
                   ],
