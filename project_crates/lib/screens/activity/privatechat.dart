@@ -7,6 +7,7 @@ import 'package:flutter_application_1/backend/activity_presenter.dart';
 import 'package:flutter_application_1/backend/auth.dart';
 import 'package:flutter_application_1/models/ChatMessage.dart';
 import 'package:flutter_application_1/models/Conversation.dart';
+import 'package:image_picker/image_picker.dart';
 
 
 
@@ -65,7 +66,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
 
     // add listener
     if (_messageDatabaseReference==null){
-      _messageDatabaseReference = FirebaseDatabase.instance.reference().child('Conversation').child(convo.conversation_id).child('messages');
+      _messageDatabaseReference = FirebaseDatabase.instance.reference().child('Conversation').child(convo.conversation_id);
       _messageDatabaseReference.onChildChanged.listen(_onMessageAdded);
       print('listener added');
     }
@@ -192,16 +193,25 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
     print('submitting');
   }
 
-  // todo: send from cam
   void _sendImageFromCamera() async {
     //_sendImage(ImageSource.camera);
-    //_activityPresenter._sendImage(ImageSource.camera)
+    var newkey = await  _activityPresenter.sendImage(ImageSource.camera, current_user);
+
+    var mylist =  List<String>.from(convo.messages);
+    mylist.add(newkey);
+    convo.messages = mylist;
+    await _activityPresenter.updateConversation(convo);
     print('sending from cam');
   }
 
-  // todo: send from gallery
   void _sendImageFromGallery() async {
-    //_sendImage(ImageSource.gallery);
+    //_sendImage(ImageSource.camera);
+    var newkey = await  _activityPresenter.sendImage(ImageSource.gallery, current_user);
+
+    var mylist =  List<String>.from(convo.messages);
+    mylist.add(newkey);
+    convo.messages = mylist;
+    await _activityPresenter.updateConversation(convo);
     print('sending from gallery');
   }
 
@@ -220,8 +230,6 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
       messagesList.insert(0, new_cm);
     });
   }
-
-
 
 }
 
@@ -248,7 +256,7 @@ Widget chatBubble(context, avatar, username, text, String imageUrl){
                 margin: const EdgeInsets.only(top: 5.0),
                 child: imageUrl == null
                     ? Text(text)
-                    : Text("img: ${imageUrl}"),
+                    :Image.network(imageUrl),
               ),
             ],
           ),

@@ -281,7 +281,7 @@ class ActivityPresenter{
 
 
   // image submitted
-  void _sendImage(ImageSource imageSource, user_id) async {
+  Future sendImage(ImageSource imageSource, user_id) async {
 
     // upload picture
     var image = await ImagePicker.pickImage(source: imageSource);
@@ -293,7 +293,7 @@ class ActivityPresenter{
     await print('chat image uploaded: $downloadUrl.ref.getDownloadURL()');
 
     // add message to db
-    await addChatMessage(null, downloadUrl, user_id);
+    return await addChatMessage(null, downloadUrl, user_id);
 
   }
 
