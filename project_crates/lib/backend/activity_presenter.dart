@@ -245,7 +245,7 @@ class ActivityPresenter{
     for (int i = 0; i < id.length ; i++){
       if(id[i] != "defaultempty"){
         DataSnapshot snapshot = await _databaseRef.child('ChatMessage').child(id[i]).once();
-        ChatMessage chatMsg = new ChatMessage(text: snapshot.value['text'] ?? "", imageUrl: snapshot.value['imageUrl'] ?? "",
+        ChatMessage chatMsg = new ChatMessage(text: snapshot.value['text'], imageUrl: snapshot.value['imageUrl'],
             sender_uid: snapshot.value['sender_uid'] ?? "", date_sent: DateTime.parse(snapshot.value['date_sent']));
         messagesList.add(chatMsg);
       }
