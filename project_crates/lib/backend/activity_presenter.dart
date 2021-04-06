@@ -256,7 +256,7 @@ class ActivityPresenter{
     var newpush = await _databaseRef.child('ChatMessage').push();
     await newpush.set({
       'text': text ?? '',
-      'imageUrl': imageUrl ?? '',
+      'imageUrl': imageUrl,
       'sender_uid': user_id ?? '',
       'date_sent': DateTime.now().toString(),
     });

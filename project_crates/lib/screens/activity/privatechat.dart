@@ -83,6 +83,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                   itemBuilder: (_, int index) {
                     var msg = messagesList[index];
                     var sender = msg.sender_uid;
+                    print("msg.text: ${msg.text}, msg.imageUrl: ${msg.imageUrl}");
                     return chatBubble(context, avatarMap[sender], usernameMap[sender], msg.text, msg.imageUrl);
                   }
               ),
@@ -177,9 +178,13 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
     // add into ChatMessage db and get its ID
     var newkey = await _activityPresenter.addChatMessage(text, null, current_user);
     await print('newkey: $newkey');
-    convo.messages.add(newkey);
+    var mylist =  List<String>.from(convo.messages);
+    mylist.add(newkey);
+    convo.messages = mylist;
 
-    print('after adding newkey: ${convo.messages}');
+    //convo.messages.add(newkey);
+
+    print('after adding newkey: $mylist');
 
     // add ChatMessageID into Conversation in db
     await _activityPresenter.updateConversation(convo);
@@ -201,7 +206,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
 
 }
 
-Widget chatBubble(context, avatar, username, text, imageUrl){
+Widget chatBubble(context, avatar, username, text, String imageUrl){
   return Container(
     margin: const EdgeInsets.symmetric(vertical: 10.0),
     child: Row(
@@ -223,7 +228,7 @@ Widget chatBubble(context, avatar, username, text, imageUrl){
                 margin: const EdgeInsets.only(top: 5.0),
                 child: imageUrl == null
                     ? Text(text)
-                    : Image.network(imageUrl),
+                    : Text("img: ${imageUrl}"),
               ),
             ],
           ),
