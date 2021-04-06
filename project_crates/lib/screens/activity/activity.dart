@@ -46,10 +46,11 @@ class _ActivityPageState extends State<ActivityPage> {
 
     // load conversations
     conversationList = await _activityPresenter.readConversationList(current_user);
+    await print('Retrieved ${conversationList.length} in conversationList');
 
     // load notifications cards
     conversationCardList = await _activityPresenter.readConversationCardList(conversationList, current_user);
-    await print('Retrieved ${conversationCardList.length} conversationCardLists');
+    await print('Retrieved ${conversationCardList.length} in conversationCardLists');
 
     // set state
     setState(() {

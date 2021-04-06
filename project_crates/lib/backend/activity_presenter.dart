@@ -81,17 +81,18 @@ class ActivityPresenter{
 
   //Retrieve list of convo
   Future<List<Conversation>> readConversationList(String userID) async{
-    List<Conversation> conList = new List<Conversation>();
+    var conList = <Conversation>[];
     await _databaseRef.child('Conversation').once().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> map = snapshot.value;
 
       // if no conversation in entire db, then return empty map
       if (map == null){
+        print('No conversation at all in db');
         return conList;
       }
 
       map.forEach((key, value) {
-        Conversation con = new Conversation(conversation_id: key, messages: value['messages'].cast<String>());
+        var con = Conversation(conversation_id: key, messages: value['messages'].cast<String>());
         if(con.conversation_id.contains(userID)) {
           conList.add(con);
         }
@@ -126,12 +127,15 @@ class ActivityPresenter{
       // get username of partner
       var partner_username = await readUsername(partner_uid);
 
-      // construct Conversation Card object and add to list
-      await conversationCardList.add(ConversationCard(conversation_id: element.conversation_id, listing_title: listing_title, partner_username:partner_username));
+      // construct Conversation Card object
+      var cc  = await ConversationCard(conversation_id: element.conversation_id, listing_title: listing_title, partner_username:partner_username);
+
+      // add to list
+      await conversationCardList.add(cc);
     });
 
     // return
-    return conversationCardList;
+    return await conversationCardList;
   }
 
 
@@ -140,11 +144,11 @@ class ActivityPresenter{
   }
 
   String getFirstUserIDFromConversation(String conversation_id){
-    return conversation_id.substring(20,40);
+    return conversation_id.substring(20,48);
   }
 
   String getSecondUserIDFromConversation(String conversation_id){
-    return conversation_id.substring(40,60);
+    return conversation_id.substring(48,76);
   }
 
 
