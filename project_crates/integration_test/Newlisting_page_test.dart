@@ -106,11 +106,9 @@ void main() {
 
 
       //TODO expect for Photo library
-
       await tester.pumpAndSettle(Duration(seconds: 1));
 
     });*/
-    //TODO Picture cannot be empty
     testWidgets('Please select a photo!', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
@@ -126,24 +124,15 @@ void main() {
       await tester.pumpAndSettle(Duration(seconds: 1));
 
       //final createListingBtn = find.byKey(Key('CreateListing'));
-      final createListingBtn = find.byType(ElevatedButton).first;
-      await tester.tap(createListingBtn);
-      await tester.pump();
-      await tester.pumpAndSettle(Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 100));
+      ElevatedButton button = find.widgetWithText(ElevatedButton, 'Create Listing').evaluate().first.widget;
+      button.onPressed();
+      await tester.pumpAndSettle(const Duration(seconds: 1));
 
-      //TODO expect for alert dialog
       await tester.pumpAndSettle(Duration(seconds: 2));
-      //expect(find.byKey(Key('Alert Dialog')), findsOneWidget);
-      //expect(find.byWidgetPredicate((widget) => widget is DialogAction),findsOneWidget);
-      //final errorTextFinder = find.text('Please select a photo!');
-      //final errorPopUp = find.byKey(Key('Alert Dialog'));
-      //await tester.tap(errorPopUp);
-      //await tester.pumpAndSettle(Duration(seconds: 1));
-      //expect(errorTextFinder, findsOneWidget);
+      expect(find.byKey(Key('Alert Dialog')),  findsOneWidget);
+      expect(find.text('Please select a photo!'),  findsOneWidget);
     });
-
-    //TODO Please select a category!
-    //TODO name of product cannot be empty
     testWidgets('Name of product cannot be empty!', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
@@ -172,17 +161,28 @@ void main() {
       await gesture.moveBy(Offset(0, -300)); //How much to scroll by
       await tester.pumpAndSettle(Duration(seconds: 1));
 
-      final createListingBtn = find.byKey(Key('CreateListing'));
-      await tester.tap(createListingBtn);
-      await tester.pump();
-      await tester.pumpAndSettle(Duration(seconds: 1));
-      await tester.pumpAndSettle(Duration(seconds: 1));
+      await tester.pump(const Duration(milliseconds: 100));
+      ElevatedButton button = find.widgetWithText(ElevatedButton, 'Create Listing').evaluate().first.widget;
+      button.onPressed();
+      await tester.pumpAndSettle(const Duration(seconds: 1));
 
-      //TODO Expect for alert dialog
       expect(find.byKey(Key('Alert Dialog')),  findsOneWidget);
-      expect(find.text('Name of product is empty.\nPlease fill up the respective field.'),  findsOneWidget);
+      expect(find.text('Name of product cannot be empty!'),  findsOneWidget);
     });
      //TODO Address cannot be empty!
+    testWidgets('Empty Address', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+      final newListingBtn = find.byIcon(Icons.add_circle_outline);
+
+      await tester.tap(newListingBtn);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      expect(find.byWidgetPredicate((widget) => widget is Body),findsOneWidget);
+
+      //TODO add empty address
+    });
+
     testWidgets('Select Giving Away!', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
