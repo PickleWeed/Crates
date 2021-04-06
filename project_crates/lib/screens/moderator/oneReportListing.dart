@@ -283,7 +283,7 @@ Widget dismissReport(
       await ModeratorPresentor().addReportListingActionData(action);
       await ModeratorPresentor()
           .updateReportListingData(reportListing.reportID);
-      //  displayToastMessage('Successfully submitted', context);
+       displayToastMessage('Successfully submitted', context);
       await Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => AdminMain()));
     }, //show popup dialog

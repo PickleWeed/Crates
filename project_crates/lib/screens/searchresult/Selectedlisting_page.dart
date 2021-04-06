@@ -57,9 +57,9 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
         center =
             LatLng(response['listing'].latitude, response['listing'].longitude);
         posted = DateTime.now()
-                .difference(response['listing'].postDateTime)
-                .inDays
-                .toString() +
+            .difference(response['listing'].postDateTime)
+            .inDays
+            .toString() +
             ' days ago';
       });
       loadMarker(listingTitle);
@@ -76,7 +76,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
 
   loadMarker(String title) async {
     markerIcon =
-        await mapHandler.getBytesFromAsset('assets/location_icon.png', 50);
+    await mapHandler.getBytesFromAsset('assets/location_icon.png', 50);
     setState(() {
       _markers.add(Marker(
           markerId: MarkerId('location'),
@@ -117,81 +117,81 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
         body: listingTitle == null
             ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
-                child: Column(children: <Widget>[
-                  listingDetailsTopCard(listingTitle, listingImg, currentuser,
-                      widget.listingID, isComplete, isAdmin, context),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
+          child: Column(children: <Widget>[
+            listingDetailsTopCard(listingTitle, listingImg, currentuser,
+                widget.listingID, isComplete, isAdmin, context),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(
+                children: [
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("posted $posted",
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold)),
-                              RichText(
-                                text: TextSpan(
-                                    text: 'by ',
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.bold),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: username,
-                                        style: TextStyle(
-                                            color: Color(0xFFFFC857),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 19),
-                                      )
-                                    ]),
-                              )
-                            ])
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(children: [
-                      Text(description,
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 16,
-                              fontWeight: FontWeight.normal)),
-                    ]),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20.0, 15, 20, 15),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text('Location ',
+                        Text("posted $posted",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold)),
+                        RichText(
+                          text: TextSpan(
+                              text: 'by ',
                               style: TextStyle(
                                   color: Colors.grey,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold)),
-                        ]),
-                  ),
-                  Container(
-                    color: Colors.grey[300],
-                    height: 200,
-                    width: 350,
-                    child: GoogleMap(
-                      onMapCreated: _onMapCreated,
-                      initialCameraPosition: CameraPosition(
-                        target: center,
-                        zoom: 11.0,
-                      ),
-                      markers: _markers,
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                ]),
-                //bottomNavigationBar: Navigationbar(0),
-              ));
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: username,
+                                  style: TextStyle(
+                                      color: Color(0xFFFFC857),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 19),
+                                )
+                              ]),
+                        )
+                      ])
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(children: [
+                Text(description,
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                        fontWeight: FontWeight.normal)),
+              ]),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20.0, 15, 20, 15),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text('Location ',
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold)),
+                  ]),
+            ),
+            Container(
+              color: Colors.grey[300],
+              height: 200,
+              width: 350,
+              child: GoogleMap(
+                onMapCreated: _onMapCreated,
+                initialCameraPosition: CameraPosition(
+                  target: center,
+                  zoom: 11.0,
+                ),
+                markers: _markers,
+              ),
+            ),
+            SizedBox(height: 20),
+          ]),
+          //bottomNavigationBar: Navigationbar(0),
+        ));
   }
 
   Future<String> getUID() async {
@@ -226,11 +226,11 @@ Widget listingDetailsTopCard(
           color: primaryColor,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
-            topLeft: Radius.zero,
-            topRight: Radius.zero,
-            bottomLeft: Radius.circular(15),
-            bottomRight: Radius.circular(15),
-          )),
+                topLeft: Radius.zero,
+                topRight: Radius.zero,
+                bottomLeft: Radius.circular(15),
+                bottomRight: Radius.circular(15),
+              )),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -249,101 +249,101 @@ Widget listingDetailsTopCard(
     //TODO: Set the functions when the buttons are clicked (for backend ppl)
     ...ownerButtons(currentUser, isAdmin, context, listingID, isComplete,
         // CompleteBtnPressed
-        () async {
-      try {
-        await FirebaseDatabase.instance
-            .reference()
-            .child('Listing')
-            .child(listingID)
-            .child('isComplete')
-            .set(true);
-        //TODO show completion message to user and remove complete button
-        await showDialog<void>(
-          context: context,
-          barrierDismissible: false, // user must tap button!
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Success'),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text('Your listing has been completed.'),
+            () async {
+          try {
+            await FirebaseDatabase.instance
+                .reference()
+                .child('Listing')
+                .child(listingID)
+                .child('isComplete')
+                .set(true);
+            //TODO show completion message to user and remove complete button
+            await showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Success'),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text('Your listing has been completed.'),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('Acknowledge'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ],
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Acknowledge'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
+                );
+              },
             );
-          },
-        );
-        print('Listing completed');
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => UserMain()));
-      } catch (e) {
-        await Dialogs.errorAbortDialog(
-            context, 'Completion unsuccessful! Please try again.');
-        print('Listing completion unsuccessful: $e');
-      }
-    },
+            print('Listing completed');
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => UserMain()));
+          } catch (e) {
+            await Dialogs.errorAbortDialog(
+                context, 'Completion unsuccessful! Please try again.');
+            print('Listing completion unsuccessful: $e');
+          }
+        },
         // EditBtnPressed
-        () {
-      print('edit button pressed');
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Editinglist_page(),
-              settings: RouteSettings(arguments: {'listingID': listingID})));
-    },
+            () {
+          print('edit button pressed');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Editinglist_page(),
+                  settings: RouteSettings(arguments: {'listingID': listingID})));
+        },
         // DeleteBtnPressed
-        () async {
-      try {
-        await dao.deleteListingOnKey(listingID);
-        await showDialog<void>(
-          context: context,
-          barrierDismissible: false, // user must tap button!
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Success'),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text('Your listing has been deleted.'),
+            () async {
+          try {
+            await dao.deleteListingOnKey(listingID);
+            await showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Success'),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text('Your listing has been deleted.'),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('Acknowledge'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ],
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Acknowledge'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
+                );
+              },
             );
-          },
-        );
-        print('Delete completed');
-        Navigator.of(context).pop();
-        // Navigator.pushReplacement(
-        //     context, MaterialPageRoute(builder: (context) => UserMain()));
-      } catch (e) {
-        await Dialogs.errorAbortDialog(
-            context, 'Deletion unsuccessful! Please try again.');
-        print('Deletion unsuccessful: $e');
-      }
-    }),
+            print('Delete completed');
+            Navigator.of(context).pop();
+            // Navigator.pushReplacement(
+            //     context, MaterialPageRoute(builder: (context) => UserMain()));
+          } catch (e) {
+            await Dialogs.errorAbortDialog(
+                context, 'Deletion unsuccessful! Please try again.');
+            print('Deletion unsuccessful: $e');
+          }
+        }),
 
     ...normalUserButtons(currentUser, isAdmin, context, listingID,
         //chat btn pressed
-        () {
-      print('Chat button pressed!');
-    }),
+            () {
+          print('Chat button pressed!');
+        }),
   ]);
 }
 
@@ -359,22 +359,22 @@ List<Widget> ownerButtons(currentuser, isAdmin, context, listingID, isComplete,
             height: 40,
             child: isComplete == false
                 ? CustomCurvedButton(
-                    btnText: 'Complete',
-                    btnPressed: CompleteBtnPressed,
-                  )
+              btnText: 'Complete',
+              btnPressed: CompleteBtnPressed,
+            )
                 : ClipRRect(
-                    borderRadius: BorderRadius.circular(30.0),
-                    child: Container(
-                      color: Colors.grey[350],
-                      child: Center(
-                        child: Text('Complete',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green[400],
-                            )),
-                      ),
-                    ),
-                  )),
+              borderRadius: BorderRadius.circular(30.0),
+              child: Container(
+                color: Colors.grey[350],
+                child: Center(
+                  child: Text('Complete',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green[400],
+                      )),
+                ),
+              ),
+            )),
       ),
       Positioned(
         right: 110,
@@ -383,7 +383,6 @@ List<Widget> ownerButtons(currentuser, isAdmin, context, listingID, isComplete,
         child: Container(
             height: 40,
             child: CustomCurvedButton(
-              btnKey:'Edit',
               btnText: 'Edit',
               btnPressed: EditBtnPressed,
             )),
@@ -417,6 +416,7 @@ List<Widget> normalUserButtons(
           bottom: -20,
           child: Container(
             height: 40,
+            key: Key('Report'),
             child: CustomCurvedButton(
               btnText: 'Report',
               btnPressed: () {
