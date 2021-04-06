@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/MapFilter.dart';
+import 'package:flutter_application_1/screens/searchresult/Selectedlisting_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'nearby_MapHandler.dart';
 import '../../backend/map_DatabaseHandler.dart';
@@ -86,6 +87,7 @@ class _NearbyState extends State<Nearby> {
   double markerDistance;
   String date = '';
   String user = '';
+  String listingID = '';
   String imageUrl;
   String locationInfo = '';
 
@@ -105,7 +107,7 @@ class _NearbyState extends State<Nearby> {
             var convertedDateTime = "${_listing[i].postDateTime.day.toString().padLeft(2,'0')}-${_listing[i].postDateTime.month.toString().padLeft(2,'0')}-${_listing[i].postDateTime.year.toString()}";
             setState(() {
               _cardVisibility = true;
-              // ignore: unnecessary_statements
+              listingID = _listing[i].listingID.substring(1);
               user = _username[i];
               date = convertedDateTime;
               title = _listing[i].listingTitle;
@@ -251,90 +253,98 @@ class _NearbyState extends State<Nearby> {
                     height:160.0,
                     width: double.infinity,
                     margin: EdgeInsets.fromLTRB(20, 0, 20, 40),
-                    child: Card(
-                        clipBehavior: Clip.none,
-                        color: Colors.white,
-                        child: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: AspectRatio(
-                                  aspectRatio: 1/1,
-                                  child:  Image.network(
-                                    imageUrl,
-                                    fit:BoxFit.fitWidth,
-                                    alignment: Alignment.center,
-                                    height:150,
-                                    width: MediaQuery.of(context).size.width,
+                    child: InkWell(
+                      onTap: () {
+                        print(listingID);
+                        // print('listingIDWidget:'+l);
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => Selectedlisting_page(listingID: listingID)));
+                      },
+                      child:   Card(
+                          clipBehavior: Clip.none,
+                          color: Colors.white,
+                          child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: AspectRatio(
+                                    aspectRatio: 1/1,
+                                    child:  Image.network(
+                                      imageUrl,
+                                      fit:BoxFit.fitWidth,
+                                      alignment: Alignment.center,
+                                      height:150,
+                                      width: MediaQuery.of(context).size.width,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 15, 15, 15),
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(title,
-                                          style: TextStyle(
-                                            color: Colors.grey[800],
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          )
-                                      ),
-                                      SizedBox(height:10),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.directions),
-                                          SizedBox(width:5),
-                                          Text(textDistance,
-                                              style: TextStyle(
-                                                color: Colors.grey[800],
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13,
-                                              )
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height:5),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.date_range),
-                                          SizedBox(width:5),
-                                          Text(date,
-                                              style: TextStyle(
-                                                color: Colors.grey[800],
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13,
-                                              )
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height:5),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.person),
-                                          SizedBox(width:5),
-                                          Text(user,
-                                              style: TextStyle(
-                                                color: Colors.grey[800],
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13,
-                                              )
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left:80),
-                                            child: Icon(Icons.keyboard_arrow_right),
-                                          ),
-                                        ],
-                                      ),
-                                    ]
-                                ),
-                              )
-                            ]
-                        )
-                    ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0, 15, 15, 15),
+                                  child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(title,
+                                            style: TextStyle(
+                                              color: Colors.grey[800],
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            )
+                                        ),
+                                        SizedBox(height:10),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.directions),
+                                            SizedBox(width:5),
+                                            Text(textDistance,
+                                                style: TextStyle(
+                                                  color: Colors.grey[800],
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 13,
+                                                )
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height:5),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.date_range),
+                                            SizedBox(width:5),
+                                            Text(date,
+                                                style: TextStyle(
+                                                  color: Colors.grey[800],
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 13,
+                                                )
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height:5),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.person),
+                                            SizedBox(width:5),
+                                            Text(user,
+                                                style: TextStyle(
+                                                  color: Colors.grey[800],
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 13,
+                                                )
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left:80),
+                                              child: Icon(Icons.keyboard_arrow_right),
+                                            ),
+                                          ],
+                                        ),
+                                      ]
+                                  ),
+                                )
+                              ]
+                          )
+                      ),
+
                   ),
+                  )
                 ],
               ):Column(),
             ]

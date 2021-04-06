@@ -34,7 +34,7 @@ class DataHandler {
             // print('calculated: $calculatedDistance');
             if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance && value['userID'] != user) {
               //url = getImg("normalListings", snapshot.key).toString();
-              Listing normalListing = new Listing(listingID: snapshot.key,
+              Listing normalListing = new Listing(listingID: key,
                   userID : value['userID'],
                   listingTitle: value['listingTitle'],
                   category: value['category'],
@@ -59,11 +59,9 @@ class DataHandler {
             calculatedDistance = haversine(
                 center.latitude, center.longitude, value['latitude'],
                 value['longitude']);
-            print('calculated: $calculatedDistance');
             if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance &&
                 (category == value['category']) && value['userID'] != user) {
-              //url = getImg("normalListings", snapshot.key).toString();
-              Listing normalListing = new Listing(listingID: snapshot.key,
+              Listing normalListing = new Listing(listingID: key,
                   userID : value['userID'],
                   listingTitle: value['listingTitle'],
                   category: value['category'],
@@ -97,7 +95,7 @@ class DataHandler {
         Map<dynamic, dynamic> map = snapshot.value;
         map.forEach((key, value) {
           if (value['isRequest'] == false && value['isComplete'] == false && value['userID'] != user) {
-            Listing normalListing = new Listing(listingID: snapshot.key,
+            Listing normalListing = new Listing(listingID: key,
                 listingTitle: value['listingTitle'],
                 category: value['category'],
                 postDateTime: DateTime.parse(value['postDateTime']),
