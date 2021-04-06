@@ -17,6 +17,7 @@ class _ActivityPageState extends State<ActivityPage> {
   ];
 
   bool dataLoading = false;
+  bool sort = false;
   List<Notifications> notiList = new List<Notifications>();
   ActivityPresenter _notificationPresenter = new ActivityPresenter();
 
@@ -77,7 +78,51 @@ class _ActivityPageState extends State<ActivityPage> {
                   Column(
                     // mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      notificationHeader(context),
+                      Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Container(
+                                    padding: EdgeInsets.only(left: 10.0),
+                                    child: Text('Notifications', style: TextStyle(fontSize: 20)),
+                                  )),
+                              Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Container(
+                                      padding: EdgeInsets.only(right: 10.0),
+                                      child: TextButton.icon(
+                                        icon: Icon(Icons.sort),
+                                        label: Text('Sort'),
+                                        onPressed: () {
+                                          if (sort == false) {
+                                            notiList.sort((a, b) {
+                                              sort = true;
+                                              return a.notiDate
+                                                  .toString()
+                                                  .toLowerCase()
+                                                  .compareTo(b.notiDate
+                                                  .toString()
+                                                  .toLowerCase());
+                                            });
+                                          } else {
+                                            notiList.sort((b, a) {
+                                              sort = false;
+                                              return a.notiDate
+                                                  .toString()
+                                                  .toLowerCase()
+                                                  .compareTo(b.notiDate
+                                                  .toString()
+                                                  .toLowerCase());
+                                            });
+                                          }
+                                          setState(() {});
+                                        },
+                                      )))
+                            ],
+                          )),
                       Container(
                           child: SingleChildScrollView(
                             child: // CHILD 1
@@ -100,34 +145,6 @@ class _ActivityPageState extends State<ActivityPage> {
             )):Center(child: CircularProgressIndicator()),
     );
   }
-}
-
-Widget notificationHeader(BuildContext context) {
-
-  return Container(
-      child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    mainAxisSize: MainAxisSize.max,
-    children: [
-      Align(
-          alignment: Alignment.topLeft,
-          child: Container(
-            padding: EdgeInsets.only(left: 10.0),
-            child: Text('Notifications', style: TextStyle(fontSize: 20)),
-          )),
-      Align(
-          alignment: Alignment.centerRight,
-          child: Container(
-              padding: EdgeInsets.only(right: 10.0),
-              child: TextButton.icon(
-                icon: Icon(Icons.sort),
-                label: Text('Sort'),
-                onPressed: () {
-                  //TODO LIST.sort() then is sorting done;
-                },
-              )))
-    ],
-  ));
 }
 
 Widget notiCard(BuildContext context, Notifications noti) {
