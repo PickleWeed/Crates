@@ -53,25 +53,6 @@ class ProfilePresenter{
 
     return userNormalListing;
   }
-  // Future<> retrieveUserListingV2(String uid) async {
-  //   var userNormalListing = <Listing>[];
-  //   await _databaseRef.child('Listing').once().then((DataSnapshot snapshot){
-  //     Map<dynamic, dynamic> map = snapshot.value;
-  //     map.forEach((key, value) {
-  //       if(value['userID'] == uid && value['isRequest'] == false){
-  //         var normalListing = Listing(listingID:key,listingTitle: value['listingTitle'],category: value['category']
-  //             ,postDateTime: DateTime.parse(value['postDateTime']),description: value['description'],isRequest: value['isRequest'],isComplete: value['isComplete'],
-  //             listingImage: value['listingImage'],longitude: value['longitude'],latitude:value['latitude'] );
-  //         userNormalListing.add(normalListing);
-  //       }
-  //     });
-  //   });
-  //
-  //   return userNormalListing;
-  // }
-  void retrieveUserListingV2(String uid){
-
-  }
 
   Future<List<Listing>> retrieveUserRequestListing(String uid) async {
     var userRequestListing = <Listing>[];

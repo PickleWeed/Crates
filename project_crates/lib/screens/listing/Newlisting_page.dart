@@ -29,7 +29,7 @@ class Newlisting_page extends StatelessWidget {
             backgroundColor: primaryColor,
             shape: RoundedRectangleBorder(
                 borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(15.0))),
+                BorderRadius.vertical(bottom: Radius.circular(15.0))),
             title: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,17 +111,17 @@ class _BodyState extends State<Body> {
                       borderRadius: BorderRadius.circular(15.0),
                       child: image != null
                           ? Image.file(
-                              image,
-                              height: 200,
-                              width: 200,
-                            )
+                        image,
+                        height: 200,
+                        width: 200,
+                      )
                           : Container(
-                              height: 200.0,
-                              width: 200.0,
-                              color: Colors.grey[350],
-                              child: Icon(Icons.photo_camera,
-                                  color: Colors.white, size: 50.0),
-                            ),
+                        height: 200.0,
+                        width: 200.0,
+                        color: Colors.grey[350],
+                        child: Icon(Icons.photo_camera,
+                            color: Colors.white, size: 50.0),
+                      ),
                     ),
                   ),
                 ),
@@ -152,7 +152,7 @@ class _BodyState extends State<Body> {
                           key: const Key('GivingAway'),
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child:
-                              Text('Giving away', style: TextStyle(fontSize: 17)),
+                          Text('Giving away', style: TextStyle(fontSize: 17)),
                         ),
                         Padding(
                           key: const Key('RequestingFor'),
@@ -164,8 +164,8 @@ class _BodyState extends State<Body> {
                       onPressed: (int newIndex) {
                         setState(() {
                           for (var buttonIndex = 0;
-                              buttonIndex < isselected.length;
-                              buttonIndex++) {
+                          buttonIndex < isselected.length;
+                          buttonIndex++) {
                             if (buttonIndex == newIndex) {
                               isselected[buttonIndex] = true;
                             } else {
@@ -308,6 +308,7 @@ class _BodyState extends State<Body> {
                     padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                     child: Container(
                       child: TextField(
+                          key: Key('location'),
                           style: TextStyle(fontSize: 16),
                           controller: addressController,
                           onTap: () async {
@@ -318,7 +319,7 @@ class _BodyState extends State<Body> {
                                 language: 'en');
                             if (_prediction != null) {
                               var _selected =
-                                  await _mapHandler.getLatLng(_prediction);
+                              await _mapHandler.getLatLng(_prediction);
 
                               setState(() {
                                 _currentLocation = _selected;
@@ -344,125 +345,125 @@ class _BodyState extends State<Body> {
                 ),
                 SizedBox(height: 10),
                 Container(
-                  padding: EdgeInsets.fromLTRB(100, 5, 100, 20),
-                  child: CustomCurvedButton(
-                    btnKey: 'CreateListing',
-                    btnText: 'Create Listing',
-                    btnPressed: () async {
-                      // validation
-                      if (image == null) {
-                        await Dialogs.errorAbortDialog(
-                            context, 'Please select a photo!');
-                        print('No image uploaded');
-                        return;
-                      }
-
-                      if (valueChoose == null) {
-                        final action = await Dialogs.errorAbortDialog(
-                            context, 'Please select a category!');
-                        print('No category selected');
-                        return;
-                      }
-
-                      if (listingTitleController.text == '') {
-                        final action = await Dialogs.errorAbortDialog(
-                            context, 'Name of product cannot be empty!');
-                        print('No listing title inputted');
-                        return;
-                      }
-
-                      if (_currentLocation == null) {
-                        await Dialogs.errorAbortDialog(
-                            context, 'Address cannot be empty!\n');
-                        print('No location selected');
-                        return;
-                      }
-
-                      // upload image
-                      var imageString = await storageAccess.uploadFile(image);
-
-                      // classify image
-                      var mp = MatchPresenter();
-                      var classifications = await mp.fetchCategories(imageString);
-
-                      print('fetchCategories() done, classifications: $classifications}');
-
-                      // if it is a request listing, then try to find matches
-                      var matches;
-                      if (isselected[1] && classifications != null) {
-                        print('This is a request listing, and classifications is not null. doing getMatches()');
-                        matches = await mp.getMatches(classifications);
-                        print('getMatches() done, matches: $matches');
-                      }
-
-                      // if it is a request listing and there are matches, display matches dialog
-                      // if not, just post the listing
-                      if (isselected[1] && matches != null) {
-                        print('At least one match was found! (#${matches.length})');
-
-                        await showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return matchesDialog(context, matches, () async {
-                                // user clicks on "Post Anyway"
-                                print("User clicks on 'post anyway', just post don't need to add to LID model");
-                                var listingID = await postListing(
-                                  context,
-                                  dao,
-                                  userid,
-                                  listingTitleController.text,
-                                  _currentLocation.longitude,
-                                  _currentLocation.latitude,
-                                  valueChoose,
-                                  isselected[1],
-                                  imageString,
-                                  descriptionController.text,
-                                );
-
-                                // close popup
-                                Navigator.of(context).pop();
-
-                                // push replace home page
-                                await Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => UserMain()));
-                                return;
-                              });
-                            });
-                      } else {
-                        // post listing
-                        await print('No matches, or not a Request listing!');
-                        var listingID = await postListing(
-                          context,
-                          dao,
-                          userid,
-                          listingTitleController.text,
-                          _currentLocation.longitude,
-                          _currentLocation.latitude,
-                          valueChoose,
-                          isselected[1],
-                          imageString,
-                          descriptionController.text,
-                        );
-
-                        // add image classification for this listing to db
-                        // only add if classifications is not empty
-                        if (isselected[0] && classifications!=null){
-                          print('This is a "Giving" listing, and classifications not null, adding to LID model');
-                          var temp = await ListingImageData(listingID: listingID, categories: classifications);
-                          await mp.addListingImageData(temp);
-                        }else{
-                          print('Not a "Giving" listing, or classifications is null. Not adding to LID model');
+                    padding: EdgeInsets.fromLTRB(100, 5, 100, 20),
+                    child: CustomCurvedButton(
+                      btnKey: 'CreateListing',
+                      btnText: 'Create Listing',
+                      btnPressed: () async {
+                        // validation
+                        if (image == null) {
+                          await Dialogs.errorAbortDialog(
+                              context, 'Please select a photo!');
+                          print('No image uploaded');
+                          return;
                         }
 
+                        if (valueChoose == null) {
+                          final action = await Dialogs.errorAbortDialog(
+                              context, 'Please select a category!');
+                          print('No category selected');
+                          return;
+                        }
 
-                        // push replace home page
-                        await Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => UserMain()));
-                      }
-                    },
-                  )
+                        if (listingTitleController.text == '') {
+                          final action = await Dialogs.errorAbortDialog(
+                              context, 'Name of product cannot be empty!');
+                          print('No listing title inputted');
+                          return;
+                        }
+
+                        if (_currentLocation == null) {
+                          await Dialogs.errorAbortDialog(
+                              context, 'Address cannot be empty!\n');
+                          print('No location selected');
+                          return;
+                        }
+
+                        // upload image
+                        var imageString = await storageAccess.uploadFile(image);
+
+                        // classify image
+                        var mp = MatchPresenter();
+                        var classifications = await mp.fetchCategories(imageString);
+
+                        print('fetchCategories() done, classifications: $classifications}');
+
+                        // if it is a request listing, then try to find matches
+                        var matches;
+                        if (isselected[1] && classifications != null) {
+                          print('This is a request listing, and classifications is not null. doing getMatches()');
+                          matches = await mp.getMatches(classifications);
+                          print('getMatches() done, matches: $matches');
+                        }
+
+                        // if it is a request listing and there are matches, display matches dialog
+                        // if not, just post the listing
+                        if (isselected[1] && matches != null) {
+                          print('At least one match was found! (#${matches.length})');
+
+                          await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return matchesDialog(context, matches, () async {
+                                  // user clicks on "Post Anyway"
+                                  print("User clicks on 'post anyway', just post don't need to add to LID model");
+                                  var listingID = await postListing(
+                                    context,
+                                    dao,
+                                    userid,
+                                    listingTitleController.text,
+                                    _currentLocation.longitude,
+                                    _currentLocation.latitude,
+                                    valueChoose,
+                                    isselected[1],
+                                    imageString,
+                                    descriptionController.text,
+                                  );
+
+                                  // close popup
+                                  Navigator.of(context).pop();
+
+                                  // push replace home page
+                                  await Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => UserMain()));
+                                  return;
+                                });
+                              });
+                        } else {
+                          // post listing
+                          await print('No matches, or not a Request listing!');
+                          var listingID = await postListing(
+                            context,
+                            dao,
+                            userid,
+                            listingTitleController.text,
+                            _currentLocation.longitude,
+                            _currentLocation.latitude,
+                            valueChoose,
+                            isselected[1],
+                            imageString,
+                            descriptionController.text,
+                          );
+
+                          // add image classification for this listing to db
+                          // only add if classifications is not empty
+                          if (isselected[0] && classifications!=null){
+                            print('This is a "Giving" listing, and classifications not null, adding to LID model');
+                            var temp = await ListingImageData(listingID: listingID, categories: classifications);
+                            await mp.addListingImageData(temp);
+                          }else{
+                            print('Not a "Giving" listing, or classifications is null. Not adding to LID model');
+                          }
+
+
+                          // push replace home page
+                          await Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) => UserMain()));
+                        }
+                      },
+                    )
                 ),
               ]),
         ),
@@ -546,10 +547,10 @@ Widget matchesDialog(context, List<Listing> matches, postAnyway) {
           itemBuilder: (BuildContext context, int index) {
             return matchCard(matches[index].listingTitle,
                 matches[index].description, matches[index].listingImage, () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Selectedlisting_page(
-                      listingID: matches[index].listingID)));
-            });
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Selectedlisting_page(
+                          listingID: matches[index].listingID)));
+                });
           },
         ),
       ),

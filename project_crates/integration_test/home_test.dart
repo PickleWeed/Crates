@@ -1,20 +1,18 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_application_1/screens/activity/activity.dart';
 import 'package:flutter_application_1/screens/home/category_page.dart';
 import 'package:flutter_application_1/screens/home/home.dart';
+import 'package:flutter_application_1/screens/listing/Newlisting_page.dart';
 import 'package:flutter_application_1/screens/nearby/nearby.dart';
-import 'package:flutter_application_1/screens/profile/profile.dart';
+import 'package:flutter_application_1/screens/searchresult/SearchResult_page.dart';
 import 'package:flutter_application_1/screens/searchresult/Selectedlisting_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_application_1/main.dart' as app;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:flutter_driver/flutter_driver.dart' as fluttering;
-import 'package:path/path.dart';
 
-//Home and view lisitng
+
+//Home and view listing
 void main() {
   /*fluttering.FlutterDriver tester;
   setUpAll(() async {
@@ -58,131 +56,144 @@ void main() {
     await tester.tap(loginButton);
     await tester.pumpAndSettle(Duration(seconds: 3));
 
-
-    expect(find.byWidgetPredicate((widget) => widget is Home),findsOneWidget);
   }
 
   group('HomePage', () {
     IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-    //TODO Select All
-    // IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-    // //TODO Select a listing in All
+
     testWidgets('Select All Category', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
       final categoryBtn = find.byKey(Key('All'));
       await tester.tap(categoryBtn);
       await tester.pumpAndSettle(Duration(seconds: 2));
-      // final listingBtn = find.byKey(Key('ListingCard')).first;
-      // await tester.tap(listingBtn);
-      // await tester.pumpAndSettle(Duration(seconds: 2));
 
-      //TODO expect
       expect(find.byWidgetPredicate((widget) => widget is CategoryPage),findsOneWidget);
     });
-    //TODO Select Veg
+
     testWidgets('Select Vegetables Category', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
       final categoryBtn = find.byKey(Key('Vegetable'));
       await tester.tap(categoryBtn);
       await tester.pumpAndSettle(Duration(seconds: 2));
-      // final listingBtn = find.byKey(Key('ListingCard')).first;
-      // await tester.tap(listingBtn);
-      // await tester.pumpAndSettle(Duration(seconds: 2));
 
-      //TODO expect
       expect(find.byWidgetPredicate((widget) => widget is CategoryPage),findsOneWidget);
     });
-    //TODO Select Canned Food
-    testWidgets('Select CannedFood Category', (WidgetTester tester) async {
+
+    testWidgets('Select Canned Food Category', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
       final categoryBtn = find.byKey(Key('CannedFood'));
       await tester.tap(categoryBtn);
       await tester.pumpAndSettle(Duration(seconds: 2));
-      // final listingBtn = find.byKey(Key('ListingCard')).first;
-      // await tester.tap(listingBtn);
-      // await tester.pumpAndSettle(Duration(seconds: 2));
 
-      //TODO expect
       expect(find.byWidgetPredicate((widget) => widget is CategoryPage),findsOneWidget);
     });
-    //TODO Select Snack
-    testWidgets('Select Snack Category', (WidgetTester tester) async {
+
+    // Only demo above first three
+    /*testWidgets('Select Snack Category', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
       final categoryBtn = find.byKey(Key('Snacks'));
       await tester.tap(categoryBtn);
       await tester.pumpAndSettle(Duration(seconds: 2));
-      // final listingBtn = find.byKey(Key('ListingCard')).first;
-      // await tester.tap(listingBtn);
-      // await tester.pumpAndSettle(Duration(seconds: 2));
 
-      //TODO expect
       expect(find.byWidgetPredicate((widget) => widget is CategoryPage),findsOneWidget);
     });
-    //TODO Select Beverage
+
     testWidgets('Select Beverage Category', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
       final categoryBtn = find.byKey(Key('Beverages'));
       await tester.tap(categoryBtn);
       await tester.pumpAndSettle(Duration(seconds: 2));
-      // final listingBtn = find.byKey(Key('ListingCard')).first;
-      // await tester.tap(listingBtn);
-      // await tester.pumpAndSettle(Duration(seconds: 2));
 
-      //TODO expect
       expect(find.byWidgetPredicate((widget) => widget is CategoryPage),findsOneWidget);
-    });
-    //TODO Select Dairy Products
+    }); */
+
+    /*
     testWidgets('Select Dairy Category', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
       final categoryBtn = find.byKey(Key('Diary'));
       await tester.tap(categoryBtn);
       await tester.pumpAndSettle(Duration(seconds: 2));
-      // final listingBtn = find.byKey(Key('ListingCard')).first;
-      // await tester.tap(listingBtn);
-      // await tester.pumpAndSettle(Duration(seconds: 2));
 
-      //TODO expect
       expect(find.byWidgetPredicate((widget) => widget is CategoryPage),findsOneWidget);
     });
-    //TODO Select Dry Food
+
     testWidgets('Select DryFood Category', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
       final categoryBtn = find.byKey(Key('DryFood'));
       await tester.tap(categoryBtn);
       await tester.pumpAndSettle(Duration(seconds: 2));
-      // final listingBtn = find.byKey(Key('ListingCard')).first;
-      // await tester.tap(listingBtn);
-      // await tester.pumpAndSettle(Duration(seconds: 2));
 
-      //TODO expect
       expect(find.byWidgetPredicate((widget) => widget is CategoryPage),findsOneWidget);
     });
-    //TODO Select a listing in latest
-    testWidgets('Select a listing', (WidgetTester tester) async {
+    */
+
+    // Select latest listing
+    testWidgets('Select a latest listing', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
-      // final categoryBtn = find.byKey(Key('All'));
-      // await tester.tap(categoryBtn);
-      // await tester.pumpAndSettle(Duration(seconds: 2));
       final listingBtn = find.byKey(Key('ListingCard')).first;
       await tester.tap(listingBtn);
       await tester.pumpAndSettle(Duration(seconds: 2));
 
-      //TODO expect
       expect(find.byWidgetPredicate((widget) => widget is Selectedlisting_page),findsOneWidget);
     });
-    //TODO Select a listing and report
-    //TODO Select a listing and chat
 
-    //TODO Select navigationBar Home
-    //TODO Select navigationBar Nearby
+    // Report Listing
+    testWidgets('Report Listing', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+      final listingBtn = find.byKey(Key('ListingCard')).first;
+      await tester.tap(listingBtn);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      expect(find.byWidgetPredicate((widget) => widget is Selectedlisting_page), findsOneWidget);
+
+      final reportBtn = find.byKey(Key('Report'));
+      await tester.tap(reportBtn);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+
+      final titleField = find.byKey(Key('Title'));
+      await tester.tap(titleField);
+      await tester.enterText(titleField, 'Item wrong');
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      final descriptionField = find.byKey(Key('Description'));
+      await tester.tap(descriptionField);
+      await tester.enterText(descriptionField, 'i think this item should be under dry food');
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      final sendBtn = find.byKey(Key('SendReport'));
+      await tester.tap(sendBtn);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+    });
+
+    //TODO: Show Chat from Listing?
+
+    //Demo search results
+    testWidgets('Search', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 2));
+      final searchBtn = find.byKey(Key('Search'));
+      await tester.tap(searchBtn);
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      await tester.enterText(searchBtn, 'Cof');
+      await tester.pumpAndSettle(Duration(seconds: 2));
+
+      final queryBtn = find.byKey(Key('SearchResult')).first;
+      await tester.tap(queryBtn);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+
+      expect(find.byWidgetPredicate((widget) => widget is SearchResult_page ),findsOneWidget);
+    });
+
+    //TODO: BYPASS PERMISSIONS
     testWidgets('Go to Nearby', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
@@ -194,33 +205,57 @@ void main() {
       expect(find.byWidgetPredicate((widget) => widget is Nearby),findsOneWidget);
       expect(find.byWidgetPredicate((widget) => widget is GoogleMap),findsOneWidget);
     });
-    //TODO Select navigationBar New Listing
-    //TODO Select navigationBar Activity
-    //TODO Select navigationBar Profile
-    testWidgets('Go to Profile', (WidgetTester tester) async {
-      await login(tester);
-      await tester.pumpAndSettle(Duration(seconds: 3));
-      final profileBtn = find.byIcon(Icons.account_circle);
-      await tester.tap(profileBtn);
-      await tester.pumpAndSettle(Duration(seconds: 5));
 
-      expect(find.byWidgetPredicate((widget) => widget is Profile),findsOneWidget);
+    // Go to new listing page
+    testWidgets('Go to New listing', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+      final newListBtn = find.byIcon(Icons.add_circle_outline);
+      await tester.tap(newListBtn);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+
+      expect(find.byWidgetPredicate((widget) => widget is Newlisting_page ),findsOneWidget);
     });
-    //TODO View Listing in Profile
-    testWidgets('Go to Profile', (WidgetTester tester) async {
+
+    // This code will demo  navigation to profile page + show listing
+    testWidgets('View Listing in Profile', (WidgetTester tester) async {
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 3));
       final profileBtn = find.byIcon(Icons.account_circle);
       await tester.tap(profileBtn);
-      await tester.pumpAndSettle(Duration(seconds: 5));
+      await tester.pumpAndSettle(Duration(seconds: 3));
       final listingBtn = find.byKey(Key('ListingCard')).first;
       await tester.tap(listingBtn);
       await tester.pumpAndSettle(Duration(seconds: 2));
 
-      expect(find.byWidgetPredicate((widget) => widget is Profile),findsOneWidget);
     });
-    //TODO Marking Listing Complete
 
-    //TODO Search
+    // Navigate to Activity Page AND back to home to show home bar working
+    testWidgets('Go to Activity & Home', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+      final activityBtn = find.byIcon(Icons.notifications_none);
+      await tester.tap(activityBtn);
+      await tester.pumpAndSettle(Duration(seconds: 5));
+
+      expect(find.byWidgetPredicate((widget) => widget is ActivityPage ),findsOneWidget);
+
+      final homeBtn = find.byIcon(Icons.home);
+      await tester.tap(homeBtn);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+
+      expect(find.byWidgetPredicate((widget) => widget is Home),findsOneWidget);
+    });
+
+    /* testWidgets('Go to Profile', (WidgetTester tester) async {
+      await login(tester);
+      await tester.pumpAndSettle(Duration(seconds: 3));
+      final profileBtn = find.byIcon(Icons.account_circle);
+      await tester.tap(profileBtn);
+      await tester.pumpAndSettle(Duration(seconds: 5));
+
+      expect(find.byWidgetPredicate((widget) => widget is Profile),findsOneWidget);
+    }); */
+
   });
 }
