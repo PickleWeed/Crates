@@ -105,37 +105,39 @@ class ActivityPresenter{
   Future<List<ConversationCard>> readConversationCardList(List<Conversation> convo_list, String userID) async{
     var conversationCardList = <ConversationCard>[];
 
-    convo_list.forEach((element) async {
-
+    for(int i = 0; i < convo_list.length; i++){
       // get listing id from conversation_id (first 20 char)
-      var listing_id = await element.conversation_id.substring(0,20);
+      var listing_id = convo_list[i].conversation_id.substring(0,20);
+      print(listing_id);
 
       // get the listing
       var listing = await readListing(listing_id);
+      print(listing.listingTitle);
 
       // listing title
-      var listing_title = await listing.listingTitle;
+      var listing_title = listing.listingTitle;
 
       // determine who is the partner
       var partner_uid;
       if (listing.userID == userID){ // current user is owner
-        partner_uid = await getSecondUserIDFromConversation(element.conversation_id);
+        partner_uid = getSecondUserIDFromConversation(convo_list[i].conversation_id);
       }else{
-        partner_uid = await listing.userID;
+        partner_uid = listing.userID;
       }
 
       // get username of partner
       var partner_username = await readUsername(partner_uid);
 
       // construct Conversation Card object
-      var cc  = await ConversationCard(conversation_id: element.conversation_id, listing_title: listing_title, partner_username:partner_username);
+      var cc  = await ConversationCard(conversation_id: convo_list[i].conversation_id, listing_title: listing_title, partner_username:partner_username);
 
       // add to list
       await conversationCardList.add(cc);
-    });
+    }
+
 
     // return
-    return await conversationCardList;
+    return conversationCardList;
   }
 
 
