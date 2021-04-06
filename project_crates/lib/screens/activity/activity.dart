@@ -78,41 +78,106 @@ class _ActivityPageState extends State<ActivityPage> {
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(15.0))),
       ),
       body: dataLoading == false
-          ? DefaultTabController(
-              length: 2,
-              child: Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Theme.of(context).canvasColor,
-                  shape: Border(
-                    top: BorderSide(color: Theme.of(context).canvasColor),
+          ? Container(
+              child: DefaultTabController(
+                length: 2,
+                child: Scaffold(
+                  appBar: AppBar(
+                    backgroundColor: Theme.of(context).canvasColor,
+                    shape: Border(
+                      top: BorderSide(color: Theme.of(context).canvasColor),
+                    ),
+                    bottom: TabBar(
+                      tabs: myTabs,
+                      isScrollable: false,
+                      indicatorWeight: 3.0,
+                      //TODO OnTap Function
+                    ),
+                    automaticallyImplyLeading: false,
+                    toolbarHeight: 60,
                   ),
-                  bottom: TabBar(
-                    tabs: myTabs,
-                    isScrollable: false,
-                    indicatorWeight: 3.0,
-                    //TODO OnTap Function
-                  ),
-                  automaticallyImplyLeading: false,
-                  toolbarHeight: 60,
-                ),
-                body: TabBarView(
-                  children: [
-                    SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
+                  body: TabBarView(
+                    children: [
+                      SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Container(
+
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Container(
+                                          padding: EdgeInsets.only(left: 15.0),
+                                          child: Text('Notifications',
+                                              style: TextStyle(fontSize: 20)),
+                                        )),
+                                    Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Container(
+                                            padding:
+                                                EdgeInsets.only(right: 10.0),
+                                            child: TextButton.icon(
+                                              icon: Icon(Icons.sort),
+                                              label: Text('Sort'),
+                                              onPressed: () {
+                                                if (sort == false) {
+                                                  notiList.sort((a, b) {
+                                                    sort = true;
+                                                    return a.notiDate
+                                                        .toString()
+                                                        .toLowerCase()
+                                                        .compareTo(b.notiDate
+                                                            .toString()
+                                                            .toLowerCase());
+                                                  });
+                                                } else {
+                                                  notiList.sort((b, a) {
+                                                    sort = false;
+                                                    return a.notiDate
+                                                        .toString()
+                                                        .toLowerCase()
+                                                        .compareTo(b.notiDate
+                                                            .toString()
+                                                            .toLowerCase());
+                                                  });
+                                                }
+                                                setState(() {});
+                                              },
+                                            )))
+                                  ],
+                                )),
+                            Container(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: notiList.length,
+                                itemBuilder: (context, index) {
+                                  return notiCard(context, notiList[index]);
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      // Chat part
+                      SingleChildScrollView(
+                        child: Column(children: [
                           Container(
-                              color: offWhite,
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
+                                  //search bar
                                   Align(
                                       alignment: Alignment.topLeft,
                                       child: Container(
                                         padding: EdgeInsets.only(left: 15.0),
-                                        child: Text('Notifications',
+                                        child: Text('Chat',
                                             style: TextStyle(fontSize: 20)),
                                       )),
                                   Align(
@@ -122,101 +187,28 @@ class _ActivityPageState extends State<ActivityPage> {
                                           child: TextButton.icon(
                                             icon: Icon(Icons.sort),
                                             label: Text('Sort'),
-                                            onPressed: () {
-                                              if (sort == false) {
-                                                notiList.sort((a, b) {
-                                                  sort = true;
-                                                  return a.notiDate
-                                                      .toString()
-                                                      .toLowerCase()
-                                                      .compareTo(b.notiDate
-                                                          .toString()
-                                                          .toLowerCase());
-                                                });
-                                              } else {
-                                                notiList.sort((b, a) {
-                                                  sort = false;
-                                                  return a.notiDate
-                                                      .toString()
-                                                      .toLowerCase()
-                                                      .compareTo(b.notiDate
-                                                          .toString()
-                                                          .toLowerCase());
-                                                });
-                                              }
-                                              setState(() {});
-                                            },
+                                            onPressed: () {},
                                           )))
                                 ],
                               )),
                           Container(
-                              child: SingleChildScrollView(
-                            child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: notiList.length,
-                                    itemBuilder: (context, index) {
-                                      return notiCard(context, notiList[index]);
-                                    },
-                                  ),
-                                ]),
+                              child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            // TODO: update here for populating a list of conversations
+                            itemCount: conversationCardList.length,
+                            itemBuilder: (context, index) {
+                              return chatCard(
+                                  context,
+                                  conversationCardList[
+                                      index]); // pass in dummy Conversation instance
+                            },
                           ))
-                        ],
+                        ]),
                       ),
-                    ),
-                    // Chat part
-                    SingleChildScrollView(
-                      child: Column(mainAxisSize: MainAxisSize.min, children: [
-                        Container(
-                            color: offWhite,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                //search bar
-                                Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Container(
-                                      padding: EdgeInsets.only(left: 15.0),
-                                      child: Text('Chat',
-                                          style: TextStyle(fontSize: 20)),
-                                    )),
-                                Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Container(
-                                        padding: EdgeInsets.only(right: 10.0),
-                                        child: TextButton.icon(
-                                          icon: Icon(Icons.sort),
-                                          label: Text('Sort'),
-                                          onPressed: () {},
-                                        )))
-                              ],
-                            )),
-                        Container(
-                            child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              // TODO: update here for populating a list of conversations
-                              itemCount: conversationCardList.length,
-                              itemBuilder: (context, index) {
-                                return chatCard(
-                                    context,
-                                    conversationCardList[
-                                        index]); // pass in dummy Conversation instance
-                              },
-                            )],
-                          ),
-                        ))
-                      ]),
-                    ),
-                    // ChatPage(),
-                  ],
+                      // ChatPage(),
+                    ],
+                  ),
                 ),
               ),
             )
@@ -227,7 +219,6 @@ class _ActivityPageState extends State<ActivityPage> {
 
 Widget notiCard(BuildContext context, Notifications noti) {
   return Container(
-    color: offWhite,
     child: Padding(
         padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
         child: Card(
@@ -258,7 +249,6 @@ Widget notiCard(BuildContext context, Notifications noti) {
 
 Widget chatCard(BuildContext context, ConversationCard cc) {
   return Container(
-    color: offWhite,
     child: Padding(
         padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
         child: Card(
