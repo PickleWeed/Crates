@@ -1,4 +1,8 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/backend/profile_presenter.dart';
+import 'package:flutter_application_1/models/Listing.dart';
+import 'package:flutter_application_1/models/user.dart';
 import 'package:flutter_application_1/screens/common/widgets.dart';
 
 class SearchResult_page extends StatelessWidget {
@@ -43,13 +47,17 @@ class SearchResult_page extends StatelessWidget {
               },
             ),
           ]),
-      body: Body(),
+      body: Body(
+        searchString: product,
+      ),
     );
     // body: Body());
   }
 }
 
 class Body extends StatefulWidget {
+  final String searchString;
+  Body({this.searchString});
   @override
   _BodyState createState() => _BodyState();
 }
@@ -57,16 +65,67 @@ class Body extends StatefulWidget {
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 class _BodyState extends State<Body> {
+  @override
+  initState() {
+    super.initState();
+    getMatchingListings(widget.searchString).then((listingList) async {
+      for (int i = 0; i < listingList.length; i++) {
+        User userDetail =
+            await ProfilePresenter().retrieveUserProfile(listingList[i].userID);
+        userDetailList.add(userDetail);
+      }
+
+      setState(() {
+        listings = listingList;
+        userDetailList = userDetailList;
+      });
+    });
+  }
+
+  Future<List<Listing>> getMatchingListings(String query) async {
+    List<Listing> listingList = [];
+    await FirebaseDatabase.instance
+        .reference()
+        .child('Listing')
+        .orderByChild('listingTitle')
+        .startAt(query)
+        .endAt(query + '\uf8ff')
+        .once()
+        .then((DataSnapshot snapshot) {
+      Map<dynamic, dynamic> data = snapshot.value;
+      if (data == null) return listingList;
+      data.forEach((key, value) {
+        Listing newListing = Listing(
+          listingID: key,
+          category: value['category'],
+          isRequest: value['isRequest'],
+          listingImage: value['listingImage'],
+          latitude: value['latitude'],
+          listingTitle: value['listingTitle'],
+          description: value['description'],
+          postDateTime: DateTime.parse(value['postDateTime']),
+          userID: value['userID'],
+          longitude: value['longitude'],
+          isComplete: value['isComplete'],
+        );
+        listingList.add(newListing);
+      });
+    });
+    return listingList;
+  }
+
   List listItem = [
-    'Drink and Beverages',
-    'Snack',
-    'Can food',
-    'Can food',
-    'Can food',
-    'Can food',
+    'Beverages',
+    'Canned Food',
+    'Dairy Product',
+    'Dry Food',
+    'Snacks',
+    'Vegetables',
   ];
   String valueChoose;
   String _distance;
+  List<Listing> listings = [];
+  List<User> userDetailList = [];
 
   Future<void> showFliterDialog(BuildContext context) async {
     return await showDialog(
@@ -75,6 +134,7 @@ class _BodyState extends State<Body> {
           final TextEditingController _textEditingController =
               TextEditingController();
           bool isChecked = false;
+          valueChoose;
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               content: Container(
@@ -132,70 +192,6 @@ class _BodyState extends State<Body> {
         });
   }
 
-  Future<void> showSortDialog(BuildContext context) async {
-    return await showDialog(
-        context: context,
-        builder: (context) {
-          final TextEditingController _textEditingController =
-              TextEditingController();
-          bool isChecked = false;
-          return StatefulBuilder(builder: (context, setState) {
-            return AlertDialog(
-              content: Container(
-                child: setupSortDialoadContainer(),
-                height: 110,
-                width: 300,
-              ),
-              actions: <Widget>[
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                        child: MaterialButton(
-                          elevation: 1,
-                          minWidth: 100,
-                          // width of the button
-                          height: 30,
-                          onPressed: () async {
-                            // clear the sort
-                          },
-                          color: Colors.grey[300],
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0)),
-
-                          child: Text('Clear',
-                              style: TextStyle(
-                                  color: Colors.grey[600], fontSize: 20)),
-                        ),
-                      ),
-                      Container(
-                        child: MaterialButton(
-                          elevation: 1,
-                          minWidth: 100,
-                          // width of the button
-                          height: 30,
-
-                          onPressed: () async {
-                            // apply
-                          },
-                          color: Colors.grey[300],
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(150.0)),
-
-                          child: Text('Apply',
-                              style: TextStyle(
-                                  color: Colors.grey[600], fontSize: 20)),
-                        ),
-                      )
-                    ]),
-              ],
-            );
-          });
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,7 +201,8 @@ class _BodyState extends State<Body> {
           SizedBox(height: 20),
           Align(
               alignment: Alignment(-0.7, 0),
-              child: Text('4 result for "coffee powder"',
+              child: Text(
+                  '${listings.length} results for "${widget.searchString}"',
                   // Text placement will change depend on the search result
                   textAlign: TextAlign.left,
                   style: TextStyle(
@@ -231,33 +228,14 @@ class _BodyState extends State<Body> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0)),
 
-                    child: Text('Fliters',
+                    child: Text('Filters',
                         style:
                             TextStyle(color: Colors.grey[600], fontSize: 20)),
                   ),
                 ),
-                Container(
-                  child: MaterialButton(
-                    elevation: 1,
-                    minWidth: 100,
-                    // width of the button
-                    height: 30,
-
-                    onPressed: () async {
-                      await showSortDialog(context); // go to sort page
-                    },
-                    color: Colors.grey[300],
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
-
-                    child: Text('Sort',
-                        style:
-                            TextStyle(color: Colors.grey[600], fontSize: 20)),
-                  ),
-                )
               ]),
           //SizedBox(height: 20),
-          ListingsArea(),
+          ListingsArea(userDetailList, listings),
         ]),
       ),
     );
@@ -383,101 +361,29 @@ class _BodyState extends State<Body> {
           ],
         ));
   }
-
-  setupSortDialoadContainer() {
-    return Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              child: Align(
-                  alignment: Alignment(-0.9, 0),
-                  child: Text("Sort",
-                      // Text placement will change depend on the search result
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          color: Colors.grey[900],
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold))),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 15),
-              child: Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey)),
-                  child: DropdownButton(
-                    hint: Text(
-                      'Sort',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    value: valueChoose,
-                    isExpanded: true,
-                    onChanged: (newValue) {
-                      setState(() {
-                        valueChoose = newValue;
-                      });
-                    },
-                    items: listItem.map((valueItem) {
-                      return DropdownMenuItem(
-                        value: valueItem,
-                        child: Text(valueItem),
-                      );
-                    }).toList(),
-                  )),
-            ),
-          ],
-        ));
-  }
 }
 
-Widget ListingsArea() {
-  // TODO: this is hardcoded data, to remove
-  List<ListingCard> listing_list = [
-    ListingCard(
-        title: "Old Town White Coffee",
-        owner: "leejunwei",
-        listingImg: 'assets/coffee.jpg',
-        ownerImg: 'assets/icons/default.png'),
-    ListingCard(
-        title: "Korean Spicy Noodles Samyang",
-        owner: "Eggxactly",
-        listingImg: 'assets/noodles.jpg',
-        ownerImg: 'assets/icons/default.png'),
-    ListingCard(
-        title: "Old Town White Coffee",
-        owner: "leejunwei",
-        listingImg: 'assets/coffee.jpg',
-        ownerImg: 'assets/icons/default.png'),
-    ListingCard(
-        title: "Korean Spicy Noodles Samyang",
-        owner: "Eggxactly",
-        listingImg: 'assets/noodles.jpg',
-        ownerImg: 'assets/icons/default.png'),
-    ListingCard(
-        title: "Korean Spicy Noodles Samyang",
-        owner: "Eggxactly",
-        listingImg: 'assets/noodles.jpg',
-        ownerImg: 'assets/icons/default.png')
-  ];
+Widget ListingsArea(List<User> userDetailList, List<Listing> listings) {
+  List<CustomListingCard> listing_list = [];
+
+  for (int i = 0; i < listings.length; i++) {
+    listing_list.add(CustomListingCard(
+        listingID: listings[i].listingID,
+        title: listings[i].listingTitle,
+        owner: userDetailList[i].username,
+        listingImg: listings[i].listingImage,
+        ownerImg: userDetailList[i].imagePath));
+  }
 
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: GridView.count(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      scrollDirection: Axis.vertical,
-      // TODO for backend person: modify here to return CustomListingCard() instead!
-      children: List.generate(listing_list.length, (index) {
-        return listing_list[index];
-      }),
-    ),
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        crossAxisCount: 2,
+        scrollDirection: Axis.vertical,
+        children: List.generate(listing_list.length, (index) {
+          return listing_list[index];
+        })),
   );
 }
