@@ -217,12 +217,11 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
 
   // callback method for listener
   _onMessageAdded(Event event) async{
+    await print('Lister trigger!');
     var new_cm_id = event.snapshot.value;
+    new_cm_id = new_cm_id[new_cm_id.length-1];
 
     if (new_cm_id == 'defaultmessage') return;
-
-    await print('new message detected by listener!!!: ${event.snapshot.value}');
-
     var new_cm = await _activityPresenter.readOneChatMessage(new_cm_id);
 
     if (!mounted) return;
