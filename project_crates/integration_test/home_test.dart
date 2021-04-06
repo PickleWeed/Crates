@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/screens/home/category_page.dart';
 import 'package:flutter_application_1/screens/home/home.dart';
-import 'package:flutter_application_1/screens/moderator/widget.dart';
 import 'package:flutter_application_1/screens/nearby/nearby.dart';
 import 'package:flutter_application_1/screens/profile/profile.dart';
 import 'package:flutter_application_1/screens/searchresult/Selectedlisting_page.dart';
