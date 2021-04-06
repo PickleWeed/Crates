@@ -92,6 +92,7 @@ class _HomeState extends State<Home> {
 }
 
 Widget topCard(BuildContext context) {
+  var _typeAheadController = TextEditingController();
   return Stack(clipBehavior: Clip.none, children: <Widget>[
     Container(
       width: double.infinity,
@@ -161,7 +162,8 @@ Widget topCard(BuildContext context) {
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  hintText: 'search')),
+                  hintText: 'search'),
+              controller: _typeAheadController),
           suggestionsCallback: (pattern) async {
             return await StateService().getListingTiles(pattern);
           },
@@ -171,6 +173,9 @@ Widget topCard(BuildContext context) {
           onSuggestionSelected: (suggestion) {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => SearchResult_page(product: suggestion)));
+            _typeAheadController.text = '';
+
+
           },
         ),
       ),

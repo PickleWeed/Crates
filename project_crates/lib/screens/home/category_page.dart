@@ -95,6 +95,7 @@ class _CategoryPageState extends State<CategoryPage> {
 }
 
 Widget topCard(BuildContext context, String category) {
+  var _typeAheadController = TextEditingController();
   return Stack(clipBehavior: Clip.none, children: <Widget>[
     Container(
       width: double.infinity,
@@ -163,7 +164,8 @@ Widget topCard(BuildContext context, String category) {
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  hintText: 'search')),
+                  hintText: 'search'),
+              controller: _typeAheadController),
           suggestionsCallback: (pattern) async {
             return await StateService()
                 .getListingTilesWithCat(pattern, category);
@@ -177,6 +179,7 @@ Widget topCard(BuildContext context, String category) {
                       product: suggestion,
                       categoryName: category,
                     )));
+            _typeAheadController.text = '';
           },
         ),
       ),
