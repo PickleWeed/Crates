@@ -141,7 +141,7 @@ void main() {
       //await tester.pumpAndSettle(Duration(seconds: 1));
       //expect(errorTextFinder, findsOneWidget);
     });
-/*
+
     //TODO Please select a category!
     //TODO name of product cannot be empty
     testWidgets('Name of product cannot be empty!', (WidgetTester tester) async {
@@ -327,6 +327,6 @@ void main() {
 
       await tester.pumpAndSettle(Duration(seconds: 1));
       expect(find.text('Test'), findsOneWidget);
-    });*/
+    });
   });
 }
