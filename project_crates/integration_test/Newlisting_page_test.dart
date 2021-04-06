@@ -179,8 +179,8 @@ void main() {
       await tester.pumpAndSettle(Duration(seconds: 1));
 
       //TODO Expect for alert dialog
-      //expect(find.byWidgetPredicate((widget) => widget is Dialogs),findsOneWidget);
-      //expect(find.byType(Dialogs), findsNothing);
+      expect(find.byKey(Key('Alert Dialog')),  findsOneWidget);
+      expect(find.text('Name of product is empty.\nPlease fill up the respective field.'),  findsOneWidget);
     });
      //TODO Address cannot be empty!
     testWidgets('Select Giving Away!', (WidgetTester tester) async {
@@ -226,22 +226,6 @@ void main() {
       await tester.tap(find.byKey(Key('GivingAway')));
       await tester.pumpAndSettle(Duration(seconds: 1));
       expect(tester.widget<ToggleButtons>(toggleBtn).isSelected, [isTrue, isFalse]);
-
-      //expect (tester.getSemantics(toggleBtn), matchesSemantics(
-      //  isButton: true,
-      //),);
-      /*Matcher isToggled(bool value) => _IsToggled(value);
-      final finder = find.byWidgetPredicate(
-              (widget) => widget is Switch && widget.key == toggleBtn && widget.value == true,
-          description: 'Giving away');
-      expect(finder, findsOneWidget);*/
-      //await tester.tap(find.byKey(Key('GivingAway')));
-      
-      /*expect(
-          find.byWidgetPredicate((widget) =>
-          widget is ToggleButtons &&
-          widget.children is Text &&
-          (widget.children as Text).data.startsWith('Requesting for')), findsOneWidget);*/
     });
     testWidgets('Select Category', (WidgetTester tester) async {
       await login(tester);
