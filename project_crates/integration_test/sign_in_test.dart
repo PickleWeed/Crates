@@ -51,12 +51,18 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(loginButton);
-      await tester.pumpAndSettle(Duration(seconds: 1));
 
 
       //TODO get expect
-      //expect(find.byWidgetPredicate((widget) => widget is Text && widget.data.startsWith('Wrong')), findsOneWidget);
+      /*await tester.pump(const Duration(milliseconds: 100));
+      expect(Fluttertoast, findsOneWidget);
       final textFinder = find.text('Wrong Email/Password');
+      expect(textFinder, findsOneWidget);
+      await tester.pumpAndSettle(const Duration(seconds: 1));*/
+
+
+      //expect(find.byWidgetPredicate((widget) => widget is Text && widget.data.startsWith('Wrong')), findsOneWidget);
+
       /*expect(tester.getSemantics(toastMsg), matchesSemantics(
         isEnabled: true,
       ),);*/

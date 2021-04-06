@@ -103,7 +103,6 @@ void main() {
       await tester.pumpAndSettle(Duration(seconds: 1));
       expect(find.byWidgetPredicate((widget) => widget is RegisterFinal),findsOneWidget);
     });
-    //TODO username empty
     testWidgets('Empty username', (WidgetTester tester) async {
       await goToRegisterPage(tester);
 
@@ -194,7 +193,6 @@ void main() {
       await tester.pumpAndSettle(Duration(seconds: 2));
       expect(find.byWidgetPredicate((widget) => widget is RootPage),findsOneWidget);
     });
-    //TODO password Required
     testWidgets('Create account, password required', (WidgetTester tester) async {
       await goToRegisterPage(tester);
 
@@ -234,7 +232,6 @@ void main() {
       final errorTextFinder = find.text('Password Required');
       expect(errorTextFinder,findsOneWidget);
     });
-    //TODO Password must have at least 6 characters
     testWidgets('Create account, error password at least 6 characters', (WidgetTester tester) async {
       await goToRegisterPage(tester);
 

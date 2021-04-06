@@ -137,6 +137,7 @@ class _BodyState extends State<Body> {
                 Widget>[
               SizedBox(height: 20),
               InkWell(
+                key: Key('image'),
                 onTap: () {
                   _showPicker(context);
                 },
@@ -300,6 +301,7 @@ class _BodyState extends State<Body> {
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: Container(
                     child: TextField(
+                        key: const Key('description'),
                         minLines: 4,
                         //Normal textInputField will be displayed
                         maxLines: 4,
@@ -432,6 +434,7 @@ class _BodyState extends State<Body> {
               child: Wrap(
                 children: <Widget>[
                   ListTile(
+                      key: const Key('Photo Library'),
                       leading: Icon(Icons.photo_library),
                       title: Text('Photo Library'),
                       onTap: () {
@@ -439,6 +442,7 @@ class _BodyState extends State<Body> {
                         Navigator.of(context).pop();
                       }),
                   ListTile(
+                    key: const Key('Camera'),
                     leading: Icon(Icons.photo_camera),
                     title: Text('Camera'),
                     onTap: () {
