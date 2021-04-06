@@ -116,6 +116,7 @@ class ActivityPresenter{
 
       // listing title
       var listing_title = listing.listingTitle;
+      var listing_img = listing.listingImage;
 
       // determine who is the partner
       var partner_uid;
@@ -129,7 +130,7 @@ class ActivityPresenter{
       var partner_username = await readUsername(partner_uid);
 
       // construct Conversation Card object
-      var cc  = await ConversationCard(conversation_id: convo_list[i].conversation_id, listing_title: listing_title, partner_username:partner_username);
+      var cc  = await ConversationCard(conversation_id: convo_list[i].conversation_id, listing_title: listing_title, partner_username:partner_username, listing_img:listing_img);
 
       // add to list
       await conversationCardList.add(cc);

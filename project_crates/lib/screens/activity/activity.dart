@@ -238,7 +238,7 @@ Widget chatCard(BuildContext context, ConversationCard cc){
                 child: ListTile(
                   contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   leading: CircleAvatar(
-                    backgroundImage: AssetImage('assets/icons/default.png'),
+                    backgroundImage: NetworkImage(cc.listing_img),
                   ),
                   title: Text(cc.listing_title),
                   subtitle: Text('@${cc.partner_username}'),
