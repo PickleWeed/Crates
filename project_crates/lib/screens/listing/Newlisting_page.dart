@@ -26,7 +26,7 @@ class Newlisting_page extends StatelessWidget {
         appBar: AppBar(
             centerTitle: true,
             automaticallyImplyLeading: false,
-            backgroundColor: Color(0xFFFFC857),
+            backgroundColor: primaryColor,
             shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(15.0))),
