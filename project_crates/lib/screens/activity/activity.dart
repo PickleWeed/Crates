@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../activity/items.dart';
-import '../activity/chatpage.dart';
+import 'package:flutter_application_1/backend/activity_presenter.dart';
+import 'package:flutter_application_1/backend/auth.dart';
+import 'package:flutter_application_1/models/Notifications.dart';
 import '../activity/notificationpage.dart';
-
 
 class ActivityPage extends StatefulWidget {
   @override
@@ -16,12 +16,30 @@ class _ActivityPageState extends State<ActivityPage> {
     Tab(text: 'Chat'),
   ];
 
+  bool dataLoading = false;
+  List<Notifications> notiList = new List<Notifications>();
+  ActivityPresenter _notificationPresenter = new ActivityPresenter();
 
-  // testing of notif
-  List<NotifItem> notifications = [
-    MessageItem('Sender Edan :)', 'Message body is empty!'),
-    MessageItem('Sender hello!', 'but really I am still testing only')
-  ];
+  void initState() {
+    loadData();
+    super.initState();
+  }
+
+  loadData() async {
+    setState(() {
+      // Data is still loading
+      dataLoading = true;
+    });
+
+    notiList =
+    await _notificationPresenter.readNotificationList(await currentUser());
+
+    setState(() {
+      notiList = notiList;
+      // Data is done loading
+      dataLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +54,8 @@ class _ActivityPageState extends State<ActivityPage> {
               borderRadius:
               BorderRadius.vertical(bottom: Radius.circular(40.0))),
         ),
-        body: DefaultTabController(
+        body: dataLoading == false ?
+        DefaultTabController(
             length: 2,
             child: Scaffold(
               appBar: AppBar(
@@ -66,23 +85,9 @@ class _ActivityPageState extends State<ActivityPage> {
                               //CHILD 2
                               shrinkWrap: true,
                               //physics: NeverScrollableScrollPhysics(),
-                              itemCount: notifications.length,
+                              itemCount: notiList.length,
                               itemBuilder: (context, index) {
-                                //TODO: BACKEND POPULATE HERE
-                                final item = notifications[index];
-                                return Card(
-                                    child: ListTile(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => NotificationPage(
-                                                    messageitem: notifications[index]))); // to go  to notifcation
-                                      },
-                                      title: item.buildTitle(context),
-                                      subtitle: item.buildSubtitle(context),
-                                      trailing: Icon(Icons.keyboard_arrow_right),
-                                    ));
+                                return notiCard(context, notiList[index]);
                               },
                             ),
                           ))
@@ -92,7 +97,7 @@ class _ActivityPageState extends State<ActivityPage> {
                   // ChatPage(),
                 ],
               ),
-            )),
+            )):Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -123,5 +128,34 @@ Widget notificationHeader(BuildContext context) {
               )))
     ],
   ));
+}
+
+Widget notiCard(BuildContext context, Notifications noti) {
+  return Container(
+    child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: Card(
+            margin: EdgeInsets.fromLTRB(5, 2, 2, 5),
+            child: GestureDetector(
+                child: ListTile(
+                  contentPadding:
+                  EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  title: Text("Update of report on " + noti.reportID),
+                  subtitle: Text(noti.notificationText),
+                  isThreeLine: false,
+                  trailing: Icon(Icons.keyboard_arrow_right),
+                ),
+                onTap: () async {
+                  // Load other listing details
+                  Notifications notification =
+                  await ActivityPresenter().readNotification(noti.notificationID);
+
+                  // Call listing to display
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NotificationPage(noti: notification)));
+                }))),
+  );
 }
 
