@@ -61,6 +61,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 color: primaryColor,
                 alignment: Alignment(-1, -1),
                 child: TextButton.icon(
+                    key: Key('CategoryBack'),
                     icon: Icon(Icons.keyboard_backspace),
                     label: Text('Back', style: TextStyle(
                       color: offWhite,

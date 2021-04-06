@@ -90,8 +90,13 @@ Future<String> isBannedCheck(userID) async{
 
 // Get Current Login UserID
 Future<String> currentUser() async {
-  FirebaseUser user = await _auth.currentUser();
+  try{
+    FirebaseUser user = await _auth.currentUser();
   return user.uid;
+  } catch(e){
+    print(e);
+  }
+  
 }
 
 //For Sign Out Button

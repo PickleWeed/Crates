@@ -228,6 +228,7 @@ class _NearbyState extends State<Nearby> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 40,20,0),
                     child: IconButton(
+                      key: Key('filter'),
                       icon: Icon(Icons.filter_alt),
                       iconSize: 30,
                       //TODO: filter button pressed

@@ -13,6 +13,7 @@ class Dialogs {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
+          key: Key('Alert Dialog'),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
 

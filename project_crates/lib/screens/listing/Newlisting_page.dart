@@ -36,13 +36,13 @@ class Newlisting_page extends StatelessWidget {
                 children: <Widget>[
                   Container(
                       child: Column(children: <Widget>[
-                    Text(
-                      'New Listing',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    )
-                  ]))
+                        Text(
+                          'New Listing',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        )
+                      ]))
                 ])),
         body: Body());
   }
@@ -93,381 +93,378 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+
         //body: Center(
         child: Container(
           color: offWhite,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
-                  Widget>[
-            SizedBox(height: 20),
-            InkWell(
-              onTap: () async {
-                _showPicker(context);
-              },
-              child: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15.0),
-                  child: image != null
-                      ? Image.file(
-                          image,
-                          height: 200,
-                          width: 200,
-                        )
-                      : Container(
-                          height: 200.0,
-                          width: 200.0,
-                          color: Colors.grey[350],
-                          child: Icon(Icons.photo_camera,
-                              color: Colors.white, size: 50.0),
-                        ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-              child: Text('I am ...',
-                  // Text placement will change depend on the search result
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 23,
-                      fontWeight: FontWeight.bold)),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-              child: Container(
-                height: 40,
-                child: ToggleButtons(
-                  borderRadius: BorderRadius.circular(8.0),
-                  isSelected: isselected,
-                  color: Colors.grey[500],
-                  selectedColor: primaryColor,
-                  fillColor: Colors.grey[800],
-                  renderBorder: true,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child:
-                          Text('Giving away', style: TextStyle(fontSize: 17)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text('Requesting for ',
-                          style: TextStyle(fontSize: 17)),
-                    ),
-                  ],
-                  onPressed: (int newIndex) {
-                    setState(() {
-                      for (var buttonIndex = 0;
-                          buttonIndex < isselected.length;
-                          buttonIndex++) {
-                        if (buttonIndex == newIndex) {
-                          isselected[buttonIndex] = true;
-                        } else {
-                          isselected[buttonIndex] = false;
-                        }
-                      }
-                    });
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 20),
+                InkWell(
+                  key: Key('image'),
+                  onTap: () async {
+                    _showPicker(context);
                   },
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-              child: Text('a ...',
-                  // Text placement will change depend on the search result
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 23,
-                      fontWeight: FontWeight.bold)),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
-              child: Container(
-                padding: EdgeInsets.fromLTRB(25, 0, 10, 0),
-                height: 50,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  color: Colors.white,
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    focusColor: Colors.red,
-                    value: valueChoose,
-                    icon: const Icon(Icons.keyboard_arrow_down),
-                    iconSize: 24,
-                    elevation: 16,
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontSize: 16,
+                  child: Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: image != null
+                          ? Image.file(
+                              image,
+                              height: 200,
+                              width: 200,
+                            )
+                          : Container(
+                              height: 200.0,
+                              width: 200.0,
+                              color: Colors.grey[350],
+                              child: Icon(Icons.photo_camera,
+                                  color: Colors.white, size: 50.0),
+                            ),
                     ),
-                    onChanged: (newValue) {
-                      setState(() {
-                        valueChoose = newValue;
-                      });
-                    },
-                    items: listItem.map((valueItem) {
-                      return DropdownMenuItem(
-                        value: valueItem,
-                        child: Text(valueItem),
-                      );
-                    }).toList(),
                   ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-              child: Text("it's called ...",
-                  // Text placement will change depend on the search result
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 23,
-                      fontWeight: FontWeight.bold)),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: Container(
-                height: 50,
-                child: TextField(
-                    style: TextStyle(fontSize: 16),
-                    controller: listingTitleController,
-                    decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.white, width: 1.0),
-                          borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.white, width: 1.0),
-                          borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: 'name of the item')),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-              child: Text('description ...',
-                  // Text placement will change depend on the search result
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 23,
-                      fontWeight: FontWeight.bold)),
-            ),
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                child: Container(
-                  child: TextField(
-                      minLines: 4, //Normal textInputField will be displayed
-                      maxLines: 4,
-                      style: TextStyle(fontSize: 16),
-                      controller: descriptionController,
-                      decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 1.0),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16.0)),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 1.0),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16.0)),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: 'description of the item')),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: Text('I am ...',
+                      // Text placement will change depend on the search result
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold)),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-              child: Text('location',
-                  // Text placement will change depend on the search result
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 23,
-                      fontWeight: FontWeight.bold)),
-            ),
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                child: Container(
-                  child: TextField(
-                      style: TextStyle(fontSize: 16),
-                      controller: addressController,
-                      onTap: () async {
-                        _prediction = await PlacesAutocomplete.show(
-                            context: context,
-                            apiKey: _mapHandler.LocationAPIkey,
-                            mode: Mode.overlay, // Mode.fullscreen
-                            language: 'en');
-                        if (_prediction != null) {
-                          var _selected =
-                              await _mapHandler.getLatLng(_prediction);
-
-                          setState(() {
-                            _currentLocation = _selected;
-                            addressController.text = _prediction.description;
-                          });
-                        }
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+                  child: Container(
+                    height: 40,
+                    child: ToggleButtons(
+                      key: const Key('toggleBtn'),
+                      borderRadius: BorderRadius.circular(8.0),
+                      isSelected: isselected,
+                      color: Colors.grey[500],
+                      selectedColor: primaryColor,
+                      fillColor: Colors.grey[800],
+                      renderBorder: true,
+                      children: <Widget>[
+                        Padding(
+                          key: const Key('GivingAway'),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child:
+                              Text('Giving away', style: TextStyle(fontSize: 17)),
+                        ),
+                        Padding(
+                          key: const Key('RequestingFor'),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text('Requesting for ',
+                              style: TextStyle(fontSize: 17)),
+                        ),
+                      ],
+                      onPressed: (int newIndex) {
+                        setState(() {
+                          for (var buttonIndex = 0;
+                              buttonIndex < isselected.length;
+                              buttonIndex++) {
+                            if (buttonIndex == newIndex) {
+                              isselected[buttonIndex] = true;
+                            } else {
+                              isselected[buttonIndex] = false;
+                            }
+                          }
+                        });
                       },
-                      decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 1.0),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16.0)),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 1.0),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16.0)),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: 'pick a location')),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Container(
-                padding: EdgeInsets.fromLTRB(100, 5, 100, 20),
-                child: CustomCurvedButton(
-                  btnText: 'Create Listing',
-                  btnPressed: () async {
-                    // validation
-                    if (image == null) {
-                      await Dialogs.errorAbortDialog(
-                          context, 'Please select a photo!');
-                      print('No image uploaded');
-                      return;
-                    }
-
-                    if (valueChoose == null) {
-                      final action = await Dialogs.errorAbortDialog(
-                          context, 'Please select a category!');
-                      print('No category selected');
-                      return;
-                    }
-
-                    if (listingTitleController.text == '') {
-                      final action = await Dialogs.errorAbortDialog(
-                          context, 'Name of product cannot be empty!');
-                      print('No listing title inputted');
-                      return;
-                    }
-
-                    if (_currentLocation == null) {
-                      await Dialogs.errorAbortDialog(
-                          context, 'Address cannot be empty!\n');
-                      print('No location selected');
-                      return;
-                    }
-
-                    // upload image
-                    var imageString = await storageAccess.uploadFile(image);
-
-                    // classify image
-                    var mp = MatchPresenter();
-                    var classifications = await mp.fetchCategories(imageString);
-
-                    print(
-                        'fetchCategories() done, classifications: $classifications}');
-
-                    // if it is a request listing, then try to find matches
-                    var matches;
-                    if (isselected[1] && classifications != null) {
-                      print(
-                          'This is a request listing, and classifications is not null. doing getMatches()');
-                      matches = await mp.getMatches(classifications);
-                      print('getMatches() done, matches: $matches');
-                    }
-
-                    // if it is a request listing and there are matches, display matches dialog
-                    // if not, just post the listing
-                    if (isselected[1] && matches != null) {
-                      print(
-                          'At least one match was found! (#${matches.length})');
-
-                      await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return matchesDialog(context, matches, () async {
-                              // user clicks on "Post Anyway"
-                              print(
-                                  "User clicks on 'post anyway', just post don't need to add to LID model");
-                              var listingID = await postListing(
-                                context,
-                                dao,
-                                userid,
-                                listingTitleController.text,
-                                _currentLocation.longitude,
-                                _currentLocation.latitude,
-                                valueChoose,
-                                isselected[1],
-                                imageString,
-                                descriptionController.text,
-                              );
-
-                              // close popup
-                              Navigator.of(context).pop();
-
-                              // push replace home page
-                              await Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => UserMain()));
-                              return;
-                            });
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: Text('a ...',
+                      // Text placement will change depend on the search result
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(25, 0, 10, 0),
+                    height: 50,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: Colors.white,
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        key: Key(valueChoose),
+                        focusColor: Colors.red,
+                        value: valueChoose,
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(
+                          color: Colors.grey[800],
+                          fontSize: 16,
+                        ),
+                        onChanged: (newValue) {
+                          setState(() {
+                            valueChoose = newValue;
                           });
-                    } else {
-                      // post listing
-                      await print('No matches, or not a Request listing!');
-                      var listingID = await postListing(
-                        context,
-                        dao,
-                        userid,
-                        listingTitleController.text,
-                        _currentLocation.longitude,
-                        _currentLocation.latitude,
-                        valueChoose,
-                        isselected[1],
-                        imageString,
-                        descriptionController.text,
-                      );
+                        },
+                        items: listItem.map((valueItem) {
+                          return DropdownMenuItem(
+                            value: valueItem,
+                            child: Text(valueItem),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+                  child: Text("it's called ...",
+                      // Text placement will change depend on the search result
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child: Container(
+                    height: 50,
+                    child: TextField(
+                        style: TextStyle(fontSize: 16),
+                        controller: listingTitleController,
+                        decoration: InputDecoration(
+                            focusedBorder :OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white, width: 1.0),
+                              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white, width: 1.0),
+                              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintText: 'name of the item')
+                    )
+                    ,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+                  child: Text('description ...',
+                      // Text placement will change depend on the search result
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold)),
+                ),
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: Container(
+                      child: TextField(
+                          key: const Key('description'),
+                          minLines: 4,//Normal textInputField will be displayed
+                          maxLines: 4,
+                          style: TextStyle(fontSize: 16),
+                          controller: descriptionController,
+                          decoration: InputDecoration(
+                              focusedBorder :OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white, width: 1.0),
+                                borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white, width: 1.0),
+                                borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'description of the item')
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+                  child: Text('location',
+                      // Text placement will change depend on the search result
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold)),
+                ),
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: Container(
+                      child: TextField(
+                          style: TextStyle(fontSize: 16),
+                          controller: addressController,
+                          onTap: () async {
+                            _prediction = await PlacesAutocomplete.show(
+                                context: context,
+                                apiKey: _mapHandler.LocationAPIkey,
+                                mode: Mode.overlay, // Mode.fullscreen
+                                language: 'en');
+                            if (_prediction != null) {
+                              var _selected =
+                                  await _mapHandler.getLatLng(_prediction);
 
-                      // add image classification for this listing to db
-                      // only add if classifications is not empty
-                      if (isselected[0] && classifications != null) {
-                        print(
-                            'This is a "Giving" listing, and classifications not null, adding to LID model');
-                        var temp = await ListingImageData(
-                            listingID: listingID, categories: classifications);
-                        await mp.addListingImageData(temp);
-                      } else {
-                        print(
-                            'Not a "Giving" listing, or classifications is null. Not adding to LID model');
+                              setState(() {
+                                _currentLocation = _selected;
+                                addressController.text = _prediction.description;
+                              });
+                            }
+                          },
+                          decoration: InputDecoration(
+                              focusedBorder :OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white, width: 1.0),
+                                borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white, width: 1.0),
+                                borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'pick a location')
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Container(
+                  padding: EdgeInsets.fromLTRB(100, 5, 100, 20),
+                  child: CustomCurvedButton(
+                    btnKey: 'CreateListing',
+                    btnText: 'Create Listing',
+                    btnPressed: () async {
+                      // validation
+                      if (image == null) {
+                        await Dialogs.errorAbortDialog(
+                            context, 'Please select a photo!');
+                        print('No image uploaded');
+                        return;
                       }
 
-                      // push replace home page
-                      await Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => UserMain()));
-                    }
-                  },
-                )),
-          ]),
+                      if (valueChoose == null) {
+                        final action = await Dialogs.errorAbortDialog(
+                            context, 'Please select a category!');
+                        print('No category selected');
+                        return;
+                      }
+
+                      if (listingTitleController.text == '') {
+                        final action = await Dialogs.errorAbortDialog(
+                            context, 'Name of product cannot be empty!');
+                        print('No listing title inputted');
+                        return;
+                      }
+
+                      if (_currentLocation == null) {
+                        await Dialogs.errorAbortDialog(
+                            context, 'Address cannot be empty!\n');
+                        print('No location selected');
+                        return;
+                      }
+
+                      // upload image
+                      var imageString = await storageAccess.uploadFile(image);
+
+                      // classify image
+                      var mp = MatchPresenter();
+                      var classifications = await mp.fetchCategories(imageString);
+
+                      print('fetchCategories() done, classifications: $classifications}');
+
+                      // if it is a request listing, then try to find matches
+                      var matches;
+                      if (isselected[1] && classifications != null) {
+                        print('This is a request listing, and classifications is not null. doing getMatches()');
+                        matches = await mp.getMatches(classifications);
+                        print('getMatches() done, matches: $matches');
+                      }
+
+                      // if it is a request listing and there are matches, display matches dialog
+                      // if not, just post the listing
+                      if (isselected[1] && matches != null) {
+                        print('At least one match was found! (#${matches.length})');
+
+                        await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return matchesDialog(context, matches, () async {
+                                // user clicks on "Post Anyway"
+                                print("User clicks on 'post anyway', just post don't need to add to LID model");
+                                var listingID = await postListing(
+                                  context,
+                                  dao,
+                                  userid,
+                                  listingTitleController.text,
+                                  _currentLocation.longitude,
+                                  _currentLocation.latitude,
+                                  valueChoose,
+                                  isselected[1],
+                                  imageString,
+                                  descriptionController.text,
+                                );
+
+                                // close popup
+                                Navigator.of(context).pop();
+
+                                // push replace home page
+                                await Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => UserMain()));
+                                return;
+                              });
+                            });
+                      } else {
+                        // post listing
+                        await print('No matches, or not a Request listing!');
+                        var listingID = await postListing(
+                          context,
+                          dao,
+                          userid,
+                          listingTitleController.text,
+                          _currentLocation.longitude,
+                          _currentLocation.latitude,
+                          valueChoose,
+                          isselected[1],
+                          imageString,
+                          descriptionController.text,
+                        );
+
+                        // add image classification for this listing to db
+                        // only add if classifications is not empty
+                        if (isselected[0] && classifications!=null){
+                          print('This is a "Giving" listing, and classifications not null, adding to LID model');
+                          var temp = await ListingImageData(listingID: listingID, categories: classifications);
+                          await mp.addListingImageData(temp);
+                        }else{
+                          print('Not a "Giving" listing, or classifications is null. Not adding to LID model');
+                        }
+
+
+                        // push replace home page
+                        await Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => UserMain()));
+                      }
+                    },
+                  )
+                ),
+              ]),
         ),
       ),
     );
@@ -487,6 +484,7 @@ class _BodyState extends State<Body> {
               child: Wrap(
                 children: <Widget>[
                   ListTile(
+                      key : Key('PhotoLibrary'),
                       leading: Icon(Icons.photo_library),
                       title: Text('Photo Library'),
                       onTap: () {
@@ -494,6 +492,7 @@ class _BodyState extends State<Body> {
                         Navigator.of(context).pop();
                       }),
                   ListTile(
+                    key : Key('Camera'),
                     leading: Icon(Icons.photo_camera),
                     title: Text('Camera'),
                     onTap: () {
@@ -567,6 +566,7 @@ Widget matchesDialog(context, List<Listing> matches, postAnyway) {
 // builds each matched row
 Widget matchCard(String title, String description, String listingImg, onTap) {
   return InkWell(
+    key: Key('popup'),
     onTap: onTap,
     child: Card(
         margin: EdgeInsets.fromLTRB(5, 2, 2, 5),
@@ -596,49 +596,19 @@ Widget matchCard(String title, String description, String listingImg, onTap) {
 Future<String> postListing(context, dao, userid, title, loc_long, loc_lat, cat,
     isselected, imageString, description) async {
   // create listing
-  String listingID;
-  try {
-    var newListing = await Listing(
-      userID: userid,
-      listingTitle: title,
-      longitude: loc_long,
-      latitude: loc_lat,
-      category: cat,
-      isRequest: isselected,
-      listingImage: imageString,
-      isComplete: false,
-      description: description,
-    );
+  var newListing = await Listing(
+    userID: userid,
+    listingTitle: title,
+    longitude: loc_long,
+    latitude: loc_lat,
+    category: cat,
+    isRequest: isselected,
+    listingImage: imageString,
+    isComplete: false,
+    description: description,
+  );
 
-    listingID = await dao.addListing(newListing);
-    await showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Success'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Listing created!'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Acknowledge'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  } catch (e) {
-    await Dialogs.errorAbortDialog(
-        context, 'Post unsuccessful! Please try again.');
-  }
+  var listingID = await dao.addListing(newListing);
 
   return listingID;
 }

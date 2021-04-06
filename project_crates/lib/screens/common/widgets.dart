@@ -9,12 +9,15 @@ class CustomButton extends StatelessWidget {
   final String btnText;
   final Function btnPressed;
 
+  final String btnKey;
+
   // constructor
-  CustomButton({this.btnText, this.btnPressed});
+  CustomButton({this.btnText, this.btnPressed, this.btnKey});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+        key: ValueKey(btnKey),
         onPressed: btnPressed,
         child: SizedBox(
             width: double.infinity,
@@ -33,13 +36,15 @@ class CustomButton extends StatelessWidget {
 class CustomCurvedButton extends StatelessWidget {
   final String btnText;
   final Function btnPressed;
+  final String btnKey;
 
   // constructor
-  CustomCurvedButton({this.btnText, this.btnPressed});
+  CustomCurvedButton({this.btnText, this.btnPressed, this.btnKey});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+        key: ValueKey(btnKey),
         onPressed: btnPressed,
         child: SizedBox(
             width: double.infinity,
@@ -131,7 +136,10 @@ class CustomListingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: GestureDetector(
+          // key: Key('listingIDWidget:'+listingID),
+          key: Key('ListingCard'),
           onTap: () {
+            print('listingWidget:'+owner);
             print('listingIDWidget:'+listingID);
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => Selectedlisting_page(listingID: listingID)));
           },
