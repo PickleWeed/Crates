@@ -107,7 +107,7 @@ class _NearbyState extends State<Nearby> {
             var convertedDateTime = "${_listing[i].postDateTime.day.toString().padLeft(2,'0')}-${_listing[i].postDateTime.month.toString().padLeft(2,'0')}-${_listing[i].postDateTime.year.toString()}";
             setState(() {
               _cardVisibility = true;
-              listingID = _listing[i].listingID.substring(1);
+              listingID = _listing[i].listingID;
               user = _username[i];
               date = convertedDateTime;
               title = _listing[i].listingTitle;

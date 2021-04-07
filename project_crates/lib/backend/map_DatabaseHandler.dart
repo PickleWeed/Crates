@@ -21,7 +21,7 @@ class DataHandler {
   Future<List<Listing>> retrieveFilteredListing(double distance, String category, LatLng center) async {
     var user;
     try{
-      final user = await currentUser();
+       user = await currentUser();
     } catch(e){
       final user = '';
     }
@@ -30,57 +30,61 @@ class DataHandler {
       if(category == "All" || category ==''){
         await _databaseRef.child("Listing").once().then((DataSnapshot snapshot) {
           Map<dynamic, dynamic> map = snapshot.value;
-          map.forEach((key, value) {
-
-            double calculatedDistance = 0;
-            calculatedDistance = haversine(
-                center.latitude, center.longitude, value['latitude'],
-                value['longitude']);
-            // print('calculated: $calculatedDistance');
-            if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance && value['userID'] != user) {
-              //url = getImg("normalListings", snapshot.key).toString();
-              Listing normalListing = new Listing(listingID: key,
-                  userID : value['userID'],
-                  listingTitle: value['listingTitle'],
-                  category: value['category'],
-                  postDateTime: DateTime.parse(value['postDateTime']),
-                  description: value['description'],
-                  isRequest: value['isRequest'],
-                  isComplete: value['isComplete'],
-                  listingImage: value['listingImage'],
-                  longitude: value['longitude'],
-                  latitude: value['latitude']);
-              userNormalListing.add(normalListing);
-              // print(userNormalListing.length);
-            }
-          });
+          if(map !=null){
+            map.forEach((key, value) {
+              double calculatedDistance = 0;
+              calculatedDistance = haversine(
+                  center.latitude, center.longitude, value['latitude'],
+                  value['longitude']);
+              // print('calculated: $calculatedDistance');
+              if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance && value['userID'] != user) {
+                //url = getImg("normalListings", snapshot.key).toString();
+                Listing normalListing = new Listing(listingID: key,
+                    userID : value['userID'],
+                    listingTitle: value['listingTitle'],
+                    category: value['category'],
+                    postDateTime: DateTime.parse(value['postDateTime']),
+                    description: value['description'],
+                    isRequest: value['isRequest'],
+                    isComplete: value['isComplete'],
+                    listingImage: value['listingImage'],
+                    longitude: value['longitude'],
+                    latitude: value['latitude']);
+                userNormalListing.add(normalListing);
+                // print(userNormalListing.length);
+              }
+            });
+          }
         });
       }else{
         await _databaseRef.child("Listing").once().then((DataSnapshot snapshot) {
           Map<dynamic, dynamic> map = snapshot.value;
-          map.forEach((key, value) {
+          if(map !=null){
+            map.forEach((key, value) {
 
-            double calculatedDistance = 0;
-            calculatedDistance = haversine(
-                center.latitude, center.longitude, value['latitude'],
-                value['longitude']);
-            if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance &&
-                (category == value['category']) && value['userID'] != user) {
-              Listing normalListing = new Listing(listingID: key,
-                  userID : value['userID'],
-                  listingTitle: value['listingTitle'],
-                  category: value['category'],
-                  postDateTime: DateTime.parse(value['postDateTime']),
-                  description: value['description'],
-                  isRequest: value['isRequest'],
-                  isComplete: value['isComplete'],
-                  listingImage: value['listingImage'],
-                  longitude: value['longitude'],
-                  latitude: value['latitude']);
-              userNormalListing.add(normalListing);
-              // print(userNormalListing.length);
-            }
-          });
+              double calculatedDistance = 0;
+              calculatedDistance = haversine(
+                  center.latitude, center.longitude, value['latitude'],
+                  value['longitude']);
+              if (value['isRequest'] == false && value['isComplete'] == false && calculatedDistance <= distance &&
+                  (category == value['category']) && value['userID'] != user) {
+                Listing normalListing = new Listing(listingID: key,
+                    userID : value['userID'],
+                    listingTitle: value['listingTitle'],
+                    category: value['category'],
+                    postDateTime: DateTime.parse(value['postDateTime']),
+                    description: value['description'],
+                    isRequest: value['isRequest'],
+                    isComplete: value['isComplete'],
+                    listingImage: value['listingImage'],
+                    longitude: value['longitude'],
+                    latitude: value['latitude']);
+                userNormalListing.add(normalListing);
+                // print(userNormalListing.length);
+              }
+            });
+          }
+
         });
 
       }
@@ -103,21 +107,23 @@ class DataHandler {
     try {
       await _databaseRef.child("Listing").once().then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> map = snapshot.value;
-        map.forEach((key, value) {
-          if (value['isRequest'] == false && value['isComplete'] == false && value['userID'] != user) {
-            Listing normalListing = new Listing(listingID: key,
-                listingTitle: value['listingTitle'],
-                category: value['category'],
-                postDateTime: DateTime.parse(value['postDateTime']),
-                description: value['description'],
-                isRequest: value['isRequest'],
-                isComplete: value['isComplete'],
-                listingImage: value['listingImage'],
-                longitude: value['longitude'],
-                latitude: value['latitude']);
-            userNormalListing.add(normalListing);
-          }
-        });
+        if(map!=null){
+          map.forEach((key, value) {
+            if (value['isRequest'] == false && value['isComplete'] == false && value['userID'] != user) {
+              Listing normalListing = new Listing(listingID: key,
+                  listingTitle: value['listingTitle'],
+                  category: value['category'],
+                  postDateTime: DateTime.parse(value['postDateTime']),
+                  description: value['description'],
+                  isRequest: value['isRequest'],
+                  isComplete: value['isComplete'],
+                  listingImage: value['listingImage'],
+                  longitude: value['longitude'],
+                  latitude: value['latitude']);
+              userNormalListing.add(normalListing);
+            }
+          });
+        }
       });
     } catch(e) {
       print(e);

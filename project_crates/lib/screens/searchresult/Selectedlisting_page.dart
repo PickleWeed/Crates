@@ -4,9 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/backend/activity_presenter.dart';
 import 'package:flutter_application_1/backend/profile_presenter.dart';
 import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/user.dart';
+import 'package:flutter_application_1/screens/activity/privatechat.dart';
 import 'package:flutter_application_1/screens/common/error_popup_widgets.dart';
 import 'package:flutter_application_1/screens/common/theme.dart';
 import 'package:flutter_application_1/screens/common/user_main.dart';
@@ -17,7 +19,7 @@ import 'package:flutter_application_1/screens/nearby/nearby_MapHandler.dart';
 import 'package:flutter_application_1/screens/profile/profile.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../listing/Editinglist_page.dart';
-import 'package:flutter_application_1/backend/auth.dart';
+import 'package:flutter_application_1/backend/auth.dart' as auth;
 
 class Selectedlisting_page extends StatefulWidget {
   final String listingID;
@@ -45,6 +47,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
   @override
   initState() {
     super.initState();
+    print("Test" + widget.listingID);
     loadAsyncData(widget.listingID).then((response) {
       setState(() {
         listingTitle = response['listing'].listingTitle;
@@ -76,7 +79,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
 
   loadMarker(String title) async {
     markerIcon =
-    await mapHandler.getBytesFromAsset('assets/location_icon.png', 50);
+    await mapHandler.getBytesFromAsset('assets/location_icon.png', 100);
     setState(() {
       _markers.add(Marker(
           markerId: MarkerId('location'),
@@ -183,7 +186,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
                 onMapCreated: _onMapCreated,
                 initialCameraPosition: CameraPosition(
                   target: center,
-                  zoom: 11.0,
+                  zoom: 13.0,
                 ),
                 markers: _markers,
               ),
@@ -203,7 +206,7 @@ class _Selectedlisting_pageState extends State<Selectedlisting_page> {
     Listing listing = await dao.getListing(listingID);
     User poster = await profilePresenter.retrieveUserProfile(listing.userID);
     String currentUID = await getUID();
-    bool isAdmin = await isAdminCheck(currentUID);
+    bool isAdmin = await auth.isAdminCheck(currentUID);
     return {
       'listing': listing,
       'poster': poster,
@@ -236,12 +239,17 @@ Widget listingDetailsTopCard(
             children: <Widget>[
               Expanded(
                 child: Center(
-                  child: Image.network(
-                    listingImg,
-                    fit: BoxFit.fitHeight,
-                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child:  Image.network(
+                          listingImg,
+                          fit: BoxFit.cover,
+                          height: 300.0,
+                          width: 300.0,
+                        ),
+                    ),
+                  )
                 ),
-              ),
               SizedBox(height: 30),
             ],
           )),
@@ -341,8 +349,27 @@ Widget listingDetailsTopCard(
 
     ...normalUserButtons(currentUser, isAdmin, context, listingID,
         //chat btn pressed
-            () {
-          print('Chat button pressed!');
+            () async {
+          String curr = await auth.currentUser();
+          Listing listing = await ActivityPresenter().readListing(listingID);
+          List<String> msgs = new List<String>();
+          msgs.add("defaultempty");
+
+          bool exists = await ActivityPresenter().checkConvoExists(listingID, listing.userID, curr);
+          if(exists == false){
+            await ActivityPresenter().addConversation(listingID, listing.userID, curr, msgs);
+          }
+          else{
+            
+          }
+
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PrivateChatScreen(
+                    conversation_id: listingID+listing.userID+curr,
+                  )));
+
         }),
   ]);
 }

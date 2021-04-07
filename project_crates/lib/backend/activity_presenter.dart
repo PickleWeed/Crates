@@ -5,26 +5,31 @@ import 'package:flutter_application_1/models/Listing.dart';
 import 'package:flutter_application_1/models/Notifications.dart';
 import 'package:flutter_application_1/models/ReportListing.dart';
 import 'package:flutter_application_1/models/Conversation.dart';
-
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class ActivityPresenter{
 
   final _databaseRef = FirebaseDatabase.instance.reference();
+  final _photoStorageReference = FirebaseStorage.instance.ref().child('chat_photos');
 
   //Get list
   Future<List<Notifications>> readNotificationList(String userID) async{
     List<Notifications> notiList = new List<Notifications>();
     await _databaseRef.child('Notification').once().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> map = snapshot.value;
-      map.forEach((key, value) {
-        Notifications noti = new Notifications(notificationID: key, notificationText: value['notificationText'],
-            listingID: value['listingID'], reportID: value['reportID'],
-            userID: value['userID'], notiDate: DateTime.parse(value['notiDate']) ?? "");
-        if(noti.userID == userID){
-          notiList.add(noti);
-        }
+      if(map != null){
+        map.forEach((key, value) {
+          Notifications noti = new Notifications(notificationID: key, notificationText: value['notificationText'],
+              listingID: value['listingID'], reportID: value['reportID'],
+              userID: value['userID'], notiDate: DateTime.parse(value['notiDate']) ?? "");
+          if(noti.userID == userID){
+            notiList.add(noti);
+          }
 
-      });
+        });
+      }
     });
     return notiList;
   }
@@ -63,6 +68,40 @@ class ActivityPresenter{
     String name = snapshotName.value['username'];
     return name;
   }
+
+  //Get avatar of user
+  Future<String> readAvatar(String userID) async{
+    DataSnapshot snapshotName = await _databaseRef.child('users').child(userID).once();
+    String imgPath = snapshotName.value['imagePath'];
+    return imgPath;
+  }
+
+
+  Future<Map<String, String>> getUsernameMap(String conversation_id) async{
+    Map usernameMap = <String, String>{};
+
+    var user1 = getFirstUserIDFromConversation(conversation_id);
+    var user2 = getSecondUserIDFromConversation(conversation_id);
+
+    usernameMap[user1] = await readUsername(user1);
+    usernameMap[user2] = await readUsername(user2);
+
+    return usernameMap;
+  }
+
+  Future<Map<String, String>> getAvatarMap(String conversation_id) async{
+    Map avatarMap = <String, String>{};
+
+    var user1 = getFirstUserIDFromConversation(conversation_id);
+    var user2 = getSecondUserIDFromConversation(conversation_id);
+
+    avatarMap[user1] = await readAvatar(user1);
+    avatarMap[user2] = await readAvatar(user2);
+
+    return avatarMap;
+  }
+
+
 
   //Get one report listing
   Future<ReportListing> readReportListing(String reportID) async{
@@ -159,6 +198,7 @@ class ActivityPresenter{
   Future<Conversation> readConversation(String conversationID) async{
     DataSnapshot snapshot = await _databaseRef.child('Conversation').child(conversationID).once();
     Conversation convo = new Conversation(conversation_id: conversationID, messages: snapshot.value['messages'].cast<String>());
+    return convo;
   }
 
   //Check if conversation exists
@@ -174,7 +214,7 @@ class ActivityPresenter{
 
   //Add convo
   //For initial. Add message first, then get the ID, then add it to convo
-  Future addConversation(String listingID, String ownerID, String getterID, String messageID) async{
+  Future addConversation(String listingID, String ownerID, String getterID, List<String> messageID) async{
     await _databaseRef.child("Conversation").child(listingID+ownerID+getterID).set({
       "messages": messageID,
     });
@@ -186,6 +226,7 @@ class ActivityPresenter{
     await _databaseRef.child("Conversation").child(data.conversation_id).update({
       "messages": data.messages,
     });
+    await print("updateConversation completed");
   }
 
   //Retrieve listing info
@@ -201,23 +242,63 @@ class ActivityPresenter{
 
   //Retrieve chat messages
   Future<List<ChatMessage>> readChatMessage(List<String> id) async{
-    for (int i = 0; i < id.length ; i++){
-      DataSnapshot snapshot = await _databaseRef.child('ChatMessage').child(id[i]).once();
-      ChatMessage chatMsg = new ChatMessage(text: snapshot.value['text'], imageUrl: snapshot.value['imageUrl'],
-          sender_uid: snapshot.value['sender_uid'], date_sent: DateTime.parse(snapshot.value['date_sent']));
+    var messagesList = <ChatMessage>[];
 
+    for (int i = 0; i < id.length ; i++){
+      if(id[i] != "defaultempty"){
+        DataSnapshot snapshot = await _databaseRef.child('ChatMessage').child(id[i]).once();
+        ChatMessage chatMsg = new ChatMessage(text: snapshot.value['text'], imageUrl: snapshot.value['imageUrl'],
+            sender_uid: snapshot.value['sender_uid'] ?? "", date_sent: DateTime.parse(snapshot.value['date_sent']));
+        messagesList.add(chatMsg);
+      }
     }
+    return messagesList.reversed.toList();
   }
 
+  // retrieve a single chat message
+  Future<ChatMessage> readOneChatMessage(String id) async{
+
+    var snapshot = await _databaseRef.child('ChatMessage').child(id).once();
+
+    var chatMsg = ChatMessage(text: snapshot.value['text'], imageUrl: snapshot.value['imageUrl'],
+        sender_uid: snapshot.value['sender_uid'], date_sent: DateTime.parse(snapshot.value['date_sent']));
+
+    return chatMsg;
+  }
+
+
   //Add chat message
-  Future addChatMessage(ChatMessage data) async{
-    await _databaseRef.child('ChatMessage').push().set({
-      'text': data.text ?? '',
-      'imageUrl': data.imageUrl ?? '',
-      'sender_uid': data.sender_uid ?? '',
+  Future addChatMessage(String text, String imageUrl, String user_id) async{
+    var newpush = await _databaseRef.child('ChatMessage').push();
+    await newpush.set({
+      'text': text,
+      'imageUrl': imageUrl,
+      'sender_uid': user_id ?? '',
       'date_sent': DateTime.now().toString(),
     });
 
+    // return ID
+    return newpush.key;
   }
+
+
+  // image submitted
+  Future sendImage(ImageSource imageSource, user_id) async {
+
+    // upload picture
+    var image = await ImagePicker.pickImage(source: imageSource);
+    var fileName = Uuid().v4();
+    var photoRef = _photoStorageReference.child(fileName);
+    var uploadTask = photoRef.putFile(image);
+    await uploadTask.onComplete;
+    String downloadUrl = await photoRef.getDownloadURL();
+    await print('chat image uploaded: $downloadUrl.ref.getDownloadURL()');
+
+    // add message to db
+    return await addChatMessage(null, downloadUrl, user_id);
+
+  }
+
+
 
 }
