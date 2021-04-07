@@ -63,7 +63,7 @@ void main() {
 
       final searchBtn = find.byKey(Key('SearchCompleted'));
       await tester.tap(searchBtn);
-      await tester.enterText(searchBtn, 'report');
+      await tester.enterText(searchBtn, 'sus');
       await tester.pumpAndSettle(Duration(seconds: 5));
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle(Duration(seconds: 5));
