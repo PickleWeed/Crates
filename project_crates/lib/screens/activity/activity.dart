@@ -217,7 +217,7 @@ Widget notiCard(BuildContext context, Notifications noti) {
                 child: ListTile(
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  title: Text('Update of report on ' + noti.reportID),
+                  title: Text('Update of report'),
                   subtitle: Text(noti.notificationText.trim()),
                   isThreeLine: false,
                   trailing: Icon(Icons.keyboard_arrow_right),

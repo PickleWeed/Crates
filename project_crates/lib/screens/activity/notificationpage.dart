@@ -153,11 +153,26 @@ class _NotificationPageState extends State<NotificationPage> {
                             child: Text.rich(TextSpan(
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 24),
+                                    fontSize: 22),
                                 children: <TextSpan>[
                                   TextSpan(
                                       text:
-                                      reportListing.reportTitle,
+                                      'Report',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold))
+                                ]))),
+                        Container(
+                            margin: const EdgeInsets.only(
+                                left: 23.0, top: 15.0),
+                            alignment: Alignment.centerLeft,
+                            child: Text.rich(TextSpan(
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text:
+                                      'Title: ' + reportListing.reportTitle,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold))
                                 ]))),
@@ -231,7 +246,7 @@ class _NotificationPageState extends State<NotificationPage> {
                               'Reply from Admin: ',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16),
+                                  fontSize: 22),
                             )),
                         Container(
                             margin: const EdgeInsets.only(
