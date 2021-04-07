@@ -355,7 +355,13 @@ Widget listingDetailsTopCard(
           List<String> msgs = new List<String>();
           msgs.add("defaultempty");
 
-          await ActivityPresenter().addConversation(listingID, listing.userID, curr, msgs);
+          bool exists = await ActivityPresenter().checkConvoExists(listingID, listing.userID, curr);
+          if(exists == false){
+            await ActivityPresenter().addConversation(listingID, listing.userID, curr, msgs);
+          }
+          else{
+            
+          }
 
           await Navigator.push(
               context,
