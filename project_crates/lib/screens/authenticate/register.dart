@@ -217,7 +217,7 @@ class _RegisterNextState extends State<RegisterNext> {
                         SizedBox(height: 10),
                         TextFormField(
                             key: const Key('username'),
-                            validator: (value)=> value.isEmpty ? "Username Required" : value.length < 3 ? "Username must be at least 3 characters" : null,
+                            validator: (value)=> value.isEmpty ? "Username Required" : value.length < 8 ? "Username must be at least 8 characters" : null,
                             controller: usernameController,
                             decoration: InputDecoration(
                                 filled: true,
