@@ -6,7 +6,6 @@ import 'package:flutter_application_1/main.dart' as app;
 import 'package:integration_test/integration_test.dart';
 
 void main() {
-
   group('Moderator Search', () {
     Future<void> login(WidgetTester tester) async {
       app.main();
@@ -25,7 +24,8 @@ void main() {
       await tester.tap(loginButton);
       await tester.pumpAndSettle(Duration(seconds: 3));
 
-      expect(find.byWidgetPredicate((widget) => widget is ReportListingPage ),findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is ReportListingPage),
+          findsOneWidget);
     }
 
     IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -37,9 +37,9 @@ void main() {
       final searchBtn = find.byKey(Key('SearchReport'));
       await tester.tap(searchBtn);
       await tester.enterText(searchBtn, 'sus');
-      await tester.pumpAndSettle(Duration(seconds: 5));
+      await tester.pumpAndSettle(Duration(seconds: 3));
       await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle(Duration(seconds: 5));
+      await tester.pumpAndSettle(Duration(seconds: 7));
     });
 
     testWidgets('Sort Reported Listings', (WidgetTester tester) async {
@@ -59,12 +59,15 @@ void main() {
       await tester.tap(completedReportBtn);
       await tester.pumpAndSettle(Duration(seconds: 5));
 
-      expect(find.byWidgetPredicate((widget) => widget is CompletedReportListingPage),findsOneWidget);
+      expect(
+          find.byWidgetPredicate(
+              (widget) => widget is CompletedReportListingPage),
+          findsOneWidget);
 
       final searchBtn = find.byKey(Key('SearchCompleted'));
       await tester.tap(searchBtn);
-      await tester.enterText(searchBtn, 'sus');
-      await tester.pumpAndSettle(Duration(seconds: 5));
+      await tester.enterText(searchBtn, 'food');
+      await tester.pumpAndSettle(Duration(seconds: 3));
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle(Duration(seconds: 5));
     });
@@ -77,12 +80,14 @@ void main() {
       await tester.tap(completedReportBtn);
       await tester.pumpAndSettle(Duration(seconds: 5));
 
-      expect(find.byWidgetPredicate((widget) => widget is CompletedReportListingPage),findsOneWidget);
+      expect(
+          find.byWidgetPredicate(
+              (widget) => widget is CompletedReportListingPage),
+          findsOneWidget);
 
       final sortBtn = find.byIcon(Icons.sort);
       await tester.tap(sortBtn);
       await tester.pumpAndSettle(Duration(seconds: 5));
     });
-
   });
 }
