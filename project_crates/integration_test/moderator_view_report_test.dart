@@ -31,6 +31,7 @@ void main() {
     IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
     testWidgets('View a completed listing', (WidgetTester tester) async {
+      //precondition
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 2));
 
@@ -44,11 +45,13 @@ void main() {
       await tester.tap(viewBtn);
       await tester.pumpAndSettle(Duration(seconds: 3));
 
+      //expect result
       expect(find.byWidgetPredicate((widget) => widget is oneReportCompleted ),findsOneWidget);
 
     });
 
     testWidgets('View a reported listing', (WidgetTester tester) async {
+      //precondition
       await login(tester);
       await tester.pumpAndSettle(Duration(seconds: 2));
 
